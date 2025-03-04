@@ -13,16 +13,16 @@ textarea {
     background: #ddd;
     border: 1px solid black;
     border-right: 5px solid black;
+    grid-column: 1;
     height: 100vh;
     max-height: 100vh;
     padding: 0 10px;
-    width: 270px;
 }
 
 .createPostHeader {
     border-bottom: 1px solid #666;
     height: 35px;
-    padding: 10px 0 0 0;
+    padding: 6px 0 0 0;
     margin: 0 0 30px 0;
     width: 100%;
 }
@@ -35,11 +35,31 @@ textarea {
     width: 100%;
 }
 
+.newPost .createPostActions {
+    display: grid;
+    margin-top: 6px;
+}
+
+.newPost .createPostActions .postButton {
+    grid-column: 2;
+    text-align: right;
+}
+
+.newPost .createPostActions .resetButton {
+    grid-column: 1;
+}
+
+.newPost .headerRow {
+    display: grid;
+}
+
 .newPost .headerRow .postLabel {
     font-weight: bold;
+    grid-column: 1;
 }
 
 .newPost .headerRow .count {
+    grid-column: 2;
     text-align: right;
 }
 
@@ -75,26 +95,50 @@ textarea {
     font-weight: bold;
     margin-top: -13px;
     padding: 0 5px;
-    width: 99px;
+    width: 109px;
+}
+
+.selectableAccount {
+    display: grid;
+    margin: 6px 0;
 }
 
 .selectableAccount .accountAvatar {
+    grid-column: 2;
+    grid-row-start: 1;
+    grid-row-end: 3;
     height: 32px;
     width: 32px;
 }
 
 .selectableAccount .accountName {
     font-weight: bold;
+    grid-column: 3;
+    grid-row: 1;
 }
 
 .selectableAccount .accountHandle {
     color: #666;
 }
 
+.selectableAccount .checkX {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
 .selectableAccount .serviceIcon {
     height: 14px;
     width: 14px;
 }
+
+.selectableAccount .accountServiceIconAndHandle {
+    grid-column: 3;
+    grid-row: 2;
+}
+
 
 .unselectedAccount {
     opacity: 40%;

@@ -8,17 +8,13 @@ export function RepliedToPost({ post } : { post: DisplayPost }): JSX.Element {
     }
 
     return (
-        <table className="repliedToPostTable">
-            <tbody>
-                <tr>
-                    <td className="replyIconColumn">
-                         <img src={Reply} />
-                    </td>
-                    <td>
-                        <PostElement isRepliedTo={true} post={post.repliedTo} />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div className="repliedToPostTable">
+            <div className="replyIconColumn">
+                 <img src={Reply} />
+            </div>
+            <div>
+                <PostElement isRepliedTo={true} post={post.repliedTo} />
+            </div>
+        </div>
     );
 }

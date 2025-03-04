@@ -29,25 +29,23 @@ export function ImageBlock({ post } : { post: DisplayPost }): JSX.Element {
         let row: JSX.Element;
         if (pair.length == 1) {
             row = (
-                <tr>
-                    <td colSpan={2}><Image src={pair[0].url}/></td>
-                </tr>
+                <div>
+                    <div><Image src={pair[0].url}/></div>
+                </div>
             )
         } else {
             row = (
-                <tr>
-                    <td><Image src={pair[0].url}/></td>
-                    <td><Image src={pair[1].url}/></td>
-                </tr>
+                <div>
+                    <div><Image src={pair[0].url}/></div>
+                    <div><Image src={pair[1].url}/></div>
+                </div>
             )
         }
         rows.push(row);
     }
     return (
-        <table>
-            <tbody>
-                { rows }
-            </tbody>
-        </table>
+        <div>
+            { rows }
+        </div>
     );
 }

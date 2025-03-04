@@ -7,17 +7,13 @@ export function RepliedToRepliedToPost({ post } : { post: DisplayPost }): JSX.El
     }
 
     return (
-        <table className="repliedToRepliedToPostTable">
-            <tbody>
-                <tr>
-                    <td className="replyIconColumn">
-                         <img src={Reply} />
-                    </td>
-                    <td className="repliedToRepliedToPoster">
-                        <span>{post.repliedToPosterDisplayName}</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div className="repliedToRepliedToPostTable">
+            <div className="replyIconColumn">
+                 <img src={Reply} />
+            </div>
+            <div className="repliedToRepliedToPoster">
+                <span>{post.repliedToPosterDisplayName}</span>
+            </div>
+        </div>
     );
 }

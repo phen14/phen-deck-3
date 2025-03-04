@@ -16,18 +16,10 @@ export function MainWindow() {
 
     return (
         <div style={ { height: "100vh" } }>
-            <table className="main-table" cellPadding="0" cellSpacing="0">
-                <tbody>
-                    <tr>
-                        <td>
-                            <CreatePost />
-                        </td>
-                        <td>
-                            <List config={ config } name="Combined Home" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className="main-table">
+                <CreatePost />
+                <List config={ config } name="Combined Home" />
+            </div>
         </div>
     );
 }

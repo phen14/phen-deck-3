@@ -38,28 +38,26 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
     }
 
     return (
-        <table className="newPost">
-            <tbody>
-            <tr className="headerRow">
-                <td className="postLabel">Post</td>
-                <td className={ countClassName }>{ count }/{ max }</td>
-            </tr>
-            <tr>
-                <td colSpan={ 2 }>
+        <div className="newPost">
+            <div className="headerRow">
+                <div className="postLabel">Post</div>
+                <div className={ countClassName }>{ count }/{ max }</div>
+            </div>
+            <div>
+                <div>
                     <div className="postBox">
                         <textarea rows={ 8 } value={ postContent } onChange={ handleChange } />
                     </div>
-                </td>
-            </tr>
-            <tr className="headerRow">
-                <td>
+                </div>
+            </div>
+            <div className="createPostActions">
+                <div className="resetButton">
                     <button disabled={ resetDisabled } onClick={ handleReset }>Reset</button>
-                </td>
-                <td className="right">
+                </div>
+                <div className="postButton">
                     <button disabled={ postDisabled } onClick={ post }>Post</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </div>
+            </div>
+        </div>
     );
 }

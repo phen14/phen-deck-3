@@ -56,11 +56,17 @@ export const getPosts = async (sender: WebContents, oneTime: boolean = false) =>
         posts.push(...result);
     }
 
+    // filter
+    const filteredPosts = posts.filter((post: StatusPost) =>
+        !post.isRetweet() || !(phenDeckConfig.timeline.hideRetweetsFromUsers.includes(post.getPosterHandle()))
+    )
+    console.log(`Filtered ${posts.length - filteredPosts.length} of ${posts.length} posts.`)
+
     // sort
-    posts.sort((a: StatusPost, b: StatusPost) => a.getTimestamp().getTime() - b.getTimestamp().getTime());
+    filteredPosts.sort((a: StatusPost, b: StatusPost) => a.getTimestamp().getTime() - b.getTimestamp().getTime());
 
     const conversionPromises: Promise<DisplayPost | null>[] = [];
-    posts.forEach((post) => {
+    filteredPosts.forEach((post) => {
         conversionPromises.push(convertStatusPostToDisplayPost(post));
     })
     const displayPosts = await Promise.all(conversionPromises);

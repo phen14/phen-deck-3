@@ -1,21 +1,24 @@
 .list {
     border: 1px solid black;
+    display: grid;
+    grid-column: 2;
+    grid-template-rows: [header] 35px [body] 1fr;
     height: 100vh;
     max-height: 100vh;
-    width: 440px;
 }
 
 .listBody {
     background: #fff;
-    height: 100%;
-    max-height: 100%;
+    grid-row: 2;
     overflow-y: scroll;
 }
 
 .listControls {
     color: #666;
-    font-size: 20px;
-    text-align: right;
+    font-size: 24px;
+    grid-column: 2;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .listControls span:hover {
@@ -26,16 +29,27 @@
 .listHeader {
     background: #ddd;
     border-bottom: 1px solid #666;
+    display: grid;
+    grid-row: 1;
+    grid-template-columns: auto 32px;
     height: 35px;
+    vertical-align: middle;
+}
+
+.listHeaderNameAndPostCount {
+    grid-column: 1;
     padding: 6px 0 5px 5px;
-    width: 100%;
+    vertical-align: middle;
 }
 
 .listName {
+    display: inline-block;
     font-size: 24px;
+    height: 100%;
 }
 
 .postCount {
     color: #4C4C4C;
+    display: inline-block;
     margin-left: 8px;
 }

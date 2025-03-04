@@ -60,7 +60,7 @@ const createWindow = async () => {
 
     mainWindow = new BrowserWindow({
         show: false,
-        width: 771,
+        width: 753,
         height: 1024,
         icon: getAssetPath("icon.png"),
         title: "PhenDeck for Workspaces 3.11",

@@ -14,17 +14,17 @@ export function SelectableAccount({ account, onSelect }: { account: DisplayAccou
         }
     }
 
+    const className = "selectableAccount " + (account.selected ? "selectedAccount" : "unselectedAccount");
+
     return (
-        <tr id={ account.accountId } className={ account.selected ? "selectedAccount" : "unselectedAccount" } onClick={ handleSelect }>
-            <td>{ account.selected ? "✅" : "❌" }</td>
-            <td>
-                <img className="accountAvatar" src={ account.avatarUrl }/>
-            </td>
-            <td>
-                <div className="accountName">{ account.displayName }</div>
-                <img className="serviceIcon" src={ account.service == "Bluesky" ? Bluesky : Mastodon }/>
+        <div id={ account.accountId } className={ className } onClick={ handleSelect }>
+            <div className="checkX">{ account.selected ? "✅" : "❌" }</div>
+            <img className="accountAvatar" src={ account.avatarUrl } />
+            <div className="accountName">{ account.displayName }</div>
+            <div className="accountServiceIconAndHandle">
+                <img className="serviceIcon" src={ account.service == "Bluesky" ? Bluesky : Mastodon } />
                 <span className="accountHandle">{ account.handle }</span>
-            </td>
-        </tr>
+            </div>
+        </div>
     );
 }

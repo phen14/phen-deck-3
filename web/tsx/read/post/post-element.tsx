@@ -3,7 +3,6 @@ import React, { JSX, useRef } from "react";
 import "./post.css";
 import "./poster.css";
 import { DisplayPost } from "../../../../src/main/ts/api/post/display-post";
-import { phenDeckConfig } from "../../../../src/main/ts/config/phen-deck-config";
 import { ActionRow } from "./action-row";
 import { GifBlock } from "./media/gif-block";
 import { ImageBlock } from "./media/image-block";
