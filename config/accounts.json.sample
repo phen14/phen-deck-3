@@ -1,0 +1,24 @@
+[
+  {
+    "type": "mastodon",
+    "access": {
+      "accessToken": "",
+      "clientKey": "",
+      "clientSecret": ""
+    },
+    "server": {
+      "url": "social.vivaldi.net"
+    }
+  },
+
+  {
+    "type": "bluesky",
+    "access": {
+      "accessToken": "",
+      "user": ""
+    },
+    "server": {
+      "url": "https://bsky.social"
+    }
+  }
+]

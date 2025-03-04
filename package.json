@@ -1,0 +1,154 @@
+{
+    "name": "phen-deck-3",
+    "version": "3.11.0",
+    "main": "./.erb/dll/main.bundle.dev.js",
+    "scripts": {
+        "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
+        "build:dll": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
+        "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
+        "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
+        "lint": "cross-env NODE_ENV=development eslint .",
+        "lint:fix": "cross-env NODE_ENV=development eslint . --fix",
+        "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
+        "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
+        "prestart": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.dev.ts",
+        "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run prestart && npm run start:renderer",
+        "start:main": "concurrently -k \"cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --watch --config ./.erb/configs/webpack.config.main.dev.ts\" \"electronmon .\"",
+        "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
+        "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts"
+    },
+    "dependencies": {
+        "@atproto/api": "0.13.x",
+        "@electron/notarize": "2.3.x",
+        "dateformat": "5.x",
+        "electron-debug": "3.x",
+        "electron-log": "4.x",
+        "hls.js": "1.x",
+        "html-entities": "2.5.x",
+        "immutable": "^5.0.3",
+        "masto": "^6.10.1",
+        "path-browserify": "1.x",
+        "react": "18.x",
+        "react-dom": "18.x",
+        "react-router-dom": "7.x"
+    },
+    "devDependencies": {
+        "@electron/rebuild": "3.3.x",
+        "@eslint/eslintrc": "3.x",
+        "@eslint/js": "9.x",
+        "@pmmmwh/react-refresh-webpack-plugin": "0.5.x",
+        "@svgr/webpack": "8.x",
+        "@teamsupercell/typings-for-css-modules-loader": "2.x",
+        "@types/dateformat": "5.x",
+        "@types/node": "20.6.2",
+        "@types/react": "18.x",
+        "@types/react-dom": "18.x",
+        "@types/webpack-bundle-analyzer": "4.x",
+        "@typescript-eslint/eslint-plugin": "8.x",
+        "@typescript-eslint/parser": "8.x",
+        "chalk": "4.x",
+        "concurrently": "9.x",
+        "core-js": "3.x",
+        "cross-env": "7.x",
+        "css-loader": "7.x",
+        "css-minimizer-webpack-plugin": "7.x",
+        "detect-port": "1.x",
+        "electron": "31.x",
+        "electron-builder": "24.x",
+        "electron-devtools-installer": "3.x",
+        "electronmon": "2.x",
+        "eslint": "9.x",
+        "eslint-config-erb": "4.x",
+        "eslint-config-prettier": "9.x",
+        "eslint-import-resolver-typescript": "3.x",
+        "eslint-import-resolver-webpack": "0.13.x",
+        "eslint-plugin-compat": "6.x",
+        "eslint-plugin-import": "2.x",
+        "eslint-plugin-jest": "28.x",
+        "eslint-plugin-jsx-a11y": "6.x",
+        "eslint-plugin-prettier": "5.x",
+        "eslint-plugin-promise": "7.x",
+        "eslint-plugin-react": "7.x",
+        "eslint-plugin-react-hooks": "5.x",
+        "file-loader": "6.x",
+        "html-webpack-plugin": "5.x",
+        "identity-obj-proxy": "3.x",
+        "mini-css-extract-plugin": "2.x",
+        "prettier": "3.x",
+        "react-refresh": "0.14.x",
+        "rimraf": "6.x",
+        "sass": "1.x",
+        "sass-loader": "16.x",
+        "style-loader": "4.x",
+        "terser-webpack-plugin": "5.x",
+        "ts-loader": "9.x",
+        "ts-node": "10.x",
+        "tsconfig-paths-webpack-plugin": "4.x",
+        "typescript": "5.x",
+        "url-loader": "4.x",
+        "webpack": "5.x",
+        "webpack-bundle-analyzer": "4.x",
+        "webpack-cli": "5.x",
+        "webpack-dev-server": "5.x",
+        "webpack-merge": "6.x"
+    },
+    "build": {
+        "productName": "ElectronReact",
+        "appId": "org.erb.ElectronReact",
+        "asar": true,
+        "asarUnpack": "**\\*.{node,dll}",
+        "files": [
+            "dist",
+            "node_modules",
+            "package.json"
+        ],
+        "dmg": {
+            "contents": [
+                {
+                    "x": 130,
+                    "y": 220
+                },
+                {
+                    "x": 410,
+                    "y": 220,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        },
+        "win": {
+            "target": [
+                "nsis"
+            ]
+        },
+        "directories": {
+            "app": "release/app",
+            "buildResources": "web/assets",
+            "output": "release/build"
+        },
+        "extraResources": [
+            "./web/assets/**"
+        ]
+    },
+    "electronmon": {
+        "patterns": [
+            "!**/**",
+            "src/main/**",
+            ".erb/dll/**"
+        ],
+        "logLevel": "quiet"
+    },
+    "prettier": {
+        "overrides": [
+            {
+                "files": [
+                    ".eslintrc"
+                ],
+                "options": {
+                    "parser": "json"
+                }
+            }
+        ],
+        "singleQuote": false
+    }
+}

@@ -1,0 +1,112 @@
+/* Post */
+
+.post {
+    border-bottom: 2px solid #ccc;
+    padding: 5px 10px;
+}
+
+.me {
+    background-color: #dae2ed !important;
+}
+
+.notMe {
+    background-color: #fff;
+}
+
+.retweet {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+.raw {
+    border: 1px solid #ccc;
+    max-width: 100%;
+}
+
+
+/* Quote Tweet */
+.quoteSection {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px;
+    padding: 5px 10px;
+}
+
+
+/* Replied-To */
+
+.repliedTo {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: lightgoldenrodyellow;
+    padding: 5px;
+}
+
+.repliedTo .notMe {
+    background-color: inherit;
+}
+
+.repliedToPostTable {
+    width: 100%;
+}
+
+.repliedToPostTable .replyIconColumn {
+    padding: 0 10px 0 0;
+    vertical-align: bottom;
+    width: 50px;
+}
+
+.repliedToPostTable .replyIconColumn img {
+    height: 50px;
+    min-width: 50px;
+    width: 50px;
+}
+
+.repliedToRepliedToPostTable .replyIconColumn {
+    padding: 0;
+    vertical-align: bottom;
+    width: 15px;
+}
+
+.repliedToRepliedToPostTable .replyIconColumn img {
+    height: 15px;
+    min-width: 15px;
+    width: 15px;
+}
+
+.repliedToRepliedToPostTable .repliedToRepliedToPoster {
+    color: #666;
+    font-size: 10px;
+    font-style: italic;
+}
+
+
+
+/* Media */
+
+.video {
+    margin-top: 10px;
+}
+
+
+/* Action Row */
+
+.actionRow {
+    border-top: 1px dotted #ccc;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.actionColumn {
+    align-content: center;
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+    width: 20%;
+}
+
+.actionColumn img {
+    height: 16px;
+    width: 16px;
+}

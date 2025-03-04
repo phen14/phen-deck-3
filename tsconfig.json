@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "incremental": true,
+        "jsx": "react-jsx",
+        "lib": [
+            "dom",
+            "es2022"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": ".erb/dll",
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2023"
+    },
+    "exclude": [
+        "test",
+        "release/build",
+        "release/app/dist",
+        ".erb/dll"
+    ]
+}

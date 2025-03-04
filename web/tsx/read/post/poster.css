@@ -1,0 +1,73 @@
+/* Header */
+
+.bigHeader {
+    border: 0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.bigHeader td {
+    vertical-align: middle;
+}
+
+.posterAvatarColumn {
+    padding: 0 10px 0 0;
+    width: 50px;
+}
+
+.posterAvatarSmall {
+    padding: 0 10px 0 0;
+    width: 32px;
+}
+
+.posterAvatar {
+    height: 50px;
+    width: 50px;
+}
+
+.posterAvatarSmall {
+    height: 32px;
+    width: 32px;
+}
+
+.posterDisplayName {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.posterServiceIcon {
+    height: 14px;
+    margin-right: 6px;
+    width: 14px;
+}
+
+.posterHandle,
+.postTimestamp,
+.postTimeSince {
+    color: #666;
+}
+
+.postTimeSince {
+    text-align: right;
+}
+
+.retweetHeader {
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.retweetedIcon {
+    height: 32px;
+    width: 32px;
+}
+
+.retweetSmallHeaderColumn table {
+    margin: 0;
+}
+
+.smallHeader {
+    border: 0;
+    margin-bottom: 10px;
+    width: 100%;
+}

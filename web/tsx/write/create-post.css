@@ -1,0 +1,101 @@
+textarea {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.right {
+    text-align: right;
+}
+
+
+
+.createPostColumn {
+    background: #ddd;
+    border: 1px solid black;
+    border-right: 5px solid black;
+    height: 100vh;
+    max-height: 100vh;
+    padding: 0 10px;
+    width: 270px;
+}
+
+.createPostHeader {
+    border-bottom: 1px solid #666;
+    height: 35px;
+    padding: 10px 0 0 0;
+    margin: 0 0 30px 0;
+    width: 100%;
+}
+
+.createPostTitle {
+    font-size: 24px;
+}
+
+.newPost {
+    width: 100%;
+}
+
+.newPost .headerRow .postLabel {
+    font-weight: bold;
+}
+
+.newPost .headerRow .count {
+    text-align: right;
+}
+
+.newPost .headerRow .overTheLimit {
+    color: #f00;
+}
+
+.newPost .postBox {
+    background-color: #fff;
+    border: 1px solid black;
+    width: 100%;
+}
+
+.newPost .postBox textarea {
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    outline: none;
+    resize: none;
+    width: 95%;
+}
+
+.selectAccountsWrapper {
+    border: 1px solid #999;
+    border-radius: 4px;
+    margin: 15px 5px;
+    padding: 5px;
+}
+
+.selectAccountsLabel {
+    background-color: #ddd;
+    display: block;
+    font-weight: bold;
+    margin-top: -13px;
+    padding: 0 5px;
+    width: 99px;
+}
+
+.selectableAccount .accountAvatar {
+    height: 32px;
+    width: 32px;
+}
+
+.selectableAccount .accountName {
+    font-weight: bold;
+}
+
+.selectableAccount .accountHandle {
+    color: #666;
+}
+
+.selectableAccount .serviceIcon {
+    height: 14px;
+    width: 14px;
+}
+
+.unselectedAccount {
+    opacity: 40%;
+}

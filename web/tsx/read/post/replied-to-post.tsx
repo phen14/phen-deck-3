@@ -1,0 +1,24 @@
+import { DisplayPost } from "../../../../src/main/ts/api/post/display-post";
+import Reply from "web/assets/reply.png";
+import { PostElement } from "./post-element";
+
+export function RepliedToPost({ post } : { post: DisplayPost }): JSX.Element {
+    if (!post.repliedTo) {
+        return (<span/>);
+    }
+
+    return (
+        <table className="repliedToPostTable">
+            <tbody>
+                <tr>
+                    <td className="replyIconColumn">
+                         <img src={Reply} />
+                    </td>
+                    <td>
+                        <PostElement isRepliedTo={true} post={post.repliedTo} />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    );
+}
