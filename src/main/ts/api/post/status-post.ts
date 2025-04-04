@@ -1,7 +1,12 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { UserAccountProfile } from "../account/user-account-profile";
 import { StatusLink } from "./status-link";
 import { StatusMedia } from "./status-media";
 
+/**
+ * Interface for classes that extract post information from a service model of a post.
+ */
 export interface StatusPost {
     getId(): string;
     getRaw(): string;

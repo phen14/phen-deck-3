@@ -1,3 +1,8 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
+/**
+ * Information about an image or video.
+ */
 export class StatusMedia {
     url: string;
 

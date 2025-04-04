@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { AppBskyEmbedRecord } from "@atproto/api";
 import * as AppBskyEmbedExternal from "@atproto/api/src/client/types/app/bsky/embed/external";
 import * as AppBskyEmbedImages from "@atproto/api/src/client/types/app/bsky/embed/images";

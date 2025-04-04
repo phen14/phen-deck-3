@@ -1,6 +1,11 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { UserAccount } from "./user-account";
 import { Map as ImmutableMap } from "immutable";
 
+/**
+ * Singleton store for loaded user accounts.
+ */
 export class Accounts {
     static #instance: Accounts;
 

@@ -1,7 +1,15 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import Hls from "hls.js";
 import { useEffect, useRef } from "react";
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 
+/**
+ * Display a video from Bluesky, which has to make everything extra complicated.
+ *
+ * @param post Post containing the link to the video.
+ * @constructor
+ */
 export function VideoPlaylistBlock({ post } : { post: DisplayPost }): JSX.Element {
     if (!post.videos || !post.videos.length) {
         return (<span/>);

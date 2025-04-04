@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { createRestAPIClient, mastodon } from "masto";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
@@ -94,7 +96,7 @@ export default class MastodonAccount implements UserAccount {
         return "Mastodon";
     }
 
-    getPostLength(): number {
+    getMaximumPostLength(): number {
         return this.maxChars;
     }
 

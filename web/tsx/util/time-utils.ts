@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 const ONE_SECOND = 1;
 
 const ONE_MINUTE = 60 * ONE_SECOND;

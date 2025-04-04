@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { Accounts } from "../../../api/account/accounts";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { StatusPost } from "../../../api/post/status-post";

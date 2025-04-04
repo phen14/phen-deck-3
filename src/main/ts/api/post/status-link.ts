@@ -1,3 +1,8 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
+/**
+ * Information about a link.
+ */
 export class StatusLink {
     description: string;
     imageUrl: string | null | undefined;

@@ -1,6 +1,11 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { sendUpdatedConfig } from "../app/react-interface";
 import { phenDeckConfig } from "../config/phen-deck-config";
 
+/**
+ * The menus and menu items displayed in the menu bar at the top of the window.
+ */
 export const mainMenuTemplate = [
     // { role: 'fileMenu' }
     {

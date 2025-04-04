@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import "./create-post.css";
 
 import { JSX, useState } from "react";
@@ -5,6 +7,11 @@ import { DisplayAccount } from "../../../src/main/ts/api/account/display-account
 import { PostBox } from "./post-box";
 import { AccountSelection } from "./account-selection";
 
+/**
+ * Display the form for submitting a post.
+ *
+ * @constructor
+ */
 export function CreatePost(): JSX.Element {
     const [max, setMax] = useState<number>(0);
     const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);

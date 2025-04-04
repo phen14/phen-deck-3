@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import "./create-post.css";
 
 import { JSX, useState } from "react";
@@ -6,6 +8,12 @@ import { Channels } from "../../../src/main/ts/app/preload";
 import { getElectron } from "../util/get-electron";
 import { SelectableAccount } from "./selectable-account";
 
+/**
+ * Display the list of accounts that can be posted to.
+ *
+ * @param onSelect Function to run when an account is selected.
+ * @constructor
+ */
 export function AccountSelection({ onSelect }: { onSelect: Function }): JSX.Element {
     const [data, setData] = useState<Map<string, DisplayAccount>>(new Map());
 

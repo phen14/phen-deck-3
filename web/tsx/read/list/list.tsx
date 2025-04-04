@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { JSX, useState } from "react";
 
 import "./list.css";
@@ -9,6 +11,13 @@ import { timeSince } from "../../util/time-utils";
 import { ListBody } from "./list-body";
 import { ListHeader } from "./list-header";
 
+/**
+ * Display a list of posts with a header.
+ *
+ * @param config Global config.
+ * @param name Name of the list.
+ * @constructor
+ */
 export function List({ config, name } : { config: PhenDeckConfig, name: string }): JSX.Element {
     const [data, setData] = useState<DisplayPost[]>([]);
 
@@ -40,6 +49,11 @@ export function List({ config, name } : { config: PhenDeckConfig, name: string }
     );
 }
 
+/**
+ * Update the relative time field of all the posts in the list.
+ *
+ * @param posts
+ */
 function updateTimestamps(posts: DisplayPost[]) {
     for (let post of posts) {
         post.timeSince = timeSince(post.timestamp);

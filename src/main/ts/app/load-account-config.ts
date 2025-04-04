@@ -1,9 +1,14 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import accountConfigList from "../../../../config/accounts.json";
 import { Accounts } from "../api/account/accounts";
 import BlueskyAccount from "../platforms/bluesky/account/bluesky-account";
 import MastodonAccount from "../platforms/mastodon/account/mastodon-account";
 import { AccountConfig } from "../config/account-config-type";
 
+/**
+ * Load accounts from the user's configuration file and store them in our global Accounts singleton.
+ */
 export const loadAccountConfig = async () => {
     const accounts = Accounts.getInstance();
     accountConfigList.forEach((accountConfig: AccountConfig) => {

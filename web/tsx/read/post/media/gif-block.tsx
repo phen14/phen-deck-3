@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 import { Image } from "../../shared/image";
 

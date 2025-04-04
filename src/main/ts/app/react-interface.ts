@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { BrowserWindow, ipcMain } from "electron";
 import { Accounts } from "../api/account/accounts";
 import { convertAccountToDisplayAccount, DisplayAccount } from "../api/account/display-account";
@@ -13,6 +15,11 @@ import IpcMainEvent = Electron.IpcMainEvent;
 const accounts = Accounts.getInstance();
 let mainWindow: BrowserWindow | null;
 
+/**
+ * Setup the communication channels between the front and back ends of the app.
+ *
+ * @param main Application window object.
+ */
 export const setupReactInterface = (main: BrowserWindow | null) => {
     mainWindow = main;
 
@@ -24,6 +31,9 @@ export const setupReactInterface = (main: BrowserWindow | null) => {
     });
 }
 
+/**
+ * Communication channel to send changes in configuration to the front end.
+ */
 export const sendUpdatedConfig = () => {
     if (!mainWindow) {
         console.error("Link to window not established.")
@@ -33,6 +43,11 @@ export const sendUpdatedConfig = () => {
     mainWindow.webContents.send("updatedConfig", phenDeckConfig);
 }
 
+/**
+ * Communication channel to send the account list to the front end.
+ *
+ * @param sender
+ */
 export const getAccounts = (sender: WebContents) => {
     console.log("in getAccounts()");
     const accounts = Accounts.getInstance().list();
@@ -43,6 +58,12 @@ export const getAccounts = (sender: WebContents) => {
     sender.send("getAccounts", displayAccounts);
 }
 
+/**
+ * Communication channel to send a batch of posts to the front end.
+ *
+ * @param sender
+ * @param oneTime
+ */
 export const getPosts = async (sender: WebContents, oneTime: boolean = false) => {
     console.log("in getPosts()");
     const posts: StatusPost[] = [];
@@ -76,6 +97,12 @@ export const getPosts = async (sender: WebContents, oneTime: boolean = false) =>
     }
 }
 
+/**
+ * Communication for the front end to send a submitted post to the back end.
+ *
+ * @param event
+ * @param value
+ */
 export const post = async (event: IpcMainEvent, value: SubmittedPost) => {
     console.log("in posts()");
 

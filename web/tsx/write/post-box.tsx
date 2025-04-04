@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import "./create-post.css";
 
 import React, { JSX, useState } from "react";
@@ -5,6 +7,13 @@ import { SubmittedPost } from "../../../src/main/ts/api/post/submitted-post";
 import { Channels } from "../../../src/main/ts/app/preload";
 import { getElectron } from "../util/get-electron";
 
+/**
+ * Display the box for text for a new post.
+ *
+ * @param max Maximum length for the post.
+ * @param selectedAccounts List of currently selected accounts.
+ * @constructor
+ */
 export function PostBox({ max, selectedAccounts }: { max: number, selectedAccounts: string[] }): JSX.Element {
     const [count, setCount] = useState<number>(0);
     const [postContent, setPostContent] = useState("");

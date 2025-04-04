@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import "../App.css";
 import { useState } from "react";
 import { Channels } from "../../../src/main/ts/app/preload";

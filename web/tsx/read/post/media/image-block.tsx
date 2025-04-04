@@ -1,7 +1,16 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 import { StatusMedia } from "../../../../../src/main/ts/api/post/status-media";
 import { Image } from "../../shared/image";
 
+/**
+ * Display an image or set of images.  If there is one image, display the image to fit the width of the list.  If there are multiple,
+ * display them in an _(n/2)_ by 2 grid.
+ *
+ * @param post Post object containing the images.
+ * @constructor
+ */
 export function ImageBlock({ post } : { post: DisplayPost }): JSX.Element {
     if (!post.images) {
         return (<span/>);

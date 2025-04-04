@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import * as AppBskyEmbedRecord from "@atproto/api/src/client/types/app/bsky/embed/record";
 import * as AppBskyEmbedRecordWithMedia from "@atproto/api/src/client/types/app/bsky/embed/recordWithMedia";
 import { encode } from "html-entities";

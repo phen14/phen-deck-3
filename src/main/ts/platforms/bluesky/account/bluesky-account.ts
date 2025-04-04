@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { AppBskyGraphGetFollows, AtpAgent, AtpSessionData, UnicodeString } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -146,7 +148,7 @@ export default class BlueskyAccount implements UserAccount {
         return "Bluesky";
     }
 
-    getPostLength(): number {
+    getMaximumPostLength(): number {
         return BlueskyAccount.MAX_CHARS;
     }
 

@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import React, { JSX, useRef } from "react";
 
 import "./post.css";
@@ -20,6 +22,14 @@ type Props = {
     post: DisplayPost
 }
 
+/**
+ * Display a post.
+ *
+ * @param isEmbedded Is this post embedded in another post?
+ * @param isRepliedTo Is this post a post that the main post replied to?
+ * @param post The post to display.
+ * @constructor
+ */
 export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Element {
     if (!post) {
         return <span />;

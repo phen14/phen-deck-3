@@ -1,6 +1,14 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 import { VideoPlaylistBlock } from "./video-playlist-block";
 
+/**
+ * Display a video.
+ *
+ * @param post Post containing the link to the video.
+ * @constructor
+ */
 export function VideoBlock({ post } : { post: DisplayPost }): JSX.Element {
     if (!post.videos || !post.videos.length) {
         return (<span/>);

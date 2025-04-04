@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import dateFormat from "dateformat";
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 import Bluesky from "web/assets/bluesky.png";
@@ -6,6 +8,12 @@ import Mastodon from "web/assets/mastodon.png";
 import { DATE_FORMAT, TIME_FORMAT, YEAR_DATE_FORMAT } from "../../../util/constants";
 import { Image } from "../../shared/image";
 
+/**
+ * Display a full header for a post, with the user's name, avatar, handle, and both full and relative timestamp.
+ *
+ * @param post Post being displayed.
+ * @constructor
+ */
 export function BigHeader({ post } : { post: DisplayPost }): JSX.Element {
 
     const avatarSrc = post.posterAvatarUrl ?? Egg;
@@ -14,14 +22,14 @@ export function BigHeader({ post } : { post: DisplayPost }): JSX.Element {
     return (
         <div className="bigHeader">
             <div className="posterAvatarColumn">
-                <Image className="posterAvatar" src={avatarSrc}/>
+                <Image className="posterAvatar" src={avatarSrc} />
             </div>
             <div className="posterDisplayName">
                 {post.posterDisplayName}
             </div>
 
             <div className="posterHandle">
-                <img className="posterServiceIcon" src={serviceSrc}/>
+                <img className="posterServiceIcon" src={serviceSrc} />
                 {post.posterHandle}
             </div>
 

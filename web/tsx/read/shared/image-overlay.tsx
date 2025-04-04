@@ -1,3 +1,5 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
 import { JSX, MouseEventHandler } from "react";
 
 export function ImageOverlay({ src, alt, close } : { src: string, alt?: string, close: MouseEventHandler }): JSX.Element {

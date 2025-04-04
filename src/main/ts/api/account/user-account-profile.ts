@@ -1,3 +1,8 @@
+// (K) ALL RIGHTS REVERSED - Reprint what you like
+
+/**
+ * Basic identifying information about a user account.
+ */
 export type UserAccountProfile = {
     // Primary Key
     readonly id: string;
