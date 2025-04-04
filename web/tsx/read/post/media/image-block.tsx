@@ -14,7 +14,11 @@ export function ImageBlock({ post } : { post: DisplayPost }): JSX.Element {
     }
 
     if (images.length == 1) {
-        return (<Image src={images[0].url} className="full" />);
+        return (
+            <div className="imageBlock">
+                <Image src={images[0].url} className="full" />
+            </div>
+        );
     }
 
     const pairs: StatusMedia[][] = [];
@@ -44,7 +48,7 @@ export function ImageBlock({ post } : { post: DisplayPost }): JSX.Element {
         rows.push(row);
     }
     return (
-        <div>
+        <div className="imageBlock">
             { rows }
         </div>
     );

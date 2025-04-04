@@ -57,11 +57,13 @@
 .posterHandle {
     grid-column: 2;
     grid-row: 2;
+    vertical-align: middle;
 }
 
 .posterServiceIcon {
     height: 14px;
-    margin-right: 6px;
+    margin-right: 4px;
+    vertical-align: middle;
     width: 14px;
 }
 

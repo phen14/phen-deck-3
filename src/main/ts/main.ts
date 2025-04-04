@@ -12,6 +12,7 @@ import path from "path";
 import { app, BrowserWindow, shell, ipcMain, Menu } from "electron";
 import { URL } from "url";
 import { loadAccountConfig } from "./app/load-account-config";
+import { loadMutesConfig } from "./app/load-mutes-config";
 import { getAccounts, getPosts, setupReactInterface } from "./app/react-interface";
 import { mainMenuTemplate } from "./menu/main-menu";
 
@@ -111,6 +112,7 @@ function resolveHtmlPath(htmlFileName: string) {
 
 app.whenReady().then(async () => {
     await loadAccountConfig();
+    await loadMutesConfig();
     setupReactInterface(mainWindow);
     await createWindow();
 })

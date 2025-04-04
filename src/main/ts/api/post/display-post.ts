@@ -98,5 +98,7 @@ export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | n
 
 function convertPostText(text: string): string {
     let convertedText = text.replaceAll("\n", "<br />");
+    convertedText = convertedText.replaceAll("<a ", "<a target='_blank' rel='noopener noreferrer' ");
+
     return convertedText;
 }

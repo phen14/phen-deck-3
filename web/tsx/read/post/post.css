@@ -5,6 +5,10 @@
     padding: 5px 10px;
 }
 
+.imageBlock {
+    margin-top: 5px;
+}
+
 .me {
     background-color: #dae2ed !important;
 }
@@ -49,15 +53,23 @@
 
 .repliedToPostTable {
     display: grid;
-    grid-template-columns: 50px 1fr;
+    grid-template-columns: 54px 1fr;
+    grid-template-rows: 1fr 50px;
+    margin-bottom: 5px;
     width: 100%;
 }
 
 .repliedToPostTable .replyIconColumn {
     grid-column: 1;
+    grid-row: 2;
     padding: 0 10px 0 0;
-    vertical-align: bottom;
     width: 50px;
+}
+
+.repliedToPostTable .repliedTo {
+    grid-column: 2;
+    grid-row-start: 1;
+    grid-row-end: 3;
 }
 
 .repliedToPostTable .replyIconColumn img {
@@ -68,11 +80,12 @@
 
 .repliedToRepliedToPostTable {
     display: grid;
-    grid-template-columns: 15px 1fr;
+    grid-template-columns: 20px 1fr;
 }
 
 .repliedToRepliedToPostTable .replyIconColumn {
     grid-column: 1;
+    grid-row: 1;
     padding: 0;
     vertical-align: bottom;
     width: 15px;
@@ -112,9 +125,12 @@
     width: 100%;
 }
 
-.actionColumn { }
+.actionColumn {
+    vertical-align: middle;
+}
 
 .actionColumn img {
     height: 16px;
+    vertical-align: middle;
     width: 16px;
 }

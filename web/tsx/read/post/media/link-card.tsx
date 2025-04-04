@@ -10,10 +10,12 @@ export function LinkCard({ post } : { post: DisplayPost }): JSX.Element {
 
     return (
         <div className="linkCard">
+            <a href={post.linkCard.url} target="_blank">
             <div className="linkTitle">{post.linkCard.title}</div>
             { imageSection }
+            </a>
             <div className="linkDescription">{post.linkCard.description}</div>
-            <div className="linkUrl">{post.linkCard.url}</div>
+            <div className="linkUrl"><a href={post.linkCard.url} target="_blank">{ post.linkCard.url }</a></div>
         </div>
 );
 }

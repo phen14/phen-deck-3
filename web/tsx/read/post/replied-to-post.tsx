@@ -12,9 +12,7 @@ export function RepliedToPost({ post } : { post: DisplayPost }): JSX.Element {
             <div className="replyIconColumn">
                  <img src={Reply} />
             </div>
-            <div>
-                <PostElement isRepliedTo={true} post={post.repliedTo} />
-            </div>
+            <PostElement isRepliedTo={true} post={post.repliedTo} />
         </div>
     );
 }

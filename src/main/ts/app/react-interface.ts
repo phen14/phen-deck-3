@@ -6,6 +6,7 @@ import { convertStatusPostToDisplayPost, DisplayPost } from "../api/post/display
 import { StatusPost } from "../api/post/status-post";
 import { SubmittedPost } from "../api/post/submitted-post";
 import { phenDeckConfig } from "../config/phen-deck-config";
+import { shouldFilterOutPost } from "../service/post-filter";
 import WebContents = Electron.WebContents;
 import IpcMainEvent = Electron.IpcMainEvent;
 
@@ -57,9 +58,7 @@ export const getPosts = async (sender: WebContents, oneTime: boolean = false) =>
     }
 
     // filter
-    const filteredPosts = posts.filter((post: StatusPost) =>
-        !post.isRetweet() || !(phenDeckConfig.timeline.hideRetweetsFromUsers.includes(post.getPosterHandle()))
-    )
+    const filteredPosts = posts.filter((post: StatusPost) => !shouldFilterOutPost(post));
     console.log(`Filtered ${posts.length - filteredPosts.length} of ${posts.length} posts.`)
 
     // sort

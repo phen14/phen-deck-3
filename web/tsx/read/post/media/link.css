@@ -1,7 +1,12 @@
 .linkCard {
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-top: 5px;
     padding: 5px;
+}
+
+.linkCard a {
+    text-decoration: none;
 }
 
 .linkCard img {
@@ -17,8 +22,8 @@
     font-weight: bold;
 }
 
-.linkCard .linkUrl {
-    color: #999;
+.linkCard .linkUrl a {
+    color: #999 !important;
     font-size: 10px;
     font-style: italic;
 }
