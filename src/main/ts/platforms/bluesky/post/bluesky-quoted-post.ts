@@ -7,7 +7,7 @@ import * as AppBskyEmbedRecordWithMedia from "@atproto/api/src/client/types/app/
 import * as AppBskyEmbedVideo from "@atproto/api/src/client/types/app/bsky/embed/video";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { AbstractBlueskyPost, BlueRecord } from "./abstract-bluesky-post";
-import { PostView, ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
 
 export class BlueskyQuotedPost extends AbstractBlueskyPost {

@@ -3,7 +3,7 @@
 const ONE_SECOND = 1;
 
 const ONE_MINUTE = 60 * ONE_SECOND;
-const MINUTES_CUTOFF = 1 * ONE_MINUTE;
+const MINUTES_CUTOFF = 59 * ONE_SECOND;
 
 const ONE_HOUR: number = 60 * ONE_MINUTE;
 const HOURS_CUTOFF: number = 99 * ONE_MINUTE;

@@ -6,6 +6,7 @@ import { JSX, useState } from "react";
 import { DisplayAccount } from "../../../src/main/ts/api/account/display-account";
 import { PostBox } from "./post-box";
 import { AccountSelection } from "./account-selection";
+import { TemplateSelection } from "./template-selection";
 
 /**
  * Display the form for submitting a post.
@@ -15,6 +16,7 @@ import { AccountSelection } from "./account-selection";
 export function CreatePost(): JSX.Element {
     const [max, setMax] = useState<number>(0);
     const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+    const [selectedTemplate, setSelectedTemplate] = useState<string>("");
 
     const handleAccountSelectionChange = (accounts: DisplayAccount[]) => {
         const selected = accounts
@@ -27,16 +29,23 @@ export function CreatePost(): JSX.Element {
         setMax(Math.min(...maxes));
     }
 
+    const handleTemplateSelectionChange = (content: string) => {
+        setSelectedTemplate(content);
+    }
+
     return (
         <div className="createPostColumn">
             <div className="createPostHeader">
-                <span className="createPostTitle">Create Post</span>
+                <span>Create Post</span>
             </div>
             <div>
-                <AccountSelection onSelect={handleAccountSelectionChange} />
+                <AccountSelection onSelect={ handleAccountSelectionChange } />
             </div>
             <div>
-                <PostBox max={max} selectedAccounts={selectedAccounts} />
+                <PostBox max={ max } resetTo={ selectedTemplate } selectedAccounts={ selectedAccounts } />
+            </div>
+            <div>
+                <TemplateSelection onSelect={ handleTemplateSelectionChange } />
             </div>
         </div>
     );

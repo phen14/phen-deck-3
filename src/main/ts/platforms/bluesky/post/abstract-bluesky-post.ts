@@ -168,9 +168,13 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     }
 
     getVideos(): StatusMedia[] {
-        const embed = this.getEmbed();
+        let embed = this.getEmbed();
         if (embed == null) {
             return [];
+        }
+
+        if (isRecordWithMediaView(embed)) {
+            embed = embed.media;
         }
 
         if (!isVideoView(embed)) {

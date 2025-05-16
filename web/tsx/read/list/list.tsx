@@ -56,15 +56,25 @@ export function List({ config, name } : { config: PhenDeckConfig, name: string }
  */
 function updateTimestamps(posts: DisplayPost[]) {
     for (let post of posts) {
-        post.timeSince = timeSince(post.timestamp);
-        if (post.repliedTo) {
-            post.repliedTo.timeSince = timeSince(post.repliedTo.timestamp);
-        }
-        if (post.retweet) {
-            post.retweet.timeSince = timeSince(post.retweet.timestamp);
-        }
-        if (post.quoteTweet) {
-            post.quoteTweet.timeSince = timeSince(post.quoteTweet.timestamp);
-        }
+        updateTimestampsForPost(post);
+    }
+}
+
+/**
+ * Update the relative time field of a post and all its associated posts.
+ *
+ * @param post
+ */
+function updateTimestampsForPost(post: DisplayPost): void {
+    post.timeSince = timeSince(post.timestamp);
+    if (post.repliedTo) {
+        post.repliedTo.timeSince = timeSince(post.repliedTo.timestamp);
+    }
+    if (post.retweet) {
+        post.retweet.timeSince = timeSince(post.retweet.timestamp);
+        updateTimestampsForPost(post.retweet);
+    }
+    if (post.quoteTweet) {
+        post.quoteTweet.timeSince = timeSince(post.quoteTweet.timestamp);
     }
 }

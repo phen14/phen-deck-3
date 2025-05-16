@@ -13,10 +13,10 @@ import { BlueSkyAccess } from "./bluesky-access-type";
 import { StatusPost } from "../../../api/post/status-post";
 import { BlueskyPost } from "../post/bluesky-post";
 
+/**
+ * Instance of a Bluesky Account with account information and API access methods.
+ */
 export default class BlueskyAccount implements UserAccount {
-    private static readonly HASHTAG_REGEX = /"#[A-Za-z][A-Za-z0-9]*/g;
-    private static readonly URL_REGEX = /"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&\/=]*)"/g;
-
     private static MAX_CHARS = 300;
     private static MAX_STATUSES = 40;
     private newestPostSeen = new Date(Date.UTC(1900,1,1));
@@ -52,6 +52,10 @@ export default class BlueskyAccount implements UserAccount {
         });
     }
 
+    /**
+     * Initialize the account by logging in, loading profile information about the user, and loading the user's following list
+     * so that replies can be filtered.
+     */
     async initialize(): Promise<void> {
         if (Server == null) {
             throw new Error("Failed to initialize account.");
@@ -61,6 +65,9 @@ export default class BlueskyAccount implements UserAccount {
         await this.loadFollowing();
     }
 
+    /**
+     *
+     */
     async login() {
         if (this.session) {
             await this.client.resumeSession(this.session);

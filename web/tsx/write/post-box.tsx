@@ -11,10 +11,11 @@ import { getElectron } from "../util/get-electron";
  * Display the box for text for a new post.
  *
  * @param max Maximum length for the post.
+ * @param resetTo What to set the post box to when the reset button is hit.
  * @param selectedAccounts List of currently selected accounts.
  * @constructor
  */
-export function PostBox({ max, selectedAccounts }: { max: number, selectedAccounts: string[] }): JSX.Element {
+export function PostBox({ max, resetTo, selectedAccounts }: { max: number, resetTo: string, selectedAccounts: string[] }): JSX.Element {
     const [count, setCount] = useState<number>(0);
     const [postContent, setPostContent] = useState("");
 
@@ -25,8 +26,8 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
     };
 
     const handleReset = () => {
-        setCount(0);
-        setPostContent("");
+        setCount(resetTo.length);
+        setPostContent(resetTo ?? "");
     };
 
     const post = () => {
@@ -39,7 +40,7 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
     };
 
     const postDisabled = !selectedAccounts?.length;
-    const resetDisabled = !postContent?.length;
+    const resetDisabled = postContent === (resetTo ?? "");
 
     let countClassName = "count";
     if (count > max) {
