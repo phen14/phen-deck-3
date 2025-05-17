@@ -2,8 +2,11 @@
 
 import { AppBskyGraphGetFollows, AtpAgent, AtpSessionData, UnicodeString } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
 import { AppBskyFeedPost } from "@atproto/api/src/client";
+import * as AppBskyEmbedExternal from "@atproto/api/src/client/types/app/bsky/embed/external";
+import urlMetadata from "url-metadata";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
 import { UserAccount } from "../../../api/account/user-account";
@@ -168,12 +171,51 @@ export default class BlueskyAccount implements UserAccount {
     // -----| Actions |-----
     // =====================
 
+    private async getLinkMetadata(uri: string): Promise<urlMetadata.Result> {
+        const data = await urlMetadata(uri);
+        console.log("Data", data);
+        return data;
+    }
+
     async post(postText: string): Promise<void> {
         const facets = detectFacets(new UnicodeString(postText));
+        let linkCard: AppBskyEmbedExternal.Main | null = null;
+
+        if (facets) {
+            const links = facets
+                .map((facet) => facet.features.find((feature) => !!isLink(feature)))
+                .filter((found) => found !== undefined);
+            if (links.length) {
+                const link = links[0];
+                const metadata = await this.getLinkMetadata(link.uri);
+
+                linkCard = {
+                    $type: "app.bsky.embed.external",
+                    external: {
+                        "description": metadata["og:description"],
+                        "title": metadata["og:title"],
+                        "uri": metadata["og:url"],
+                    }
+                }
+
+                const thumb = metadata["og:image"];
+                if (thumb) {
+                    const blob = await fetch(thumb).then(r => r.blob())
+                    const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" })
+                    linkCard.external.thumb = data?.blob;
+                }
+
+                console.log("Link Card", linkCard);
+            }
+        }
 
         const params : Partial<AppBskyFeedPost.Record> = {
             facets,
             text: postText
+        }
+
+        if (linkCard) {
+            params.embed = linkCard!;
         }
 
         try {

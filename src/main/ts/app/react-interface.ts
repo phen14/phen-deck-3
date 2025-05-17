@@ -121,6 +121,10 @@ export const getPostTemplates = (sender: WebContents) => {
 export const post = async (event: IpcMainEvent, value: SubmittedPost) => {
     console.log("in posts()");
 
+    if (!value.text) {
+        return;
+    }
+
     const accountsLibrary = Accounts.getInstance();
     const accounts = value.accounts.map((account) => accountsLibrary.get(account));
 
