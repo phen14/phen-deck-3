@@ -22,12 +22,14 @@ type Params = {
  * @constructor
  */
 export function SelectableTemplate({ onChange, onDelete, onSelect, onUse, selected, template }: Params): JSX.Element {
+    const [content, setContent] = useState<string>(template.content);
     const [editing, setEditing] = useState<boolean>(false);
 
     const handleChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const target = event.target as HTMLTextAreaElement;
+        setContent(target.value);
         if (onChange) {
-            onChange(template, target.value);
+            onChange(template.id, target.value);
         }
     };
 
@@ -67,7 +69,7 @@ export function SelectableTemplate({ onChange, onDelete, onSelect, onUse, select
         <div id={ template.id } className={ className } onClick={ setPostToMe }>
             <div className="templatePostBox">
                 { (!template.editable || !editing) ? contentDisplay :
-                    <textarea rows={ 4 } value={ template.content } onChange={ handleChange } /> }
+                    <textarea rows={ 4 } value={ content } onChange={ handleChange } /> }
             </div>
             <div className="templateActions">
                 <div>

@@ -24,7 +24,7 @@ BLANK_RESET_TEMPLATE.id = "0"; // The template resets in dev mode when I make ch
  * A list of templates to which the post box can be reset.
  *
  * @param onSelect Function to run when a template is selected.
- * @param onSelect Function to run when a template is used.
+ * @param onUse Function to run when a template is used.
  * @constructor
  */
 export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onUse: Function }): JSX.Element {
@@ -41,17 +41,6 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
         });
         setData(data);
     });
-
-
-    const handleChange = (id: string, content: string) => {
-        console.log(`handleChange(${ id })`);
-
-        if (id === selected) {
-            if (onSelect) {
-                onSelect(id, content);
-            }
-        }
-    };
 
     const addTemplate = () => {
         console.log("Adding.");
@@ -71,10 +60,16 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
     };
 
     const handleTemplateChange = (id: string, content: string) => {
+        console.log("In handleTemplateChange()", id, content);
         const altered = data.items.get(id);
         if (altered) {
+            console.log("Updating template...");
             altered.content = content;
             setData({ items: data.items });
+
+            if (altered.id === selected && onSelect) {
+                onSelect(altered.content);
+            }
         }
     };
 
