@@ -22,7 +22,6 @@ let mainWindow: BrowserWindow | null;
  */
 export const setupReactInterface = (main: BrowserWindow | null) => {
     mainWindow = main;
-    console.log("Set link to window.");
 
     ipcMain.on('getPosts', async (event) => {
         await getPosts(event.sender);
@@ -36,7 +35,6 @@ export const setupReactInterface = (main: BrowserWindow | null) => {
  * Communication channel to send changes in configuration to the front end.
  */
 export const sendUpdatedConfig = (senderArg?: WebContents) => {
-    console.log("in sendUpdatedConfig()");
     const sender = senderArg ?? mainWindow?.webContents;
 
     if (!sender) {
@@ -53,7 +51,6 @@ export const sendUpdatedConfig = (senderArg?: WebContents) => {
  * @param sender
  */
 export const getAccounts = (sender: WebContents) => {
-    console.log("in getAccounts()");
     const accounts = Accounts.getInstance().list();
     const displayAccounts = accounts
         .map((account: UserAccount) => convertAccountToDisplayAccount(account))
@@ -69,7 +66,6 @@ export const getAccounts = (sender: WebContents) => {
  * @param oneTime
  */
 export const getPosts = async (sender: WebContents, oneTime: boolean = false) => {
-    console.log("in getPosts()");
     const posts: StatusPost[] = [];
 
     const postPromises: Promise<StatusPost[]>[] = [];
@@ -107,7 +103,6 @@ export const getPosts = async (sender: WebContents, oneTime: boolean = false) =>
  * @param sender
  */
 export const getPostTemplates = (sender: WebContents) => {
-    console.log("in getPostTemplates()");
     sender.send("getPostTemplates", phenDeckConfig.compose.postTemplates);
 }
 
@@ -119,8 +114,6 @@ export const getPostTemplates = (sender: WebContents) => {
  * @param value
  */
 export const post = async (event: IpcMainEvent, value: SubmittedPost) => {
-    console.log("in posts()");
-
     if (!value.text) {
         return;
     }

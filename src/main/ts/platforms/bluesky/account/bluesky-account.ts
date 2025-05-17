@@ -105,7 +105,6 @@ export default class BlueskyAccount implements UserAccount {
         let followingResponse: AppBskyGraphGetFollows.Response | undefined;
 
         do {
-            console.log("Loading follows...", followingResponse?.data.cursor);
             followingResponse = await this.client.app.bsky.graph.getFollows({
                 actor: this.client.assertDid,
                 cursor: followingResponse?.data.cursor,
@@ -171,12 +170,6 @@ export default class BlueskyAccount implements UserAccount {
     // -----| Actions |-----
     // =====================
 
-    private async getLinkMetadata(uri: string): Promise<urlMetadata.Result> {
-        const data = await urlMetadata(uri);
-        console.log("Data", data);
-        return data;
-    }
-
     async post(postText: string): Promise<void> {
         const facets = detectFacets(new UnicodeString(postText));
         let linkCard: AppBskyEmbedExternal.Main | null = null;
@@ -187,7 +180,7 @@ export default class BlueskyAccount implements UserAccount {
                 .filter((found) => found !== undefined);
             if (links.length) {
                 const link = links[0];
-                const metadata = await this.getLinkMetadata(link.uri);
+                const metadata = await urlMetadata(link.uri);
 
                 linkCard = {
                     $type: "app.bsky.embed.external",
@@ -204,8 +197,6 @@ export default class BlueskyAccount implements UserAccount {
                     const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" })
                     linkCard.external.thumb = data?.blob;
                 }
-
-                console.log("Link Card", linkCard);
             }
         }
 

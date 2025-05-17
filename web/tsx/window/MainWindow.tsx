@@ -12,7 +12,6 @@ export function MainWindow() {
     const [config, setConfig] = useState<PhenDeckConfig>(phenDeckConfig);
 
     getElectron().ipcRenderer.on("updatedConfig" as Channels, (arg) => {
-        console.log("In updatedConfig (MainWindow).");
         const config = arg as PhenDeckConfig;
         setConfig(config);
     });

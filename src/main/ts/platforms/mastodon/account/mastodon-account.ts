@@ -49,7 +49,6 @@ export default class MastodonAccount implements UserAccount {
     }
 
     async loadMyProfile(): Promise<UserAccountProfile> {
-        console.log('URL', this.server.url);
         const mastoProfile = await this.client.v1.accounts.verifyCredentials();
 
         this.myProfile =  {

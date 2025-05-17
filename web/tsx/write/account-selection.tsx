@@ -29,8 +29,6 @@ export function AccountSelection({ onSelect }: { onSelect: Function }): JSX.Elem
     });
 
     const handleSelect = (id: string) => {
-        console.log(`HandleSelect(${id})`);
-
         const copy = new Map(data);
         const targetedAccount = copy.get(id);
         if (!targetedAccount) {

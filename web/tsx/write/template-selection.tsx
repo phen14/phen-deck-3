@@ -34,7 +34,6 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
     const [selected, setSelected] = useState<string>(BLANK_RESET_TEMPLATE.id);
 
     getElectron().ipcRenderer.on("updatedConfig" as Channels, (arg) => {
-        console.log("In updatedConfig (TemplateSelection).");
         const config = arg as PhenDeckConfig;
         config.compose.postTemplates.forEach((template: PostTemplate) => {
             data.items.set(template.id, template);
@@ -43,14 +42,12 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
     });
 
     const addTemplate = () => {
-        console.log("Adding.");
         const added = new PostTemplate();
         data.items.set(added.id, added);
         setData({ items: data.items });
     };
 
     const removeTemplate = (id: string) => {
-        console.log("Remove", id);
         data.items.delete(id);
         setData({ items: data.items });
 
@@ -60,10 +57,8 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
     };
 
     const handleTemplateChange = (id: string, content: string) => {
-        console.log("In handleTemplateChange()", id, content);
         const altered = data.items.get(id);
         if (altered) {
-            console.log("Updating template...");
             altered.content = content;
             setData({ items: data.items });
 
@@ -74,7 +69,6 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
     };
 
     const handleSelect = (template: PostTemplate) => {
-        console.log(`HandleSelect(${ template.id }, ${ template.content })`);
         setSelected(template.id);
 
         if (onSelect) {
