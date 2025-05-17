@@ -21,6 +21,11 @@ textarea {
     padding: 0 10px;
 }
 
+.createPostColumn h3 {
+    margin-block-end: 0;
+    margin-block-start: 0;
+}
+
 .createPostHeader {
     border-bottom: 1px solid #666;
     font-size: 24px;
@@ -31,6 +36,7 @@ textarea {
 }
 
 .newPost {
+    margin-top: 30px;
     width: 100%;
 }
 
@@ -59,6 +65,7 @@ textarea {
 
 .newPost .headerRow .count {
     grid-column: 2;
+    line-height: 16px;
     text-align: right;
 }
 
@@ -68,7 +75,8 @@ textarea {
 
 .newPost .postBox {
     background-color: #fff;
-    border: 1px solid black;
+    border: 1px solid #999;
+    margin-top: 2px;
     width: 100%;
 }
 
@@ -81,27 +89,28 @@ textarea {
     width: 95%;
 }
 
-.selectAccountsWrapper,
-.selectTemplateWrapper {
+.selectAccountsWrapper {
+    margin-top: 15px;
+    padding: 0;
+}
+
+.selectableAccount,
+.selectableTemplate {
+    background-color: #eee;
     border: 1px solid #999;
     border-radius: 4px;
-    margin: 15px 5px;
+    display: grid;
+    margin: 6px 0;
     padding: 5px;
 }
 
-.selectAccountsLabel {
-    background-color: #ddd;
-    display: block;
-    font-weight: bold;
-    margin-top: -13px;
-    padding: 0 5px;
-    width: 109px;
+.selectableAccount {
+    grid-template-columns: 24px 36px auto;
 }
 
-.selectableAccount {
-    display: grid;
-    grid-template-columns: 24px 36px auto;
-    margin: 6px 0;
+.selectableAccount:hover,
+.selectableTemplate:hover {
+    background-color: #def;
 }
 
 .selectableAccount .accountAvatar {
@@ -145,10 +154,8 @@ textarea {
     vertical-align: middle;
 }
 
-.selectableTemplate {
-    border-bottom: 1px solid #999;
-    display: grid;
-    margin: 6px 0;
+.selectedTemplate {
+    border: 2px solid #0b0;
 }
 
 .selectableTemplate textarea {
@@ -156,7 +163,7 @@ textarea {
     font-size: 12px;
     outline: none;
     resize: vertical;
-    width: 95%;
+    width: 100%;
 }
 
 .selectableTemplate .blankTemplate {
@@ -166,10 +173,22 @@ textarea {
 
 .selectableTemplate .templateActions {
     display: grid;
+    font-size: 11px;
     grid-row: 2;
     grid-template-columns: repeat(3, 1fr);
-    padding-bottom: 5px;
     place-items: center;
+}
+
+.selectableTemplate .templateActions .actionable::after {
+    content: " ]";
+}
+
+.selectableTemplate .templateActions .actionable::before {
+    content: "[ ";
+}
+
+.selectableTemplate .templateActions .actionable:hover {
+    font-weight: bold;
 }
 
 .selectableTemplate .templatePostBox {
@@ -179,8 +198,23 @@ textarea {
     padding-bottom: 5px;
 }
 
+.selectTemplateWrapper {
+    margin-top: 30px;
+    padding: 0;
+}
+
+.selectTemplateWrapper .selectTemplateHeader {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
 .selectTemplateWrapper .addButton {
-    text-align: center;
+    grid-column: 2;
+    text-align: right;
+}
+
+.selectTemplateWrapper .addButton:hover {
+    font-weight: bold;
 }
 
 .unselectedAccount {

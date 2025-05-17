@@ -71,13 +71,13 @@ export function SelectableTemplate({ onChange, onDelete, onSelect, onUse, select
             </div>
             <div className="templateActions">
                 <div>
-                    { selected ? " ✅ Default" : (<span onClick={ makeMeDefault }>Make Default</span>) }
+                    { selected ? " ✅ Default" : (<span className="actionable" onClick={ makeMeDefault }>Make Default</span>) }
                 </div>
                 <div>
-                    { template.editable && <span onClick={ editMe }>{ editLabel }</span> }
+                    { template.editable && <span className="actionable" onClick={ editMe }>{ editLabel }</span> }
                 </div>
                 <div>
-                    { template.deletable && <span onClick={ deleteMe }>🗑 Delete</span> }
+                    { template.deletable && <span className="actionable" onClick={ deleteMe }>🗑 Delete</span> }
                 </div>
             </div>
         </div>

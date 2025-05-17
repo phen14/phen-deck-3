@@ -32,12 +32,8 @@ export function CreatePost(): JSX.Element {
             <div className="createPostHeader">
                 <span>Create Post</span>
             </div>
-            <div>
-                <AccountSelection onSelect={ handleAccountSelectionChange } />
-            </div>
-            <div>
-                <PostBox max={ max } selectedAccounts={ selectedAccounts } />
-            </div>
+            <AccountSelection onSelect={ handleAccountSelectionChange } />
+            <PostBox max={ max } selectedAccounts={ selectedAccounts } />
         </div>
     );
 }

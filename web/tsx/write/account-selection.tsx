@@ -53,7 +53,7 @@ export function AccountSelection({ onSelect }: { onSelect: Function }): JSX.Elem
 
     return (
         <div className="selectAccountsWrapper">
-            <div className="selectAccountsLabel">Post to Accounts</div>
+            <h3>Post to Accounts</h3>
             { rows }
         </div>
     );

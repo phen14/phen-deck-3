@@ -107,9 +107,11 @@ export function TemplateSelection({ onSelect, onUse }: { onSelect: Function, onU
 
     return (
         <div className="selectTemplateWrapper">
-            <div className="selectAccountsLabel">Post Templates</div>
+            <div className="selectTemplateHeader">
+                <h3>Post Templates</h3>
+                <div className="addButton" onClick={ addTemplate }>➕ Add</div>
+            </div>
             { rows }
-            <div className="addButton" onClick={ addTemplate }>➕ Add</div>
         </div>
     );
 }

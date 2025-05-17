@@ -61,7 +61,7 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
         <div>
             <div className="newPost">
                 <div className="headerRow">
-                    <div className="postLabel">Post</div>
+                    <h3>Post</h3>
                     <div className={ countClassName }>{ count }/{ max }</div>
                 </div>
                 <div>
@@ -80,9 +80,7 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
                     </div>
                 </div>
             </div>
-            <div>
-                <TemplateSelection onSelect={ handleTemplateSelectionChange } onUse={ handleUseTemplate } />
-            </div>
+            <TemplateSelection onSelect={ handleTemplateSelectionChange } onUse={ handleUseTemplate } />
         </div>
     );
 }
