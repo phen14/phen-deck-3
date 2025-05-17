@@ -13,7 +13,8 @@ import { app, BrowserWindow, shell, ipcMain, Menu } from "electron";
 import { URL } from "url";
 import { loadAccountConfig } from "./app/load-account-config";
 import { loadMutesConfig } from "./app/load-mutes-config";
-import { getAccounts, getPosts, setupReactInterface } from "./app/react-interface";
+import { loadPostTemplatesConfig } from "./app/load-post-templates-config";
+import { getAccounts, getPosts, sendUpdatedConfig, setupReactInterface } from "./app/react-interface";
 import { mainMenuTemplate } from "./menu/main-menu";
 
 let mainWindow: BrowserWindow | null = null;
@@ -98,7 +99,13 @@ const createWindow = async () => {
 
     setTimeout(() => getAccounts(mainWindow!.webContents), 5000);
     setTimeout(() => getPosts(mainWindow!.webContents), 5000);
+    setTimeout(() => sendUpdatedConfig(mainWindow!.webContents), 5000);
 };
+
+export function refreshConfig() {
+    getAccounts(mainWindow!.webContents);
+    sendUpdatedConfig(mainWindow!.webContents);
+}
 
 function resolveHtmlPath(htmlFileName: string) {
     if (process.env.NODE_ENV === "development") {
@@ -113,6 +120,7 @@ function resolveHtmlPath(htmlFileName: string) {
 app.whenReady().then(async () => {
     await loadAccountConfig();
     await loadMutesConfig();
+    await loadPostTemplatesConfig();
     setupReactInterface(mainWindow);
     await createWindow();
 })

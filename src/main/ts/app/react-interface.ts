@@ -22,6 +22,7 @@ let mainWindow: BrowserWindow | null;
  */
 export const setupReactInterface = (main: BrowserWindow | null) => {
     mainWindow = main;
+    console.log("Set link to window.");
 
     ipcMain.on('getPosts', async (event) => {
         await getPosts(event.sender);
@@ -34,13 +35,16 @@ export const setupReactInterface = (main: BrowserWindow | null) => {
 /**
  * Communication channel to send changes in configuration to the front end.
  */
-export const sendUpdatedConfig = () => {
-    if (!mainWindow) {
+export const sendUpdatedConfig = (senderArg?: WebContents) => {
+    console.log("in sendUpdatedConfig()");
+    const sender = senderArg ?? mainWindow?.webContents;
+
+    if (!sender) {
         console.error("Link to window not established.")
         return;
     }
 
-    mainWindow.webContents.send("updatedConfig", phenDeckConfig);
+    sender.send("updatedConfig", phenDeckConfig);
 }
 
 /**
@@ -96,6 +100,17 @@ export const getPosts = async (sender: WebContents, oneTime: boolean = false) =>
         setTimeout(() => getPosts(sender), 30000)
     }
 }
+
+/**
+ * Communication channel to send the post template list to the front end.
+ *
+ * @param sender
+ */
+export const getPostTemplates = (sender: WebContents) => {
+    console.log("in getPostTemplates()");
+    sender.send("getPostTemplates", phenDeckConfig.compose.postTemplates);
+}
+
 
 /**
  * Communication for the front end to send a submitted post to the back end.

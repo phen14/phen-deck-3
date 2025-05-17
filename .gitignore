@@ -140,9 +140,9 @@ dist
 # =========================
 
 #Config
-config/accounts.json
+/config/accounts.json
 /config/mutes.json
-
+/config/templates.json
 
 #Electron
 /.erb/dll/*.bundle.*

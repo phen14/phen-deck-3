@@ -48,7 +48,7 @@ export function AccountSelection({ onSelect }: { onSelect: Function }): JSX.Elem
 
     const accounts = [...data.values()];
     const rows = accounts.map((account) => (
-        <SelectableAccount account={ account } onSelect={ handleSelect } />
+        <SelectableAccount account={ account } key={account.accountId} onSelect={ handleSelect } />
     ));
 
     return (

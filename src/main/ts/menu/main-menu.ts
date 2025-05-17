@@ -2,6 +2,7 @@
 
 import { sendUpdatedConfig } from "../app/react-interface";
 import { phenDeckConfig } from "../config/phen-deck-config";
+import { refreshConfig } from "../main";
 
 /**
  * The menus and menu items displayed in the menu bar at the top of the window.
@@ -11,6 +12,10 @@ export const mainMenuTemplate = [
     {
         label: 'File',
         submenu: [
+            {
+                label: 'Refresh Config',
+                click: () => { refreshConfig() }
+            },
             { role: 'quit' }
         ]
     },
