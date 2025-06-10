@@ -17,6 +17,9 @@ import { isView as isRecordView, ViewRecord } from "@atproto/api/dist/client/typ
 import { isView as isRecordWithMediaView } from "@atproto/api/dist/client/types/app/bsky/embed/recordWithMedia";
 
 export abstract class AbstractBlueskyPost implements StatusPost {
+    private readonly AT_URI_REGEX = "at://(.*)/app.bsky.feed.post/(.*)";
+    private readonly URL_FORMAT = "https://bsky.app/profile/AT_ID/post/RKEY";
+
     protected readonly viewer: UserAccountProfile;
     protected readonly viewerAccountId: string;
 
@@ -197,6 +200,10 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         return null;
     }
 
+    getRepliedToUrl(): string | null {
+        return null;
+    }
+
     async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
         return null;
     }
@@ -218,7 +225,11 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     }
 
     isRabbitHole(): boolean {
-        return this.getEmbed() != null && isRecordView(this.getEmbed());
+        return false;
+    }
+
+    getRabbitHoleUrl(): string | null | undefined {
+        return null;
     }
 
     isRetweet(): boolean {
@@ -227,6 +238,14 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
     getRetweet(): StatusPost | null {
         return null;
+    }
+
+    // ---------------------------------------
+    // ~~~~~| Util |~~~~~
+
+    protected convertAtToUrl(at: string): string {
+        const pieces = at.match(this.AT_URI_REGEX);
+        return this.URL_FORMAT.replace("AT_ID", pieces?.at(1)!).replace("RKEY", pieces?.at(2)!);
     }
 }
 

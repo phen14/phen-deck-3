@@ -1,6 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
+import { StatusPost } from "../../../api/post/status-post";
 import { AbstractBlueskyPost, BlueRecord } from "./abstract-bluesky-post";
 import { PostView, ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
@@ -40,6 +41,15 @@ export class BlueskyRepliedToPost extends AbstractBlueskyPost {
 
     isReply(): boolean {
         return !!(this.blueskyStatus.parent && this.blueskyStatus.parent.$type === 'app.bsky.feed.defs#threadViewPost');
+    }
+
+    getRepliedToUrl(): string | null {
+        if (!this.isReply()) {
+            return null;
+        }
+
+        const parent = this.blueskyStatus.parent as ThreadViewPost;
+        return this.convertAtToUrl(parent.post.uri);
     }
 
     async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {

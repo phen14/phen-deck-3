@@ -9,7 +9,7 @@ import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { StatusPost } from "../../../api/post/status-post";
 import { AbstractBlueskyPost, BlueRecord } from "./abstract-bluesky-post";
 import { FeedViewPost, PostView, ReplyRef } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
-import { ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
+import { isView as isRecordView, ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
 import { BlueskyRepliedToPost } from "./bluesky-replied-to-post";
 
 export class BlueskyQuotedPost extends AbstractBlueskyPost {
@@ -76,4 +76,16 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
     // ---------------------------------------
     // ~~~~~| Retweets |~~~~~
 
+    isRabbitHole(): boolean {
+        return this.getEmbed() != null && isRecordView(this.getEmbed());
+    }
+
+    getRabbitHoleUrl(): string | null | undefined {
+        if (!this.isRabbitHole()) {
+            return null;
+        }
+
+        const embed = this.getEmbed() as AppBskyEmbedRecord.View;
+        return this.convertAtToUrl(embed.record.uri as string);
+    }
 }

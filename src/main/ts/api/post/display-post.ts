@@ -64,6 +64,9 @@ export type DisplayPost = {
     // The post that this post replied to.
     repliedTo: DisplayPost | null;
 
+    // URL of the post that this post replied to.
+    repliedToUrl: string | null;
+
     // Who made the post that this post replied to.
     repliedToPosterDisplayName: string | null | undefined;
 
@@ -81,6 +84,9 @@ export type DisplayPost = {
 
     // Is the post being quoted while also quoting another post?
     isRabbitHole: boolean;
+
+    // Link to the rabbit hole post.
+    rabbitHoleUrl: string | null | undefined;
 
     // Is this post a retweet?
     isRetweet: boolean;
@@ -133,6 +139,7 @@ export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | n
         // Reply
         isReply: statusPost.isReply(),
         repliedTo: await convertStatusPostToDisplayPost(statusPost.getRepliedTo()),
+        repliedToUrl: statusPost.getRepliedToUrl(),
         repliedToPosterDisplayName: await statusPost.getRepliedToPosterDisplayName(),
         isRepliedToMutual: statusPost.isRepliedToMutual(),
 
@@ -140,6 +147,7 @@ export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | n
         isQuoteTweet: statusPost.isQuoteTweet(),
         quoteTweet: await convertStatusPostToDisplayPost(statusPost.getQuoteTweet()),
         isRabbitHole: statusPost.isRabbitHole(),
+        rabbitHoleUrl: statusPost.getRabbitHoleUrl(),
         isRetweet: statusPost.isRetweet(),
         retweet: await convertStatusPostToDisplayPost(statusPost.getRetweet())
     };

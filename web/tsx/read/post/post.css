@@ -40,6 +40,21 @@
     padding: 5px 10px;
 }
 
+.rabbitHole {
+    margin-top: 10px;
+}
+
+.rabbitHole a,
+.rabbitHole a:visited {
+    color: #999;
+    font-style: italic;
+    text-decoration: none;
+}
+
+.rabbitHole a:hover {
+    color: #00f;
+}
+
 
 /* Replied-To */
 
@@ -105,6 +120,17 @@
     font-size: 10px;
     font-style: italic;
     grid-column: 2;
+}
+
+.repliedToRepliedToPostTable .repliedToRepliedToPoster a,
+.repliedToRepliedToPostTable .repliedToRepliedToPoster a:visited {
+    color: #666;
+    font-style: italic;
+    text-decoration: none;
+}
+
+.repliedToRepliedToPostTable .repliedToRepliedToPoster a:hover {
+    color: #00f;
 }
 
 

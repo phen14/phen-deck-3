@@ -38,6 +38,7 @@ export interface StatusPost {
     // Reply
     isReply(): boolean;
     getRepliedTo(): StatusPost | null;
+    getRepliedToUrl(): string | null;
     getRepliedToPosterDisplayName(): Promise<string | null | undefined>;
     isRepliedToMutual(): boolean;
 
@@ -45,6 +46,7 @@ export interface StatusPost {
     isQuoteTweet(): boolean;
     getQuoteTweet(): StatusPost | null;
     isRabbitHole(): boolean;
+    getRabbitHoleUrl(): string | null | undefined;
     isRetweet(): boolean;
     getRetweet(): StatusPost | null;
 }

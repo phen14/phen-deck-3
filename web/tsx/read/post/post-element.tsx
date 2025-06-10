@@ -83,7 +83,13 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     if(!isRepliedTo && !post.isRetweet && post.isQuoteTweet) {
         quoteSection = (
             <div className="quoteSection">
-                <PostElement post={post.quoteTweet!} isEmbedded={ true } />
+                <PostElement post={ post.quoteTweet! } isEmbedded={ true } />
+            </div>
+        )
+    } else if (post.isRabbitHole) {
+        quoteSection = (
+            <div className="rabbitHole">
+                <a href={ post.rabbitHoleUrl! } target="_blank">The rabbit hole goes deeper...</a>
             </div>
         )
     }
@@ -91,7 +97,7 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     // Replied-to
     let repliedToSection: string | JSX.Element = "";
     if (post.isReply) {
-        if (isRepliedTo || post.isRetweet || isEmbedded) {
+        if (isRepliedTo || post.isRetweet) {
             repliedToSection = <RepliedToRepliedToPost post={post} />;
         } else {
             repliedToSection = <RepliedToPost post={post} />;

@@ -20,7 +20,7 @@ export function RepliedToRepliedToPost({ post } : { post: DisplayPost }): JSX.El
                  <img src={Reply} />
             </div>
             <div className="repliedToRepliedToPoster">
-                <span>{post.repliedToPosterDisplayName}</span>
+                <a href={ post.repliedToUrl! } target="_blank">{post.repliedToPosterDisplayName}</a>
             </div>
         </div>
     );

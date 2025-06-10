@@ -26,6 +26,10 @@ export class MastodonPost implements StatusPost {
         return this.mastodonStatus.id;
     }
 
+    getUrl(): string {
+        return this.mastodonStatus.url ?? "";
+    }
+
     getViewer(): UserAccountProfile {
         return this.viewer;
     }
@@ -153,6 +157,10 @@ export class MastodonPost implements StatusPost {
         return this.repliedTo;
     }
 
+    getRepliedToUrl(): string | null {
+        return this.repliedTo?.getUrl() ?? null;
+    }
+
     async getRepliedToPosterDisplayName(): Promise<string | null> {
         return (this.getRepliedTo())?.getPosterDisplayName() ?? null;
     }
@@ -174,6 +182,10 @@ export class MastodonPost implements StatusPost {
 
     isRabbitHole(): boolean {
         return false;
+    }
+
+    getRabbitHoleUrl(): string | null | undefined {
+        return null;
     }
 
     isRetweet(): boolean {
