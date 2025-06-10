@@ -12,6 +12,7 @@ import { StatusPost } from "./status-post";
 export type DisplayPost = {
     id: string;
     raw: string;
+    url: string;
 
     // ---------------------------------
     // ~~~~~| Viewer |~~~~~
@@ -110,6 +111,7 @@ export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | n
     return {
         id: statusPost.getId(),
         raw: statusPost.getRaw(),
+        url: statusPost.getUrl(),
 
         // Viewer
         viewer: statusPost.getViewer(),

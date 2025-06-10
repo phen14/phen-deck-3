@@ -10,6 +10,7 @@ import { StatusMedia } from "./status-media";
 export interface StatusPost {
     getId(): string;
     getRaw(): string;
+    getUrl(): string;
 
     // Viewer
     getViewer(): UserAccountProfile;

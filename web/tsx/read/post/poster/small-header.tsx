@@ -12,9 +12,16 @@ import { Image } from "../../shared/image";
  * @param post Post being displayed.
  * @constructor
  */
-export function SmallHeader({ post } : { post: DisplayPost }): JSX.Element {
+export function SmallHeader({ isRetweet, post } : { isRetweet: boolean, post: DisplayPost }): JSX.Element {
     const avatarSrc = post.posterAvatarUrl ?? Egg;
     const serviceSrc = post.posterService == "Bluesky" ? Bluesky : Mastodon;
+
+    let timeSince: string | JSX.Element = post.timeSince;
+    if (!isRetweet) {
+        timeSince = (
+            <a href={ post.url } target="_blank">{ post.timeSince }</a>
+        )
+    }
 
     return (
         <div className="smallHeader">
@@ -29,7 +36,7 @@ export function SmallHeader({ post } : { post: DisplayPost }): JSX.Element {
                 {post.posterHandle}
             </div>
             <div className="postTimeSince">
-                {post.timeSince}
+                { timeSince }
             </div>
         </div>
     );

@@ -17,7 +17,7 @@ export function RetweetHeader({ post } : { post: DisplayPost }): JSX.Element {
                 <img className="retweetedIcon" src={Retweet} />
             </div>
             <div className="retweetSmallHeaderColumn">
-                <SmallHeader post={post} />
+                <SmallHeader isRetweet={true} post={post} />
             </div>
         </div>
     );

@@ -79,6 +79,16 @@
     text-align: right;
 }
 
+.postTimeSince a,
+.postTimeSince a:visited {
+    color: #666;
+    text-decoration: none;
+}
+
+.postTimeSince a:hover {
+    color: #00f;
+}
+
 .retweetHeader {
     border-bottom: 1px dotted #ccc;
     display: grid;

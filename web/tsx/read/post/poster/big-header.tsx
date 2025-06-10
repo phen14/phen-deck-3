@@ -39,7 +39,7 @@ export function BigHeader({ post } : { post: DisplayPost }): JSX.Element {
                 { dateFormat(post.timestamp, TIME_FORMAT) }
             </div>
             <div className="postTimeSince">
-                { post.timeSince }
+                <a href={ post.url } target="_blank">{ post.timeSince }</a>
             </div>
         </div>
     );

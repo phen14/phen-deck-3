@@ -43,6 +43,10 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         }
     }
 
+    getUrl(): string {
+        return this.convertAtToUrl(this.getBase().uri);
+    }
+
     // ---------------------------------------
     // ~~~~~| Viewer |~~~~~
 
