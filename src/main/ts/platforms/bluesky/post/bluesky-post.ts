@@ -20,6 +20,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     private readonly isRetweeted: boolean;
     private readonly retweet: BlueskyPost | null;
 
+    protected quotedRepliedTo: BlueskyRepliedToPost | null = null;
     protected retweetInfo: ReasonRepost | null;
     protected repliedTo: BlueskyRepliedToPost | null = null;
 
@@ -42,6 +43,10 @@ export class BlueskyPost extends AbstractBlueskyPost {
 
     protected getRecord(): BlueRecord {
         return this.getBase().record as BlueRecord;
+    }
+
+    setQuotedRepliedTo(repliedTo: BlueskyRepliedToPost): void {
+        this.quotedRepliedTo = repliedTo;
     }
 
     setRepliedTo(repliedTo: BlueskyRepliedToPost): void {
@@ -212,7 +217,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
             if (!quotedTweet?.record) {
                 return null;
             }
-            return new BlueskyQuotedPost(quotedTweet, this.viewer, this.viewerAccountId);
+            return new BlueskyQuotedPost(quotedTweet, this.viewer, this.viewerAccountId, this.quotedRepliedTo);
         }
 
         if (this.isQuoteTweetWithMedia()) {
@@ -221,7 +226,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
             if (!quotedTweet?.record) {
                 return null;
             }
-            return new BlueskyQuotedPost(quotedTweet, this.viewer, this.viewerAccountId);
+            return new BlueskyQuotedPost(quotedTweet, this.viewer, this.viewerAccountId, this.quotedRepliedTo);
         }
 
         return null;

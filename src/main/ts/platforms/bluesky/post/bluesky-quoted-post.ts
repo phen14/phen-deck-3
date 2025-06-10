@@ -6,16 +6,20 @@ import * as AppBskyEmbedImages from "@atproto/api/src/client/types/app/bsky/embe
 import * as AppBskyEmbedRecordWithMedia from "@atproto/api/src/client/types/app/bsky/embed/recordWithMedia";
 import * as AppBskyEmbedVideo from "@atproto/api/src/client/types/app/bsky/embed/video";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
+import { StatusPost } from "../../../api/post/status-post";
 import { AbstractBlueskyPost, BlueRecord } from "./abstract-bluesky-post";
-import { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { FeedViewPost, PostView, ReplyRef } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
+import { BlueskyRepliedToPost } from "./bluesky-replied-to-post";
 
 export class BlueskyQuotedPost extends AbstractBlueskyPost {
     private readonly blueskyStatus: AppBskyEmbedRecord.View;
+    private readonly repliedTo: BlueskyRepliedToPost | null = null;
 
-    public constructor(blueskyStatus: AppBskyEmbedRecord.View, account: UserAccountProfile, viewerAccountId: string) {
+    public constructor(blueskyStatus: AppBskyEmbedRecord.View, account: UserAccountProfile, viewerAccountId: string, repliedTo: BlueskyRepliedToPost | null) {
         super(account, viewerAccountId);
         this.blueskyStatus = blueskyStatus;
+        this.repliedTo = repliedTo;
     }
 
     protected getBase(): PostView | ViewRecord {
@@ -51,13 +55,23 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
     // ---------------------------------------
     // ~~~~~| Reply |~~~~~
 
-    // async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
-    //     if (!this.isReply()) {
-    //         return null;
-    //     }
-    //
-    //     return this.blueskyStatus. parent.post.author.displayName;
-    // }
+    isReply(): boolean {
+        const value = this.blueskyStatus.record.value as FeedViewPost;
+        return !!value.reply;
+    }
+
+    getReplyRef(): ReplyRef | undefined {
+        const value = this.blueskyStatus.record.value as FeedViewPost;
+        return value.reply;
+    }
+
+    getRepliedTo(): StatusPost | null {
+        return this.repliedTo;
+    }
+
+    async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
+        return this.repliedTo?.getPosterDisplayName();
+    }
 
     // ---------------------------------------
     // ~~~~~| Retweets |~~~~~

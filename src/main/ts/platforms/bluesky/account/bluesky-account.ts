@@ -11,6 +11,7 @@ import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
 import { UserAccount } from "../../../api/account/user-account";
 import { AccountConfig } from "../../../config/account-config-type";
+import { BlueskyQuotedPost } from "../post/bluesky-quoted-post";
 import { BlueskyRepliedToPost } from "../post/bluesky-replied-to-post";
 import { BlueSkyAccess } from "./bluesky-access-type";
 import { StatusPost } from "../../../api/post/status-post";
@@ -250,18 +251,34 @@ export default class BlueskyAccount implements UserAccount {
 
                 const getRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
                 const replies: BlueskyPost[] = [];
+
+                const getQuotedRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
+                const postsWithQuotedReplies: BlueskyPost[] = [];
+
                 for (const post of newPosts) {
                     if (post.isReply()) {
                         replies.push(post.isRetweet() ? post.getRetweet()! as BlueskyPost : post);
                         getRepliedToPromises.push(this.getRepliedTo(post.getReplyRef()?.parent.uri as string));
                     }
+                    if (post.isQuoteTweet() && post.getQuoteTweet()!.isReply()) {
+                        const quoted = post.getQuoteTweet()! as BlueskyQuotedPost;
+                        postsWithQuotedReplies.push(post);
+                        getQuotedRepliedToPromises.push(this.getRepliedTo(quoted.getReplyRef()?.parent.uri as string));
+                    }
                 }
 
                 const repliedTos = await Promise.all(getRepliedToPromises);
+                const quotedRepliedTos = await Promise.all(getQuotedRepliedToPromises);
 
                 for (let i = 0; i < replies.length; ++i) {
                     if (repliedTos[i] != null) {
                         replies[i].setRepliedTo(repliedTos[i]!);
+                    }
+                }
+
+                for (let i = 0; i < postsWithQuotedReplies.length; ++i) {
+                    if (quotedRepliedTos[i] != null) {
+                        postsWithQuotedReplies[i].setQuotedRepliedTo(quotedRepliedTos[i]!);
                     }
                 }
             }

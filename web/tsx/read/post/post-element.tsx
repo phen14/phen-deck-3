@@ -91,7 +91,7 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     // Replied-to
     let repliedToSection: string | JSX.Element = "";
     if (post.isReply) {
-        if (isRepliedTo || post.isRetweet) {
+        if (isRepliedTo || post.isRetweet || isEmbedded) {
             repliedToSection = <RepliedToRepliedToPost post={post} />;
         } else {
             repliedToSection = <RepliedToPost post={post} />;
@@ -122,11 +122,19 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
                 { quoteSection }
                 <div className="raw" ref={rawRef} style={{display: "none"}}>
                     <div>
-                        { post.raw }
+                        <pre>
+                            <code>
+                                { JSON.stringify(JSON.parse(post.raw), undefined, 2) }
+                            </code>
+                        </pre>
                     </div>
                     <hr />
                     <div>
-                        { JSON.stringify(postCopy) }
+                        <pre>
+                            <code>
+                                { JSON.stringify(postCopy, undefined, 2) }
+                            </code>
+                        </pre>
                     </div>
                 </div>
             </div>
