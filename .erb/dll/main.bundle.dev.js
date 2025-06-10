@@ -148749,7 +148749,7 @@ module.exports = /*#__PURE__*/JSON.parse('[{"type":"mastodon","access":{"accessT
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"hideRetweetsFromUsers":["helenqu.bsky.social"],"mutedPhrases":["Stephen A. Smith"]}');
+module.exports = /*#__PURE__*/JSON.parse('{"hideRetweetsFromUsers":["helenqu.bsky.social"],"mutedPhrases":["Jordon Hudson","Michael Kay","Stephen A. Smith"]}');
 
 /***/ }),
 

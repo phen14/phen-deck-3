@@ -4,7 +4,7 @@
 
 .post {
     border-bottom: 2px solid #ccc;
-    padding: 5px 10px;
+    padding: 5px 10px 0 10px;
 }
 
 .imageBlock {
@@ -121,9 +121,16 @@
     border-top: 1px dotted #ccc;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: 24px;
+    grid-template-rows: 28px;
     margin-top: 5px;
     place-items: center;
+    width: 100%;
+}
+
+.actionRow div {
+    height: 100%;
+    padding-top: 5px;
+    text-align: center;
     width: 100%;
 }
 
@@ -135,4 +142,24 @@
     height: 16px;
     vertical-align: middle;
     width: 16px;
+}
+
+.actionRow .debugColumn:hover {
+    background-color: #eee;
+}
+
+.actionRow .favoriteColumn:hover {
+    background-color: #eeb;
+}
+
+.actionRow .menuColumn:hover {
+    background-color: #fdb;
+}
+
+.actionRow .replyColumn:hover {
+    background-color: #dfb;
+}
+
+.actionRow .retweetColumn:hover {
+    background-color: #bdf;
 }
