@@ -4,6 +4,7 @@ import { BrowserWindow, ipcMain } from "electron";
 import { Accounts } from "../api/account/accounts";
 import { convertAccountToDisplayAccount, DisplayAccount } from "../api/account/display-account";
 import { UserAccount } from "../api/account/user-account";
+import { ActionedPost } from "../api/post/actioned-post";
 import { convertStatusPostToDisplayPost, DisplayPost } from "../api/post/display-post";
 import { StatusPost } from "../api/post/status-post";
 import { SubmittedPost } from "../api/post/submitted-post";
@@ -28,6 +29,9 @@ export const setupReactInterface = (main: BrowserWindow | null) => {
     })
     ipcMain.on('post', async (event, value: SubmittedPost) => {
         await post(event, value);
+    });
+    ipcMain.on('retweet', async (event, value: ActionedPost) => {
+        await retweet(event, value);
     });
 }
 
@@ -122,4 +126,17 @@ export const post = async (event: IpcMainEvent, value: SubmittedPost) => {
     const accounts = value.accounts.map((account) => accountsLibrary.get(account));
 
     accounts.forEach((account => account?.post(value.text)));
+}
+
+/**
+ * Communication for the front end to send a retweet to the back end.
+ *
+ * @param event
+ * @param value
+ */
+export const retweet = async (event: IpcMainEvent, value: ActionedPost) => {
+    const accountsLibrary = Accounts.getInstance();
+    const accounts = value.accounts.map((account) => accountsLibrary.get(account));
+
+    accounts.forEach((account => account?.retweet(value)));
 }

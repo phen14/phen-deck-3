@@ -4,6 +4,7 @@ import { createRestAPIClient, mastodon } from "masto";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
 import { UserAccount } from "../../../api/account/user-account";
+import { ActionedPost } from "../../../api/post/actioned-post";
 import { AccountConfig } from "../../../config/account-config-type";
 import { MastodonAccess } from "./mastodon-access-type";
 import { StatusPost } from "../../../api/post/status-post";
@@ -53,6 +54,7 @@ export default class MastodonAccount implements UserAccount {
 
         this.myProfile =  {
             id: mastoProfile.id,
+            accountId: this.ID,
             avatarUrl: mastoProfile.avatar,
             displayName: mastoProfile.displayName,
             handle: `${mastoProfile.username}@${this.handleServer}`,
@@ -187,8 +189,12 @@ export default class MastodonAccount implements UserAccount {
         }
     }
 
-    async retweet(post: StatusPost): Promise<void> {
-        // await Console.Out.WriteLineAsync("Reblogging...");
-        // await client.Reblog(post.getId().ToString());
+    async retweet(post: ActionedPost): Promise<void> {
+        console.log("Reblogging (M)...", post);
+        try {
+            await this.client.v1.statuses.$select(post.id).reblog();
+        } catch (e) {
+            console.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
+        }
     }
 }

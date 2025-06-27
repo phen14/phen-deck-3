@@ -1,6 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import { UUID } from "../../util/uuid";
+import { ActionedPost } from "../post/actioned-post";
 import { StatusPost } from "../post/status-post";
 import { UserAccountProfile } from "./user-account-profile";
 
@@ -56,5 +57,5 @@ export interface UserAccount {
 
     post(postText: string): void;
     getPosts(): Promise<StatusPost[]>;
-    retweet(post:StatusPost): Promise<void>;
+    retweet(post: ActionedPost): Promise<void>;
 }

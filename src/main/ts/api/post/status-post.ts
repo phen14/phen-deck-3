@@ -9,6 +9,7 @@ import { StatusMedia } from "./status-media";
  */
 export interface StatusPost {
     getId(): string;
+    getCid(): string;
     getRaw(): string;
     getUrl(): string;
 

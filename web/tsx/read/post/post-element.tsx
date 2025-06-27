@@ -4,7 +4,10 @@ import React, { JSX, useRef } from "react";
 
 import "./post.css";
 import "./poster.css";
+import { convertDisplayPostToActionedPost } from "../../../../src/main/ts/api/post/actioned-post";
 import { DisplayPost } from "../../../../src/main/ts/api/post/display-post";
+import { Channels } from "../../../../src/main/ts/app/preload";
+import { getElectron } from "../../util/get-electron";
 import { ActionRow } from "./action-row";
 import { GifBlock } from "./media/gif-block";
 import { ImageBlock } from "./media/image-block";
@@ -49,6 +52,12 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
         }
     }
 
+    const retweetHander = () => {
+        console.log("retweetHander");
+        const actionedPost = convertDisplayPostToActionedPost(post);
+        getElectron().ipcRenderer.sendMessage("retweet" as Channels, actionedPost);
+    }
+
     // ClassName
     let className = "post";
     if (isEmbedded) {
@@ -73,7 +82,7 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     if (post.isRetweet) {
         headerSection = <RetweetHeader post={post} />;
     } else if (isRepliedTo) {
-        headerSection = <SmallHeader post={post}/>;
+        headerSection = <SmallHeader isRetweet={post.isRetweet} post={post}/>;
     } else {
         headerSection = <BigHeader post={post}/>;
     }
@@ -109,7 +118,7 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     const linkSection = (!post.isRetweet && post.linkCard) ? <LinkCard post={post} /> : "";
     const videoSection = (post.videos.length > 0) ? <VideoBlock post={post} /> : "";
     const retweetSection = (post.isRetweet) ? <PostElement post={post.retweet!} isEmbedded={ true } /> : "";
-    const actionRowSection = (isEmbedded || isRepliedTo) ? "" : <ActionRow post={post} rawHandler={rawHandler} />;
+    const actionRowSection = (isEmbedded || isRepliedTo) ? "" : <ActionRow post={post} rawHandler={rawHandler} retweetHandler={retweetHander}/>;
 
     const postCopy = structuredClone(post);
     postCopy.raw = "";

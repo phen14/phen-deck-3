@@ -10,6 +10,7 @@ import urlMetadata from "url-metadata";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
 import { UserAccount } from "../../../api/account/user-account";
+import { ActionedPost } from "../../../api/post/actioned-post";
 import { AccountConfig } from "../../../config/account-config-type";
 import { BlueskyQuotedPost } from "../post/bluesky-quoted-post";
 import { BlueskyRepliedToPost } from "../post/bluesky-replied-to-post";
@@ -94,6 +95,7 @@ export default class BlueskyAccount implements UserAccount {
 
         this.myProfile = {
             id: bskyProfile.did,
+            accountId: this.ID,
             avatarUrl: bskyProfile.avatar,
             displayName: bskyProfile.displayName,
             handle: bskyProfile.handle,
@@ -291,8 +293,8 @@ export default class BlueskyAccount implements UserAccount {
         }
     }
 
-    async retweet(post: StatusPost): Promise<void> {
-        // await Console.Out.WriteLineAsync("Reblogging...");
-        // await client.Reblog(post.getId().ToString());
+    async retweet(post: ActionedPost): Promise<void> {
+        console.log("Reblogging (B)...", post);
+        await this.client.repost(post.id, post.cid);
     }
 }

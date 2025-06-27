@@ -35,6 +35,10 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         return this.getBase().uri ?? "";
     }
 
+    getCid(): string {
+        return this.getBase().cid ?? "";
+    }
+
     getRaw(): string {
         try {
             return JSON.stringify(this.getBase());

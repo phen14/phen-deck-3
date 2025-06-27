@@ -26,6 +26,10 @@ export class MastodonPost implements StatusPost {
         return this.mastodonStatus.id;
     }
 
+    getCid(): string {
+        return "";
+    }
+
     getUrl(): string {
         return this.mastodonStatus.url ?? "";
     }

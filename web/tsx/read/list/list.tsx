@@ -76,5 +76,6 @@ function updateTimestampsForPost(post: DisplayPost): void {
     }
     if (post.quoteTweet) {
         post.quoteTweet.timeSince = timeSince(post.quoteTweet.timestamp);
+        updateTimestampsForPost(post.quoteTweet);
     }
 }

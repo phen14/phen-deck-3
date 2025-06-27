@@ -8,6 +8,7 @@ export type UserAccountProfile = {
     readonly id: string;
 
     // Account Info
+    readonly accountId: string;
     readonly avatarUrl: string | undefined;
     readonly displayName: string | undefined;
     readonly handle: string;
