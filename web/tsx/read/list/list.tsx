@@ -18,7 +18,7 @@ import { ListHeader } from "./list-header";
  * @param name Name of the list.
  * @constructor
  */
-export function List({ config, name } : { config: PhenDeckConfig, name: string }): JSX.Element {
+export function List({ config, onChange, name } : { config: PhenDeckConfig, onChange?: Function, name: string }): JSX.Element {
     const [data, setData] = useState<DisplayPost[]>([]);
 
     getElectron().ipcRenderer.on("getPosts" as Channels, (arg, hardReset) => {
@@ -27,6 +27,10 @@ export function List({ config, name } : { config: PhenDeckConfig, name: string }
 
         updateTimestamps(combinedPosts);
         setData(combinedPosts);
+
+        if (onChange) {
+            onChange(combinedPosts);
+        }
     });
 
     const getPosts = () => {
@@ -35,6 +39,9 @@ export function List({ config, name } : { config: PhenDeckConfig, name: string }
 
     function clearData() {
         setData([]);
+        if (onChange) {
+            onChange([]);
+        }
     }
 
     const shown = config.timeline.hideNonMutualReplies ?

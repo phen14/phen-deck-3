@@ -4,7 +4,8 @@
  * Stored configuration relating to the layout of the screen.
  */
 export const layoutConfig: LayoutConfig = {
-    columnWidth: 440
+    columnWidth: 440,
+    updateTitleWithHomeCount: true
 }
 
 /**
@@ -12,4 +13,5 @@ export const layoutConfig: LayoutConfig = {
  */
 export type LayoutConfig = {
     columnWidth: number;
+    updateTitleWithHomeCount: boolean;
 }

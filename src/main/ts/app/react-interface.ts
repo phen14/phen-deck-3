@@ -39,6 +39,7 @@ export const setupReactInterface = (main: BrowserWindow | null) => {
  * Communication channel to send changes in configuration to the front end.
  */
 export const sendUpdatedConfig = (senderArg?: WebContents) => {
+    console.log("Sending updated config...");
     const sender = senderArg ?? mainWindow?.webContents;
 
     if (!sender) {

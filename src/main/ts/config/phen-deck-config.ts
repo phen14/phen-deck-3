@@ -10,7 +10,8 @@ import { TimelineConfig, timelineConfig } from "./timeline-config";
 export const phenDeckConfig: PhenDeckConfig = {
     compose: composeConfig,
     layout: layoutConfig,
-    timeline: timelineConfig
+    timeline: timelineConfig,
+    title: "phenDeck for Workspaces 3.11",
 }
 
 /**
@@ -20,4 +21,5 @@ export type PhenDeckConfig = {
     compose: ComposeConfig;
     layout: LayoutConfig;
     timeline: TimelineConfig;
+    title: string;
 }

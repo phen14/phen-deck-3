@@ -15,6 +15,7 @@ import { loadAccountConfig } from "./app/load-account-config";
 import { loadMutesConfig } from "./app/load-mutes-config";
 import { loadPostTemplatesConfig } from "./app/load-post-templates-config";
 import { getAccounts, getPosts, sendUpdatedConfig, setupReactInterface } from "./app/react-interface";
+import { phenDeckConfig } from "./config/phen-deck-config";
 import { mainMenuTemplate } from "./menu/main-menu";
 
 let mainWindow: BrowserWindow | null = null;
@@ -65,7 +66,7 @@ const createWindow = async () => {
         width: 753,
         height: 1024,
         icon: getAssetPath("icon.png"),
-        title: "PhenDeck for Workspaces 3.11",
+        title: phenDeckConfig.title,
         webPreferences: {
             nodeIntegration: true,
             preload: app.isPackaged ? path.join(__dirname, "preload.js") : path.join(__dirname, "../../.erb/dll/preload.js"),

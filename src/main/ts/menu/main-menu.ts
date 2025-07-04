@@ -52,6 +52,15 @@ export const mainMenuTemplate = [
                     sendUpdatedConfig();
                 }
             },
+            {
+                checked: true,
+                label: 'Update Title with Home Count',
+                type: 'checkbox',
+                click: () => {
+                    phenDeckConfig.layout.updateTitleWithHomeCount = !phenDeckConfig.layout.updateTitleWithHomeCount;
+                    sendUpdatedConfig();
+                }
+            },
         ]
     },
     {
