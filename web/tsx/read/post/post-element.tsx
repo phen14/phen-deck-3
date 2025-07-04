@@ -53,7 +53,6 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     }
 
     const retweetHander = () => {
-        console.log("retweetHander");
         const actionedPost = convertDisplayPostToActionedPost(post);
         getElectron().ipcRenderer.sendMessage("retweet" as Channels, actionedPost);
     }

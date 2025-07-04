@@ -93,7 +93,6 @@ const createWindow = async () => {
 
     // Open urls in the user's browser
     mainWindow.webContents.setWindowOpenHandler((edata) => {
-        console.log("Hi.");
         shell.openExternal(edata.url);
         return { action: "deny" };
     });
