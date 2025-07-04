@@ -38,4 +38,10 @@ export class Accounts {
     public map(): ImmutableMap<string, UserAccount> {
         return ImmutableMap<string, UserAccount>(this.accounts);
     }
+
+    public resetCursors(): void {
+        for (let account of this.accounts.values()) {
+            account.resetCursor();
+        }
+    }
 }

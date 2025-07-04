@@ -29,7 +29,8 @@ export function List({ config, onChange, name } : { config: PhenDeckConfig, onCh
         setData(combinedPosts);
 
         if (onChange) {
-            onChange(combinedPosts);
+            const shown = getFilteredPosts(combinedPosts);
+            onChange(shown);
         }
     });
 
@@ -37,16 +38,23 @@ export function List({ config, onChange, name } : { config: PhenDeckConfig, onCh
         getElectron().ipcRenderer.sendMessage("getPosts" as Channels);
     };
 
-    function clearData() {
+    const clearData = () => {
         setData([]);
         if (onChange) {
             onChange([]);
         }
     }
 
-    const shown = config.timeline.hideNonMutualReplies ?
-        data.filter((post) => post.isMe || !post.isReply || post.isRepliedToMutual) :
-        data;
+    const getFilteredPosts = (posts: DisplayPost[]) => {
+        return config.timeline.hideNonMutualReplies ?
+            posts.filter((post) => post.isMe || !post.isReply || post.isRepliedToMutual) :
+            posts;
+    }
+
+    let shown = getFilteredPosts(data);
+    if (!config.timeline.ascendingOrder) {
+        shown = shown.reverse();
+    }
 
     return (
         <div className="list">
@@ -55,6 +63,7 @@ export function List({ config, onChange, name } : { config: PhenDeckConfig, onCh
         </div>
     );
 }
+
 
 /**
  * Update the relative time field of all the posts in the list.

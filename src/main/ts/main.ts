@@ -14,14 +14,14 @@ import { URL } from "url";
 import { loadAccountConfig } from "./app/load-account-config";
 import { loadMutesConfig } from "./app/load-mutes-config";
 import { loadPostTemplatesConfig } from "./app/load-post-templates-config";
-import { getAccounts, getPosts, sendUpdatedConfig, setupReactInterface } from "./app/react-interface";
+import { ReactInterface } from "./app/react-interface";
 import { phenDeckConfig } from "./config/phen-deck-config";
 import { mainMenuTemplate } from "./menu/main-menu";
 
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on("ipc-example", async (event, arg) => {
-    const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+    const msgTemplate = (pingPong: string) => `IPC test: ${ pingPong }`;
     console.log(msgTemplate(arg));
     event.reply("ipc-example", msgTemplate("pong"));
 });
@@ -45,7 +45,7 @@ const installExtensions = async () => {
     return installer
         .default(
             extensions.map((name) => installer[name]),
-            forceDownload,
+            forceDownload
         )
         .catch(console.log);
 };
@@ -69,15 +69,15 @@ const createWindow = async () => {
         title: phenDeckConfig.title,
         webPreferences: {
             nodeIntegration: true,
-            preload: app.isPackaged ? path.join(__dirname, "preload.js") : path.join(__dirname, "../../.erb/dll/preload.js"),
-        },
+            preload: app.isPackaged ? path.join(__dirname, "preload.js") : path.join(__dirname, "../../.erb/dll/preload.js")
+        }
     });
 
     mainWindow.loadURL(resolveHtmlPath("index.html"));
 
     mainWindow.on("ready-to-show", () => {
         if (!mainWindow) {
-            throw new Error('"mainWindow" is not defined');
+            throw new Error("\"mainWindow\" is not defined");
         }
         mainWindow.show();
     });
@@ -93,36 +93,38 @@ const createWindow = async () => {
 
     // Open urls in the user's browser
     mainWindow.webContents.setWindowOpenHandler((edata) => {
-        console.log('Hi.');
+        console.log("Hi.");
         shell.openExternal(edata.url);
         return { action: "deny" };
     });
 
-    setTimeout(() => getAccounts(mainWindow!.webContents), 5000);
-    setTimeout(() => getPosts(mainWindow!.webContents), 5000);
-    setTimeout(() => sendUpdatedConfig(mainWindow!.webContents), 5000);
+    const reactInterface = ReactInterface.getInstance();
+    ReactInterface.getInstance().setMainWindow(mainWindow);
+    setTimeout(() => reactInterface.getAccounts(mainWindow!.webContents), 5000);
+    setTimeout(() => reactInterface.getPosts(mainWindow!.webContents), 5000);
+    setTimeout(() => reactInterface.sendUpdatedConfig(mainWindow!.webContents), 5000);
 };
 
 export function refreshConfig() {
-    getAccounts(mainWindow!.webContents);
-    sendUpdatedConfig(mainWindow!.webContents);
+    const reactInterface = ReactInterface.getInstance();
+    reactInterface.getAccounts(mainWindow!.webContents);
+    reactInterface.sendUpdatedConfig(mainWindow!.webContents);
 }
 
 function resolveHtmlPath(htmlFileName: string) {
     if (process.env.NODE_ENV === "development") {
         const port = process.env.PORT || 1212;
-        const url = new URL(`http://localhost:${port}`);
+        const url = new URL(`http://localhost:${ port }`);
         url.pathname = htmlFileName;
         return url.href;
     }
-    return `file://${path.resolve(__dirname, "../renderer/", htmlFileName)}`;
+    return `file://${ path.resolve(__dirname, "../renderer/", htmlFileName) }`;
 }
 
 app.whenReady().then(async () => {
     await loadAccountConfig();
     await loadMutesConfig();
     await loadPostTemplatesConfig();
-    setupReactInterface(mainWindow);
     await createWindow();
 })
     .catch(console.log);

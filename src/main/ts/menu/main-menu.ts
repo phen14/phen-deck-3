@@ -1,6 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import { sendUpdatedConfig } from "../app/react-interface";
+import { Accounts } from "../api/account/accounts";
+import { ReactInterface } from "../app/react-interface";
 import { phenDeckConfig } from "../config/phen-deck-config";
 import { refreshConfig } from "../main";
 
@@ -30,8 +31,19 @@ export const mainMenuTemplate = [
     {
         label: 'Timeline',
         submenu: [
-            { label: 'Force Load' },
-            { label: 'Reset Cursors' },
+            {
+                label: 'Force Load',
+                click: () => {
+                    ReactInterface.getInstance().getPosts(undefined, true);
+                }
+            },
+            {
+                label: 'Reset Cursors',
+                click: () => {
+                    Accounts.getInstance().resetCursors();
+                    ReactInterface.getInstance().getPosts(undefined, true);
+                }
+            },
             { type: 'separator' },
             {
                 checked: true,
@@ -39,7 +51,7 @@ export const mainMenuTemplate = [
                 type: 'checkbox',
                 click: () => {
                     phenDeckConfig.timeline.ascendingOrder = !phenDeckConfig.timeline.ascendingOrder;
-                    sendUpdatedConfig();
+                    ReactInterface.getInstance().sendUpdatedConfig();
                 }
 
             },
@@ -49,7 +61,7 @@ export const mainMenuTemplate = [
                 type: 'checkbox',
                 click: () => {
                     phenDeckConfig.timeline.hideNonMutualReplies = !phenDeckConfig.timeline.hideNonMutualReplies;
-                    sendUpdatedConfig();
+                    ReactInterface.getInstance().sendUpdatedConfig();
                 }
             },
             {
@@ -58,7 +70,7 @@ export const mainMenuTemplate = [
                 type: 'checkbox',
                 click: () => {
                     phenDeckConfig.layout.updateTitleWithHomeCount = !phenDeckConfig.layout.updateTitleWithHomeCount;
-                    sendUpdatedConfig();
+                    ReactInterface.getInstance().sendUpdatedConfig();
                 }
             },
         ]

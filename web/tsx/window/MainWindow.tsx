@@ -23,12 +23,10 @@ export function MainWindow() {
     });
 
     const onHomeChange = (data: DisplayPost[]): void => {
-        if (config.layout.updateTitleWithHomeCount) {
-            if (data.length) {
-                document.title = `(${data.length}) ${config.title}`;
-            } else {
-                document.title = config.title;
-            }
+        if (config.layout.updateTitleWithHomeCount && data.length) {
+            document.title = `(${data.length}) ${config.title}`;
+        } else {
+            document.title = config.title;
         }
     }
 

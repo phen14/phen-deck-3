@@ -11,7 +11,6 @@ import { PostElement } from "../post/post-element";
  * @constructor
  */
 export function ListBody({ posts } : { posts: DisplayPost[] }): JSX.Element {
-
     const postElements: JSX.Element[] = posts ? posts.map((post) => <PostElement key={post.id} post={post} />) : [];
 
     return (

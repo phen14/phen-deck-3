@@ -31,6 +31,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
         this.retweetInfo = !isRetweeted && isReasonRepost(this.blueskyStatus.reason) ? (this.blueskyStatus.reason as ReasonRepost) : null;
 
         if (this.isRetweet()) {
+            console.log("RT", this.retweetInfo);
             this.retweet = new BlueskyPost(this.blueskyStatus, this.viewer, this.viewerAccountId, true);
         } else {
             this.retweet = null;
@@ -53,6 +54,10 @@ export class BlueskyPost extends AbstractBlueskyPost {
         this.repliedTo = repliedTo;
     }
 
+
+    getId(): string {
+        return this.retweetInfo != null ? this.retweetInfo.uri as string : this.getBase().uri ?? "";
+    }
 
     // ---------------------------------------
     // ~~~~~| Viewer |~~~~~

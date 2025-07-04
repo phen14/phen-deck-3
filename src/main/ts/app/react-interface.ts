@@ -14,130 +14,152 @@ import WebContents = Electron.WebContents;
 import IpcMainEvent = Electron.IpcMainEvent;
 
 const accounts = Accounts.getInstance();
-let mainWindow: BrowserWindow | null;
 
-/**
- * Setup the communication channels between the front and back ends of the app.
- *
- * @param main Application window object.
- */
-export const setupReactInterface = (main: BrowserWindow | null) => {
-    mainWindow = main;
+export class ReactInterface {
+    static #instance: ReactInterface;
+    mainWindow: BrowserWindow | null = null;
 
-    ipcMain.on('getPosts', async (event) => {
-        await getPosts(event.sender);
-    })
-    ipcMain.on('post', async (event, value: SubmittedPost) => {
-        await post(event, value);
-    });
-    ipcMain.on('retweet', async (event, value: ActionedPost) => {
-        await retweet(event, value);
-    });
-}
+    public static getInstance(): ReactInterface {
+        if (!ReactInterface.#instance) {
+            ReactInterface.#instance = new ReactInterface();
+        }
 
-/**
- * Communication channel to send changes in configuration to the front end.
- */
-export const sendUpdatedConfig = (senderArg?: WebContents) => {
-    console.log("Sending updated config...");
-    const sender = senderArg ?? mainWindow?.webContents;
-
-    if (!sender) {
-        console.error("Link to window not established.")
-        return;
+        return ReactInterface.#instance;
     }
 
-    sender.send("updatedConfig", phenDeckConfig);
-}
-
-/**
- * Communication channel to send the account list to the front end.
- *
- * @param sender
- */
-export const getAccounts = (sender: WebContents) => {
-    const accounts = Accounts.getInstance().list();
-    const displayAccounts = accounts
-        .map((account: UserAccount) => convertAccountToDisplayAccount(account))
-        .filter((displayAccount: DisplayAccount | null) => !!displayAccount);
-
-    sender.send("getAccounts", displayAccounts);
-}
-
-/**
- * Communication channel to send a batch of posts to the front end.
- *
- * @param sender
- * @param oneTime
- */
-export const getPosts = async (sender: WebContents, oneTime: boolean = false) => {
-    const posts: StatusPost[] = [];
-
-    const postPromises: Promise<StatusPost[]>[] = [];
-    accounts.list().forEach(account => {
-        postPromises.push(account.getPosts());
-    });
-
-    const results = await Promise.all(postPromises);
-    for (const result of results) {
-        posts.push(...result);
+    private constructor() {
+        ipcMain.on('getPosts', async (event) => {
+            await this.getPosts(event.sender);
+        })
+        ipcMain.on('post', async (event, value: SubmittedPost) => {
+            await this.post(event, value);
+        });
+        ipcMain.on('retweet', async (event, value: ActionedPost) => {
+            await this.retweet(event, value);
+        });
     }
 
-    // filter
-    const filteredPosts = posts.filter((post: StatusPost) => !shouldFilterOutPost(post));
-    console.log(`Filtered ${posts.length - filteredPosts.length} of ${posts.length} posts.`)
-
-    // sort
-    filteredPosts.sort((a: StatusPost, b: StatusPost) => a.getTimestamp().getTime() - b.getTimestamp().getTime());
-
-    const conversionPromises: Promise<DisplayPost | null>[] = [];
-    filteredPosts.forEach((post) => {
-        conversionPromises.push(convertStatusPostToDisplayPost(post));
-    })
-    const displayPosts = await Promise.all(conversionPromises);
-    sender.send("getPosts", displayPosts);
-
-    if (!oneTime) {
-        setTimeout(() => getPosts(sender), 30000)
-    }
-}
-
-/**
- * Communication channel to send the post template list to the front end.
- *
- * @param sender
- */
-export const getPostTemplates = (sender: WebContents) => {
-    sender.send("getPostTemplates", phenDeckConfig.compose.postTemplates);
-}
-
-
-/**
- * Communication for the front end to send a submitted post to the back end.
- *
- * @param event
- * @param value
- */
-export const post = async (event: IpcMainEvent, value: SubmittedPost) => {
-    if (!value.text) {
-        return;
+    /**
+     * Setup the communication channels between the front and back ends of the app.
+     *
+     * @param main Application window object.
+     */
+     setMainWindow (main: BrowserWindow | null) {
+         console.log("SetMainWindow", main);
+        this.mainWindow = main;
     }
 
-    const accountsLibrary = Accounts.getInstance();
-    const accounts = value.accounts.map((account) => accountsLibrary.get(account));
+    /**
+     * Communication channel to send changes in configuration to the front end.
+     */
+    sendUpdatedConfig (senderArg?: WebContents) {
+        const sender = senderArg ?? this.mainWindow?.webContents;
 
-    accounts.forEach((account => account?.post(value.text)));
-}
+        if (!sender) {
+            console.error("Link to window not established.")
+            return;
+        }
 
-/**
- * Communication for the front end to send a retweet to the back end.
- *
- * @param event
- * @param value
- */
-export const retweet = async (event: IpcMainEvent, value: ActionedPost) => {
-    const accountsLibrary = Accounts.getInstance();
-    const accounts = value.accounts.map((account) => accountsLibrary.get(account));
+        sender.send("updatedConfig", phenDeckConfig);
+    }
 
-    accounts.forEach((account => account?.retweet(value)));
+    /**
+     * Communication channel to send the account list to the front end.
+     *
+     * @param sender
+     */
+    getAccounts(sender: WebContents) {
+        const accounts = Accounts.getInstance().list();
+        const displayAccounts = accounts
+            .map((account: UserAccount) => convertAccountToDisplayAccount(account))
+            .filter((displayAccount: DisplayAccount | null) => !!displayAccount);
+
+        sender.send("getAccounts", displayAccounts);
+    }
+
+    /**
+     * Communication channel to send a batch of posts to the front end.
+     *
+     * @param senderArg
+     * @param oneTime
+     */
+    async getPosts (senderArg?: WebContents, oneTime: boolean = false) {
+        const sender = senderArg ?? this.mainWindow?.webContents;
+
+        if (!sender) {
+            console.error("Link to window not established.")
+            return;
+        }
+
+        const posts: StatusPost[] = [];
+
+        const postPromises: Promise<StatusPost[]>[] = [];
+        accounts.list().forEach(account => {
+            postPromises.push(account.getPosts());
+        });
+
+        const results = await Promise.all(postPromises);
+        for (const result of results) {
+            posts.push(...result);
+        }
+
+        // filter
+        const filteredPosts = posts.filter((post: StatusPost) => !shouldFilterOutPost(post));
+        console.log(`Filtered ${ posts.length - filteredPosts.length } of ${ posts.length } posts.`)
+
+        // sort
+        filteredPosts.sort((a: StatusPost, b: StatusPost) => a.getTimestamp().getTime() - b.getTimestamp().getTime());
+
+        const conversionPromises: Promise<DisplayPost | null>[] = [];
+        filteredPosts.forEach((post) => {
+            conversionPromises.push(convertStatusPostToDisplayPost(post));
+        })
+        const displayPosts = await Promise.all(conversionPromises);
+        sender.send("getPosts", displayPosts);
+
+        if (!oneTime) {
+            setTimeout(() => this.getPosts(sender), 30000)
+        }
+    }
+
+    /**
+     * Communication channel to send the post template list to the front end.
+     *
+     * @param sender
+     */
+    getPostTemplates (sender: WebContents) {
+        sender.send("getPostTemplates", phenDeckConfig.compose.postTemplates);
+    }
+
+
+    /**
+     * Communication for the front end to send a submitted post to the back end.
+     *
+     * @param event
+     * @param value
+     */
+    async post (event: IpcMainEvent, value: SubmittedPost) {
+        if (!value.text) {
+            return;
+        }
+
+        const accountsLibrary = Accounts.getInstance();
+        const accounts = value.accounts.map((account) => accountsLibrary.get(account));
+
+        accounts.forEach((account => account?.post(value.text)));
+    }
+
+    /**
+     * Communication for the front end to send a retweet to the back end.
+     *
+     * @param event
+     * @param value
+     */
+    async retweet (event: IpcMainEvent, value: ActionedPost)  {
+        const accountsLibrary = Accounts.getInstance();
+        const accounts = value.accounts.map((account) => accountsLibrary.get(account));
+
+        accounts.forEach((account => account?.retweet(value)));
+    }
+
 }
