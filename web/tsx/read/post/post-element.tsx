@@ -124,7 +124,6 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
 
     return (
         <div className={ className }>
-            {post.id} <br />
             { repliedToSection }
             { headerSection }
             <div className={contentClassName}>
