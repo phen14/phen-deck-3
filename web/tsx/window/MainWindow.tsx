@@ -22,6 +22,7 @@ export function MainWindow() {
     });
 
     const onHomeChange = (data: DisplayPost[]): void => {
+        console.log("Updating count...", new Date(), data.length);
         if (config.layout.updateTitleWithHomeCount && data.length) {
             document.title = `(${data.length}) ${config.title}`;
         } else {

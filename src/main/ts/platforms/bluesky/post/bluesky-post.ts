@@ -81,7 +81,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     // ~~~~~| Time |~~~~~
 
     getTimestamp(): Date {
-        const indexedAt = (this.retweetInfo != null ? this.retweetInfo.indexedAt : this.getRecord().createdAt);
+        const indexedAt = (this.retweetInfo != null ? this.retweetInfo.indexedAt : this.getBase().indexedAt);
         if (indexedAt) {
             return new Date(Date.parse(indexedAt));
         }

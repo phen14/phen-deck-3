@@ -250,6 +250,9 @@ export default class BlueskyAccount implements UserAccount {
             const newPosts = posts.filter((item) => item.getTimestamp() > this.newestPostSeen);
             if (newPosts.length) {
                 this.newestPostSeen = newPosts[0].getTimestamp();
+                if (this.newestPostSeen > new Date()) {
+                    this.newestPostSeen = new Date();
+                }
 
                 const getRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
                 const replies: BlueskyPost[] = [];

@@ -22,6 +22,7 @@ export function List({ config, onChange, name } : { config: PhenDeckConfig, onCh
     const [data, setData] = useState<DisplayPost[]>([]);
 
     getElectron().ipcRenderer.on("getPosts" as Channels, (arg, hardReset) => {
+        console.log("Got posts...", new Date());
         const posts = arg as DisplayPost[];
         const combinedPosts = hardReset ? posts : [...data, ...posts];
 
