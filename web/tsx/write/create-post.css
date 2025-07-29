@@ -86,7 +86,7 @@ textarea {
     font-size: 12px;
     outline: none;
     resize: none;
-    width: 95%;
+    width: 100%;
 }
 
 .selectAccountsWrapper {

@@ -16,6 +16,12 @@ export function LinkCard({ post } : { post: DisplayPost }): JSX.Element {
 
     const imageSection = post.linkCard.imageUrl ? <img src={post.linkCard.imageUrl}/> : "";
 
+    let displayUrl = post.linkCard.url;
+    let startGetParams = displayUrl.indexOf("?");
+    if (startGetParams !== -1) {
+        displayUrl = `${displayUrl.substring(0, startGetParams)}...`;
+    }
+
     return (
         <div className="linkCard">
             <a href={post.linkCard.url} target="_blank">
@@ -23,7 +29,7 @@ export function LinkCard({ post } : { post: DisplayPost }): JSX.Element {
             { imageSection }
             </a>
             <div className="linkDescription">{post.linkCard.description}</div>
-            <div className="linkUrl"><a href={post.linkCard.url} target="_blank">{ post.linkCard.url }</a></div>
+            <div className="linkUrl"><a href={post.linkCard.url} target="_blank">{ displayUrl }</a></div>
         </div>
     );
 }
