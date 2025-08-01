@@ -22,6 +22,7 @@ export interface StatusPost {
     getPosterDisplayName(): string;
     getPosterHandle(): string;
     getPosterService(): string;
+    getPosterUrl(): string;
     isMe(): boolean;
     isRetweetedByMe(): boolean;
 

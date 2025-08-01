@@ -37,6 +37,7 @@ export type DisplayPost = {
     posterDisplayName: string;
     posterHandle: string;
     posterService: string;
+    posterUrl: string;
 
     // ---------------------------------
     // ~~~~~| Time |~~~~~
@@ -126,6 +127,7 @@ export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | n
         posterDisplayName: statusPost.getPosterDisplayName(),
         posterHandle: statusPost.getPosterHandle(),
         posterService: statusPost.getPosterService(),
+        posterUrl: statusPost.getPosterUrl(),
 
         // Time
         timestamp: statusPost.getTimestamp(),

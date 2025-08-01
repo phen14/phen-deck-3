@@ -25,7 +25,7 @@ export function BigHeader({ post } : { post: DisplayPost }): JSX.Element {
                 <Image className="posterAvatar" src={avatarSrc} />
             </div>
             <div className="posterDisplayName">
-                {post.posterDisplayName}
+                <a href={ post.posterUrl } target="_blank" >{post.posterDisplayName}</a>
             </div>
 
             <div className="posterHandle">

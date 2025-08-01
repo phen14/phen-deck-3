@@ -73,6 +73,10 @@ export class MastodonPost implements StatusPost {
         return "Mastodon";
     }
 
+    getPosterUrl(): string {
+        return this.mastodonStatus.account.url;
+    }
+
     isMe(): boolean {
         if (this.isRetweet()) {
             return this.getViewer().rawHandle === this.getRetweet()!.getPosterHandle();

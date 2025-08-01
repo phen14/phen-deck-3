@@ -29,7 +29,7 @@ export function SmallHeader({ isRetweet, post } : { isRetweet: boolean, post: Di
                 <Image src={avatarSrc}/>
             </div>
             <div className="posterDisplayName">
-                {post.posterDisplayName}
+                <a href={ post.posterUrl } target="_blank" >{post.posterDisplayName}</a>
             </div>
             <div className="posterHandle">
                 <img className="posterServiceIcon" src={serviceSrc}/>

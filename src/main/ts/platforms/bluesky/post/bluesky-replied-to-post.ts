@@ -49,7 +49,7 @@ export class BlueskyRepliedToPost extends AbstractBlueskyPost {
         }
 
         const parent = this.blueskyStatus.parent as ThreadViewPost;
-        return this.convertAtToUrl(parent.post.uri);
+        return this.convertPostAtToUrl(parent.post.uri);
     }
 
     async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
