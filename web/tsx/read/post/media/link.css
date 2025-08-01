@@ -16,7 +16,11 @@
 }
 
 .linkCard .linkDescription {
-
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    display: -webkit-box;
+    overflow: clip;
+    text-overflow: ellipsis;
 }
 
 .linkCard .linkTitle {
