@@ -21,7 +21,7 @@ import { ListHeader } from "./list-header";
 export function List({ config, onChange, name } : { config: PhenDeckConfig, onChange?: Function, name: string }): JSX.Element {
     const [data, setData] = useState<DisplayPost[]>([]);
 
-    getElectron().ipcRenderer.on("getPosts" as Channels, (arg, hardReset) => {
+    getElectron().ipcRenderer.only("getPosts" as Channels, (arg, hardReset) => {
         console.log("Got posts...", new Date());
         const posts = arg as DisplayPost[];
         const combinedPosts = hardReset ? posts : [...data, ...posts];

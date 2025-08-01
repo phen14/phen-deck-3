@@ -45,7 +45,6 @@ export class ReactInterface {
      * @param main Application window object.
      */
      setMainWindow (main: BrowserWindow | null) {
-         console.log("SetMainWindow", main);
         this.mainWindow = main;
     }
 
@@ -60,6 +59,7 @@ export class ReactInterface {
             return;
         }
 
+        console.log("Sending config...");
         sender.send("updatedConfig", phenDeckConfig);
     }
 

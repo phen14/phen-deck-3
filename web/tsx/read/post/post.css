@@ -32,6 +32,22 @@
 }
 
 
+/* Mastodon Links */
+
+.ellipsis:after {
+    content: "…";
+}
+
+.invisible {
+    font-size: 0;
+    line-height: 0;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+
 /* Quote Tweet */
 .quoteSection {
     border: 1px solid #ccc;

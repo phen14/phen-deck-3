@@ -16,7 +16,5 @@ export const loadPostTemplatesConfig = async () => {
         }
     })
 
-    console.log(templatesConfigTyped);
-
     phenDeckConfig.compose.postTemplates = templatesConfigTyped;
 };
