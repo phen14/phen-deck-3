@@ -10,10 +10,10 @@ import { StatusLink } from "../../../api/post/status-link";
 import { PostView } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isMain as isExternalMain, isView as isExternalView } from "@atproto/api/dist/client/types/app/bsky/embed/external";
 import * as AppBskyEmbedExternal from "@atproto/api/src/client/types/app/bsky/embed/external";
-import { AppBskyEmbedImages, AppBskyEmbedVideo } from "@atproto/api";
+import { AppBskyEmbedImages, AppBskyEmbedVideo, Facet, RichText } from "@atproto/api";
 import { isView as isImageView } from "@atproto/api/dist/client/types/app/bsky/embed/images";
 import { isView as isVideoView } from "@atproto/api/dist/client/types/app/bsky/embed/video";
-import { isView as isRecordView, ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
+import { ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
 import { isView as isRecordWithMediaView } from "@atproto/api/dist/client/types/app/bsky/embed/recordWithMedia";
 
 export abstract class AbstractBlueskyPost implements StatusPost {
@@ -105,7 +105,27 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ~~~~~| Content |~~~~~
 
     getPostText(): string {
-        return encode(this.getRecord()?.text ?? "");
+        const text = this.getRecord()?.text ?? "";
+        const facets = this.getRecord().facets;
+        const rt = new RichText({text, facets});
+
+        // Mostly from the docs
+        let markdown = "";
+        for (const segment of rt.segments()) {
+            if (segment.isLink()) {
+                markdown += `<a href="${ segment.link?.uri }">${ segment.text }</a>`;
+            } else if (segment.isMention()) {
+                markdown += `<a href="https://bsky.app/profile/${ segment.mention?.did }">${ segment.text }</a>`;
+            } else if (segment.isTag()) {
+                markdown += `<a href="https://bsky.app/hashtag/${ segment.tag?.tag }">${ segment.text }</a>`;
+            } else {
+                markdown += segment.text;
+            }
+        }
+        // End from the docs.
+
+        // Used to have encode() here.  Can't now with markdown, and I don't know what it was fixing, but I feel I'll find out...
+        return markdown;
     }
 
     protected getEmbed() : AppBskyEmbedImages.View | AppBskyEmbedVideo.View | AppBskyEmbedExternal.View | AppBskyEmbedRecord.View
@@ -265,5 +285,6 @@ export type BlueRecord = {
         | AppBskyEmbedRecord.View
         | AppBskyEmbedRecordWithMedia.View
         | { $type: string; [k: string]: unknown }
+    facets?: Facet[];
     text: string;
 }
