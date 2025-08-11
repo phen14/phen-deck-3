@@ -110,7 +110,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ~~~~~| Content |~~~~~
 
     getPostText(): string {
-        const text = this.getRecord()?.text ?? "";
+        const text = encode(this.getRecord()?.text ?? "");
         const facets = this.getRecord().facets;
         const rt = new RichText({text, facets});
 
@@ -129,7 +129,6 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         }
         // End from the docs.
 
-        // Used to have encode() here.  Can't now with markdown, and I don't know what it was fixing, but I feel I'll find out...
         return markdown;
     }
 
