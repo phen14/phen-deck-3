@@ -110,7 +110,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ~~~~~| Content |~~~~~
 
     getPostText(): string {
-        const text = encode(this.getRecord()?.text ?? "");
+        const text = this.getRecord()?.text ?? "";
         const facets = this.getRecord().facets;
         const rt = new RichText({text, facets});
 
@@ -120,11 +120,11 @@ export abstract class AbstractBlueskyPost implements StatusPost {
             if (segment.isLink()) {
                 markdown += `<a href="${ segment.link?.uri }">${ segment.text }</a>`;
             } else if (segment.isMention()) {
-                markdown += `<a href="https://bsky.app/profile/${ segment.mention?.did }">${ segment.text }</a>`;
+                markdown += `<a href="https://bsky.app/profile/${ segment.mention?.did }">${ encode(segment.text) }</a>`;
             } else if (segment.isTag()) {
-                markdown += `<a href="https://bsky.app/hashtag/${ segment.tag?.tag }">${ segment.text }</a>`;
+                markdown += `<a href="https://bsky.app/hashtag/${ segment.tag?.tag }">${ encode(segment.text) }</a>`;
             } else {
-                markdown += segment.text;
+                markdown += encode(segment.text);
             }
         }
         // End from the docs.
