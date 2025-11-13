@@ -1,5 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
+import { Quote, ShallowQuote } from "masto/dist/cjs/mastodon/entities/v1";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { StatusPost } from "../../../api/post/status-post";
 import { mastodon } from "masto";
@@ -7,20 +8,36 @@ import { StatusLink } from "../../../api/post/status-link";
 import { StatusMedia } from "../../../api/post/status-media";
 
 export class MastodonPost implements StatusPost {
+    private readonly isQuoted: boolean;
     private readonly mastodonStatus: mastodon.v1.Status;
+    private readonly quoted: MastodonPost | null = null;
+    private readonly rabbitHoleId: string | null | undefined = null;
     private readonly retweet: MastodonPost | null;
     private readonly viewer: UserAccountProfile;
     private readonly viewerAccountId: string;
 
+    protected rabbitHole: MastodonPost | null = null;
     protected repliedTo: MastodonPost | null = null;
 
-    public constructor(mastadonStatus: mastodon.v1.Status, viewer: UserAccountProfile, viewerAccountId: string) {
+    public constructor(mastadonStatus: mastodon.v1.Status, viewer: UserAccountProfile, viewerAccountId: string, isQuoted = false) {
         if (!mastadonStatus || !viewer || !viewerAccountId) {
             throw new Error("Required fields missing.");
         }
+
+        this.isQuoted = isQuoted;
         this.mastodonStatus = mastadonStatus;
         this.viewer = viewer;
         this.viewerAccountId = viewerAccountId;
+
+        if (!!this.mastodonStatus.quote) {
+            if (this.isQuoted) {
+                const quoteWrapper = this.mastodonStatus.quote as ShallowQuote;
+                this.rabbitHoleId = quoteWrapper.quotedStatusId;
+            } else {
+                const quoteWrapper = this.mastodonStatus.quote as Quote;
+                this.quoted = new MastodonPost(quoteWrapper.quotedStatus!, this.viewer, this.viewerAccountId, true);
+            }
+        }
 
         this.retweet = this.isRetweet() ? new MastodonPost(this.mastodonStatus.reblog!, this.viewer, this.viewerAccountId) : null;
     }
@@ -51,6 +68,11 @@ export class MastodonPost implements StatusPost {
 
     getRawString(): string {
         return JSON.stringify(this.mastodonStatus);
+    }
+
+    setRabbitHole(rabbitHole: MastodonPost): void {
+        console.log('Setting rabbit hole', rabbitHole);
+        this.rabbitHole = rabbitHole;
     }
 
     setRepliedTo(repliedTo: MastodonPost): void {
@@ -192,19 +214,25 @@ export class MastodonPost implements StatusPost {
     // ~~~~~| Retweets |~~~~~
 
     isQuoteTweet(): boolean {
-        return false;
+        return !!this.mastodonStatus.quote && 'quotedStatus' in this.mastodonStatus.quote;
     }
 
     getQuoteTweet(): StatusPost | null {
-        return null;
+        return this.quoted;
     }
 
     isRabbitHole(): boolean {
-        return false;
+        return !!this.rabbitHoleId;
+    }
+
+    getRabbitHoleId() : string | null | undefined {
+        return this.rabbitHoleId;
     }
 
     getRabbitHoleUrl(): string | null | undefined {
-        return null;
+        console.log('Getting rabbit hole URL', this.rabbitHole);
+        console.log('Getting rabbit hole URL', this.rabbitHole?.getUrl());
+        return this.rabbitHole?.getUrl() ?? null;
     }
 
     isRetweet(): boolean {

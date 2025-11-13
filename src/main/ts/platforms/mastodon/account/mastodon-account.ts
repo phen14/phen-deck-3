@@ -120,7 +120,7 @@ export default class MastodonAccount implements UserAccount {
         }
     }
 
-    async getRepliedTo(postId: string): Promise<MastodonPost | null> {
+    async fetchPostById(postId: string): Promise<MastodonPost | null> {
         const postResponse = await this.client.v1.statuses.fetch({
             id: [postId]
         });
@@ -146,14 +146,22 @@ export default class MastodonAccount implements UserAccount {
 
                 const getRepliedToPromises: Promise<MastodonPost | null>[] = [];
                 const replies: MastodonPost[] = [];
+
+                const getRabbitHolePromises: Promise<MastodonPost | null>[] = [];
+                const quotes: MastodonPost[] = [];
+
                 for (const post of posts) {
                     if (post.isReply()) {
                         replies.push(post);
-                        getRepliedToPromises.push(this.getRepliedTo(post.getInRepliedToId()!));
+                        getRepliedToPromises.push(this.fetchPostById(post.getInRepliedToId()!));
                     } else if (post.isRetweet() && post.getRetweet()?.isReply()) {
                         const retweet = post.getRetweet() as MastodonPost;
                         replies.push(retweet);
-                        getRepliedToPromises.push(this.getRepliedTo(retweet.getInRepliedToId()!));
+                        getRepliedToPromises.push(this.fetchPostById(retweet.getInRepliedToId()!));
+                    } else if (!!post.getQuoteTweet() && post.getQuoteTweet()!.isRabbitHole()) {
+                        const quote = post.getQuoteTweet() as MastodonPost;
+                        quotes.push(quote);
+                        getRabbitHolePromises.push(this.fetchPostById(quote.getRabbitHoleId()!));
                     }
                 }
 
@@ -168,8 +176,17 @@ export default class MastodonAccount implements UserAccount {
 
                         if (repliedTo.isReply()) {
                             repliedToReplies.push(repliedTo);
-                            getRepliedToRepliedToPromises.push(this.getRepliedTo(repliedTo.getInRepliedToId()!));
+                            getRepliedToRepliedToPromises.push(this.fetchPostById(repliedTo.getInRepliedToId()!));
                         }
+                    }
+                }
+
+                const rabbitHoles = await Promise.all(getRabbitHolePromises);
+                console.log('Rabbit Holes', rabbitHoles);
+                for (let i = 0; i < quotes.length; ++i) {
+                    if (quotes[i] != null) {
+                        console.log("Setting rabbit hole...");
+                        quotes[i].setRabbitHole(rabbitHoles[i]!);
                     }
                 }
 

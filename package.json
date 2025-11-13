@@ -28,7 +28,7 @@
         "html-entities": "2.5.x",
         "immutable": "^5.0.3",
         "lorem-ipsum": "2.x",
-        "masto": "^6.10.1",
+        "masto": "7.x",
         "path-browserify": "1.x",
         "react": "18.x",
         "react-dom": "18.x",

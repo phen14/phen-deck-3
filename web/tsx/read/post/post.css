@@ -49,6 +49,12 @@
 
 
 /* Quote Tweet */
+
+/* Mastodon's "Re: <quoted link>" stopgap for clients that don't support links. */
+.quote-inline {
+    display: none;
+}
+
 .quoteSection {
     border: 1px solid #ccc;
     border-radius: 4px;
