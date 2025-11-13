@@ -182,10 +182,8 @@ export default class MastodonAccount implements UserAccount {
                 }
 
                 const rabbitHoles = await Promise.all(getRabbitHolePromises);
-                console.log('Rabbit Holes', rabbitHoles);
                 for (let i = 0; i < quotes.length; ++i) {
                     if (quotes[i] != null) {
-                        console.log("Setting rabbit hole...");
                         quotes[i].setRabbitHole(rabbitHoles[i]!);
                     }
                 }

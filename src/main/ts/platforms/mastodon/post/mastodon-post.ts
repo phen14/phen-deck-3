@@ -71,7 +71,6 @@ export class MastodonPost implements StatusPost {
     }
 
     setRabbitHole(rabbitHole: MastodonPost): void {
-        console.log('Setting rabbit hole', rabbitHole);
         this.rabbitHole = rabbitHole;
     }
 
@@ -230,8 +229,6 @@ export class MastodonPost implements StatusPost {
     }
 
     getRabbitHoleUrl(): string | null | undefined {
-        console.log('Getting rabbit hole URL', this.rabbitHole);
-        console.log('Getting rabbit hole URL', this.rabbitHole?.getUrl());
         return this.rabbitHole?.getUrl() ?? null;
     }
 
