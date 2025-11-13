@@ -57,12 +57,12 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
 
     isReply(): boolean {
         const value = this.blueskyStatus.record.value as FeedViewPost;
-        return !!value.reply;
+        return !!value?.reply;
     }
 
     getReplyRef(): ReplyRef | undefined {
         const value = this.blueskyStatus.record.value as FeedViewPost;
-        return value.reply;
+        return value?.reply;
     }
 
     getRepliedTo(): StatusPost | null {

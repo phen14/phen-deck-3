@@ -40,7 +40,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         return this.getBase().cid ?? "";
     }
 
-    getRaw(): string {
+    getRawString(): string {
         try {
             return JSON.stringify(this.getBase());
         } catch (ignored) {
@@ -57,6 +57,10 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
     getViewer(): UserAccountProfile {
         return this.viewer;
+    }
+
+    getViewerAccountId(): string {
+        return this.viewerAccountId;
     }
 
     hasViewerRetweeted(): boolean {
@@ -110,6 +114,10 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ~~~~~| Content |~~~~~
 
     getPostText(): string {
+        if (!this.getRecord()) {
+            return "";
+        }
+
         const text = this.getRecord()?.text ?? "";
         const facets = this.getRecord().facets;
         const rt = new RichText({text, facets});

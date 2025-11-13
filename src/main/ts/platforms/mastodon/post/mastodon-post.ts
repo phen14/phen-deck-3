@@ -15,6 +15,9 @@ export class MastodonPost implements StatusPost {
     protected repliedTo: MastodonPost | null = null;
 
     public constructor(mastadonStatus: mastodon.v1.Status, viewer: UserAccountProfile, viewerAccountId: string) {
+        if (!mastadonStatus || !viewer || !viewerAccountId) {
+            throw new Error("Required fields missing.");
+        }
         this.mastodonStatus = mastadonStatus;
         this.viewer = viewer;
         this.viewerAccountId = viewerAccountId;
@@ -38,7 +41,15 @@ export class MastodonPost implements StatusPost {
         return this.viewer;
     }
 
-    getRaw(): string {
+    getViewerAccountId(): string {
+        return this.viewerAccountId;
+    }
+
+    getRaw(): Object {
+        return this.mastodonStatus;
+    }
+
+    getRawString(): string {
         return JSON.stringify(this.mastodonStatus);
     }
 

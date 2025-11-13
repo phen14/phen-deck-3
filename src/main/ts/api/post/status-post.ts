@@ -10,11 +10,12 @@ import { StatusMedia } from "./status-media";
 export interface StatusPost {
     getId(): string;
     getCid(): string;
-    getRaw(): string;
+    getRawString(): string;
     getUrl(): string;
 
     // Viewer
     getViewer(): UserAccountProfile;
+    getViewerAccountId(): string;
     hasViewerRetweeted(): boolean;
 
     // Poster

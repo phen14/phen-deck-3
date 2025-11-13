@@ -113,7 +113,7 @@ export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | n
     return {
         id: statusPost.getId(),
         cid: statusPost.getCid(),
-        raw: statusPost.getRaw(),
+        raw: statusPost.getRawString(),
         url: statusPost.getUrl(),
 
         // Viewer
