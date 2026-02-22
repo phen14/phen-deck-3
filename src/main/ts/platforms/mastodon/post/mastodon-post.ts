@@ -29,7 +29,7 @@ export class MastodonPost implements StatusPost {
         this.viewer = viewer;
         this.viewerAccountId = viewerAccountId;
 
-        if (!!this.mastodonStatus.quote) {
+        if (!!this.mastodonStatus.quote && this.mastodonStatus.quote.state === "accepted") {
             if (this.isQuoted) {
                 const quoteWrapper = this.mastodonStatus.quote as ShallowQuote;
                 this.rabbitHoleId = quoteWrapper.quotedStatusId;
@@ -177,7 +177,7 @@ export class MastodonPost implements StatusPost {
             return [];
         }
 
-        return attachments.filter(attachment => attachment.type == "video")
+        return attachments.filter(attachment => attachment.type == "video" || attachment.type == "audio")
             .map(attachment => new StatusMedia(attachment.url ?? attachment.remoteUrl!, attachment.meta?.original?.height, attachment.meta?.original?.width));
     }
 

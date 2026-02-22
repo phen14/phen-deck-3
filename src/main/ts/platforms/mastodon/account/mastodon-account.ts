@@ -27,6 +27,9 @@ export default class MastodonAccount implements UserAccount {
     private myProfile: UserAccountProfile | undefined;
     private handleServer = "";
 
+    // Post record
+    private postsSeen = new Set<string>();
+
     // ===============================================================================================================
     // -----| Start |-----
     // ===================
@@ -66,6 +69,7 @@ export default class MastodonAccount implements UserAccount {
 
     public resetCursor(): void {
         this.newestPostSeen = "0";
+        this.postsSeen.clear();
     }
 
 
@@ -140,7 +144,17 @@ export default class MastodonAccount implements UserAccount {
                 sinceId: this.newestPostSeen
             });
 
-            const posts = rawPosts.map(rawPost => new MastodonPost(rawPost, this.myProfile!, this.getId()));
+            const unseenRawPosts = [];
+            for (const post of rawPosts) {
+                if (!this.postsSeen.has(post.id)) {
+                    this.postsSeen.add(post.id);
+                    unseenRawPosts.push(post);
+                } else {
+                    // console.log(`Already seen ${post.id}`);
+                }
+            }
+
+            const posts = unseenRawPosts.map(rawPost => new MastodonPost(rawPost, this.myProfile!, this.getId()));
             if (posts.length) {
                 this.newestPostSeen = rawPosts[0].id;
 

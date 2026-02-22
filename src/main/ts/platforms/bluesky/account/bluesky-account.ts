@@ -6,6 +6,7 @@ import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
 import { AppBskyFeedPost } from "@atproto/api/src/client";
 import * as AppBskyEmbedExternal from "@atproto/api/src/client/types/app/bsky/embed/external";
+import * as AppBskyFeedDefs from "@atproto/api/src/client/types/app/bsky/feed/defs";
 import urlMetadata from "url-metadata";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
@@ -24,7 +25,6 @@ import { BlueskyPost } from "../post/bluesky-post";
 export default class BlueskyAccount implements UserAccount {
     private static MAX_CHARS = 300;
     private static MAX_STATUSES = 40;
-    private newestPostSeen = new Date(Date.UTC(1900,1,1));
 
     // Primary Key
     private ID = crypto.randomUUID();
@@ -40,6 +40,8 @@ export default class BlueskyAccount implements UserAccount {
 
     private myProfile: UserAccountProfile | undefined;
 
+    // Post record
+    private postsSeen = new Set<string>();
 
     // ===============================================================================================================
     // -----| Start |-----
@@ -127,7 +129,7 @@ export default class BlueskyAccount implements UserAccount {
     }
 
     resetCursor(): void {
-        this.newestPostSeen = new Date(Date.UTC(1900,1,1));
+        this.postsSeen.clear();
     }
 
     getId() {
@@ -238,58 +240,66 @@ export default class BlueskyAccount implements UserAccount {
 
     async getPosts(): Promise<StatusPost[]> {
         try {
-            console.log(`Getting Bluesky timeline for ${ this.myProfile?.handle } since ${ this.newestPostSeen }`);
+            console.log(`Getting Bluesky timeline for ${ this.myProfile?.handle }.`);
             await this.login();
 
             const postsResponse = await this.client.app.bsky.feed.getTimeline({
                 limit: 100
             });
 
-            const posts = postsResponse.data.feed.map(rawPost => new BlueskyPost(rawPost, this.myProfile!, this.getId()));
-
-            const newPosts = posts.filter((item) => item.getTimestamp() > this.newestPostSeen);
-            if (newPosts.length) {
-                this.newestPostSeen = newPosts[0].getTimestamp();
-                if (this.newestPostSeen > new Date()) {
-                    this.newestPostSeen = new Date();
-                }
-
-                const getRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
-                const replies: BlueskyPost[] = [];
-
-                const getQuotedRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
-                const postsWithQuotedReplies: BlueskyPost[] = [];
-
-                for (const post of newPosts) {
-                    if (post.isReply()) {
-                        replies.push(post.isRetweet() ? post.getRetweet()! as BlueskyPost : post);
-                        getRepliedToPromises.push(this.getRepliedTo(post.getReplyRef()?.parent.uri as string));
-                    }
-                    if (post.isQuoteTweet() && post.getQuoteTweet()!.isReply()) {
-                        const quoted = post.getQuoteTweet()! as BlueskyQuotedPost;
-                        postsWithQuotedReplies.push(post);
-                        getQuotedRepliedToPromises.push(this.getRepliedTo(quoted.getReplyRef()?.parent.uri as string));
-                    }
-                }
-
-                const repliedTos = await Promise.all(getRepliedToPromises);
-                const quotedRepliedTos = await Promise.all(getQuotedRepliedToPromises);
-
-                for (let i = 0; i < replies.length; ++i) {
-                    if (repliedTos[i] != null) {
-                        replies[i].setRepliedTo(repliedTos[i]!);
-                    }
-                }
-
-                for (let i = 0; i < postsWithQuotedReplies.length; ++i) {
-                    if (quotedRepliedTos[i] != null) {
-                        postsWithQuotedReplies[i].setQuotedRepliedTo(quotedRepliedTos[i]!);
-                    }
+            const unseenRawPosts: AppBskyFeedDefs.FeedViewPost[] = [];
+            for (const post of postsResponse.data.feed) {
+                const id = post.post.cid as string;
+                if (!this.postsSeen.has(id)) {
+                    this.postsSeen.add(id);
+                    unseenRawPosts.push(post);
+                } else {
+                    // console.log(`Already seen ${id}`);
                 }
             }
 
-            console.log(`Returning ${ newPosts.length } posts.`);
-            return newPosts;
+            if (!unseenRawPosts.length) {
+                console.log(`Returning 0 posts.`);
+                return [];
+            }
+
+            const posts = unseenRawPosts.map(rawPost => new BlueskyPost(rawPost, this.myProfile!, this.getId()));
+
+            const getRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
+            const replies: BlueskyPost[] = [];
+
+            const getQuotedRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
+            const postsWithQuotedReplies: BlueskyPost[] = [];
+
+            for (const post of posts) {
+                if (post.isReply()) {
+                    replies.push(post.isRetweet() ? post.getRetweet()! as BlueskyPost : post);
+                    getRepliedToPromises.push(this.getRepliedTo(post.getReplyRef()?.parent.uri as string));
+                }
+                if (post.isQuoteTweet() && post.getQuoteTweet()!.isReply()) {
+                    const quoted = post.getQuoteTweet()! as BlueskyQuotedPost;
+                    postsWithQuotedReplies.push(post);
+                    getQuotedRepliedToPromises.push(this.getRepliedTo(quoted.getReplyRef()?.parent.uri as string));
+                }
+            }
+
+            const repliedTos = await Promise.all(getRepliedToPromises);
+            const quotedRepliedTos = await Promise.all(getQuotedRepliedToPromises);
+
+            for (let i = 0; i < replies.length; ++i) {
+                if (repliedTos[i] != null) {
+                    replies[i].setRepliedTo(repliedTos[i]!);
+                }
+            }
+
+            for (let i = 0; i < postsWithQuotedReplies.length; ++i) {
+                if (quotedRepliedTos[i] != null) {
+                    postsWithQuotedReplies[i].setQuotedRepliedTo(quotedRepliedTos[i]!);
+                }
+            }
+
+            console.log(`Returning ${ posts.length } posts.`);
+            return posts;
         } catch (e) {
             console.error(`Failure getting posts for ${this.myProfile?.handle}.`, e);
             return [];
