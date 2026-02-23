@@ -141,7 +141,7 @@ export default class MastodonAccount implements UserAccount {
 
             const unseenRawPosts = [];
             for (const post of rawPosts) {
-                if (!this.postsSeen.has(post.id)) {
+                if (!this.postsSeen.has(post.id) && !this.postsSeen.has(post.reblog?.id ?? '')) {
                     this.postsSeen.add(post.id);
                     unseenRawPosts.push(post);
                 } else {
@@ -229,7 +229,7 @@ export default class MastodonAccount implements UserAccount {
 
     public forgetPosts(): void {
         console.log("Clearing known posts.");
-        // Nothing until [33].
+        this.postsSeen.clear();
     }
 
     public resetCursor(): void {
