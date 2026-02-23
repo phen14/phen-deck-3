@@ -59,7 +59,7 @@
         "css-loader": "7.x",
         "css-minimizer-webpack-plugin": "7.x",
         "detect-port": "1.x",
-        "electron": "31.x",
+        "electron": "40.x",
         "electron-builder": "24.x",
         "electron-devtools-installer": "3.x",
         "electronmon": "2.x",
