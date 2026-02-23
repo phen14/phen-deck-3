@@ -61,7 +61,7 @@
         "detect-port": "1.x",
         "electron": "40.x",
         "electron-builder": "26.x",
-        "electron-devtools-installer": "3.x",
+        "electron-devtools-installer": "4.x",
         "electronmon": "2.x",
         "eslint": "9.x",
         "eslint-config-erb": "4.x",
