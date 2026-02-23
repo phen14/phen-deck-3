@@ -3427,27 +3427,6 @@ eval("\n/**\n * This is the common logic for both the Node.js and web browser\n 
 
 /***/ }),
 
-/***/ "./node_modules/electron-debug/index.js":
-/*!**********************************************!*\
-  !*** ./node_modules/electron-debug/index.js ***!
-  \**********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-eval("\nconst {app, BrowserWindow, session} = __webpack_require__(/*! electron */ \"electron\");\nconst path = __webpack_require__(/*! path */ \"path\");\nconst localShortcut = __webpack_require__(/*! electron-localshortcut */ \"./node_modules/electron-localshortcut/index.js\");\nconst isDev = __webpack_require__(/*! electron-is-dev */ \"./node_modules/electron-is-dev/index.js\");\n\nconst isMacOS = process.platform === 'darwin';\n\nconst devToolsOptions = {};\n\nfunction toggleDevTools(win = BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\tconst {webContents} = win;\n\t\tif (webContents.isDevToolsOpened()) {\n\t\t\twebContents.closeDevTools();\n\t\t} else {\n\t\t\twebContents.openDevTools(devToolsOptions);\n\t\t}\n\t}\n}\n\nfunction devTools(win = BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\ttoggleDevTools(win);\n\t}\n}\n\nfunction openDevTools(win = BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\twin.webContents.openDevTools(devToolsOptions);\n\t}\n}\n\nfunction refresh(win = BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\twin.webContents.reloadIgnoringCache();\n\t}\n}\n\nfunction inspectElements() {\n\tconst win = BrowserWindow.getFocusedWindow();\n\tconst inspect = () => {\n\t\twin.devToolsWebContents.executeJavaScript('DevToolsAPI.enterInspectElementMode()');\n\t};\n\n\tif (win) {\n\t\tif (win.webContents.isDevToolsOpened()) {\n\t\t\tinspect();\n\t\t} else {\n\t\t\twin.webContents.once('devtools-opened', inspect);\n\t\t\twin.openDevTools();\n\t\t}\n\t}\n}\n\nconst addExtensionIfInstalled = (name, getPath) => {\n\tconst isExtensionInstalled = name => {\n\t\t// For Electron >=9.\n\t\tif (session.defaultSession.getAllExtensions) {\n\t\t\treturn {}.hasOwnProperty.call(session.defaultSession.getAllExtensions(), name);\n\t\t}\n\n\t\t// TODO: Remove this when targeting Electron >=9.\n\t\treturn BrowserWindow.getDevToolsExtensions &&\n\t\t\t{}.hasOwnProperty.call(BrowserWindow.getDevToolsExtensions(), name);\n\t};\n\n\ttry {\n\t\tif (!isExtensionInstalled(name)) {\n\t\t\t// For Electron >=9.\n\t\t\tif (session.defaultSession.loadExtension) {\n\t\t\t\tsession.defaultSession.loadExtension(getPath(name));\n\t\t\t} else {\n\t\t\t\t// TODO: Remove this when targeting Electron >=9.\n\t\t\t\tBrowserWindow.addDevToolsExtension(getPath(name));\n\t\t\t}\n\t\t}\n\t} catch (_) {}\n};\n\nmodule.exports = options => {\n\toptions = {\n\t\tisEnabled: null,\n\t\tshowDevTools: true,\n\t\tdevToolsMode: 'previous',\n\t\t...options\n\t};\n\n\tif (options.isEnabled === false || (options.isEnabled === null && !isDev)) {\n\t\treturn;\n\t}\n\n\tif (options.devToolsMode !== 'previous') {\n\t\tdevToolsOptions.mode = options.devToolsMode;\n\t}\n\n\tapp.on('browser-window-created', (event, win) => {\n\t\tif (options.showDevTools) {\n\t\t\t/// Workaround for https://github.com/electron/electron/issues/12438\n\t\t\twin.webContents.once('dom-ready', () => {\n\t\t\t\topenDevTools(win, options.showDevTools, false);\n\t\t\t});\n\t\t}\n\t});\n\n\t(async () => {\n\t\tawait app.whenReady();\n\n\t\taddExtensionIfInstalled('devtron', name => __webpack_require__(\"./node_modules/electron-debug sync recursive\")(name).path);\n\t\taddExtensionIfInstalled('electron-react-devtools', name => __webpack_require__(\"./node_modules/electron-debug sync recursive\")(name).path);\n\n\t\tlocalShortcut.register('CommandOrControl+Shift+C', inspectElements);\n\t\tlocalShortcut.register(isMacOS ? 'Command+Alt+I' : 'Control+Shift+I', devTools);\n\t\tlocalShortcut.register('F12', devTools);\n\n\t\tlocalShortcut.register('CommandOrControl+R', refresh);\n\t\tlocalShortcut.register('F5', refresh);\n\t})();\n};\n\nmodule.exports.refresh = refresh;\nmodule.exports.devTools = devTools;\nmodule.exports.openDevTools = openDevTools;\nmodule.exports.preloadScriptPath = path.join(__dirname, 'preload.js');\n\n\n//# sourceURL=webpack://renderer/./node_modules/electron-debug/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/electron-debug sync recursive":
-/*!*******************************************!*\
-  !*** ./node_modules/electron-debug/ sync ***!
-  \*******************************************/
-/***/ ((module) => {
-
-eval("function webpackEmptyContext(req) {\n\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\te.code = 'MODULE_NOT_FOUND';\n\tthrow e;\n}\nwebpackEmptyContext.keys = () => ([]);\nwebpackEmptyContext.resolve = webpackEmptyContext;\nwebpackEmptyContext.id = \"./node_modules/electron-debug sync recursive\";\nmodule.exports = webpackEmptyContext;\n\n//# sourceURL=webpack://renderer/./node_modules/electron-debug/_sync?");
-
-/***/ }),
-
 /***/ "./node_modules/electron-is-accelerator/index.js":
 /*!*******************************************************!*\
   !*** ./node_modules/electron-is-accelerator/index.js ***!
@@ -3456,17 +3435,6 @@ eval("function webpackEmptyContext(req) {\n\tvar e = new Error(\"Cannot find mod
 
 "use strict";
 eval("\n\nconst modifiers = /^(Command|Cmd|Control|Ctrl|CommandOrControl|CmdOrCtrl|Alt|Option|AltGr|Shift|Super)$/;\nconst keyCodes = /^([0-9A-Z)!@#$%^&*(:+<_>?~{|}\";=,\\-./`[\\\\\\]']|F1*[1-9]|F10|F2[0-4]|Plus|Space|Tab|Backspace|Delete|Insert|Return|Enter|Up|Down|Left|Right|Home|End|PageUp|PageDown|Escape|Esc|VolumeUp|VolumeDown|VolumeMute|MediaNextTrack|MediaPreviousTrack|MediaStop|MediaPlayPause|PrintScreen)$/;\n\nmodule.exports = function (str) {\n\tlet parts = str.split(\"+\");\n\tlet keyFound = false;\n    return parts.every((val, index) => {\n\t\tconst isKey = keyCodes.test(val);\n\t\tconst isModifier = modifiers.test(val);\n\t\tif (isKey) {\n\t\t\t// Key must be unique\n\t\t\tif (keyFound) return false;\n\t\t\tkeyFound = true;\n\t\t}\n\t\t// Key is required\n\t\tif (index === parts.length - 1 && !keyFound) return false;\n        return isKey || isModifier;\n    });\n};\n\n\n//# sourceURL=webpack://renderer/./node_modules/electron-is-accelerator/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/electron-is-dev/index.js":
-/*!***********************************************!*\
-  !*** ./node_modules/electron-is-dev/index.js ***!
-  \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-eval("\nconst electron = __webpack_require__(/*! electron */ \"electron\");\n\nif (typeof electron === 'string') {\n\tthrow new TypeError('Not running in an Electron environment!');\n}\n\nconst app = electron.app || electron.remote.app;\n\nconst isEnvSet = 'ELECTRON_IS_DEV' in process.env;\nconst getFromEnv = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;\n\nmodule.exports = isEnvSet ? getFromEnv : !app.isPackaged;\n\n\n//# sourceURL=webpack://renderer/./node_modules/electron-is-dev/index.js?");
 
 /***/ }),
 
@@ -4854,6 +4822,17 @@ module.exports = require("net");
 
 /***/ }),
 
+/***/ "node:process":
+/*!*******************************!*\
+  !*** external "node:process" ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:process");
+
+/***/ }),
+
 /***/ "os":
 /*!*********************!*\
   !*** external "os" ***!
@@ -5533,6 +5512,28 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   CDATA: () => (/* binding */ CDATA),\n/* harmony export */   Comment: () => (/* binding */ Comment),\n/* harmony export */   Directive: () => (/* binding */ Directive),\n/* harmony export */   Doctype: () => (/* binding */ Doctype),\n/* harmony export */   ElementType: () => (/* binding */ ElementType),\n/* harmony export */   Root: () => (/* binding */ Root),\n/* harmony export */   Script: () => (/* binding */ Script),\n/* harmony export */   Style: () => (/* binding */ Style),\n/* harmony export */   Tag: () => (/* binding */ Tag),\n/* harmony export */   Text: () => (/* binding */ Text),\n/* harmony export */   isTag: () => (/* binding */ isTag)\n/* harmony export */ });\n/** Types of elements found in htmlparser2's DOM */\nvar ElementType;\n(function (ElementType) {\n    /** Type for the root element of a document */\n    ElementType[\"Root\"] = \"root\";\n    /** Type for Text */\n    ElementType[\"Text\"] = \"text\";\n    /** Type for <? ... ?> */\n    ElementType[\"Directive\"] = \"directive\";\n    /** Type for <!-- ... --> */\n    ElementType[\"Comment\"] = \"comment\";\n    /** Type for <script> tags */\n    ElementType[\"Script\"] = \"script\";\n    /** Type for <style> tags */\n    ElementType[\"Style\"] = \"style\";\n    /** Type for Any tag */\n    ElementType[\"Tag\"] = \"tag\";\n    /** Type for <![CDATA[ ... ]]> */\n    ElementType[\"CDATA\"] = \"cdata\";\n    /** Type for <!doctype ...> */\n    ElementType[\"Doctype\"] = \"doctype\";\n})(ElementType || (ElementType = {}));\n/**\n * Tests whether an element is a tag or not.\n *\n * @param elem Element to test\n */\nfunction isTag(elem) {\n    return (elem.type === ElementType.Tag ||\n        elem.type === ElementType.Script ||\n        elem.type === ElementType.Style);\n}\n// Exports for backwards compatibility\n/** Type for the root element of a document */\nconst Root = ElementType.Root;\n/** Type for Text */\nconst Text = ElementType.Text;\n/** Type for <? ... ?> */\nconst Directive = ElementType.Directive;\n/** Type for <!-- ... --> */\nconst Comment = ElementType.Comment;\n/** Type for <script> tags */\nconst Script = ElementType.Script;\n/** Type for <style> tags */\nconst Style = ElementType.Style;\n/** Type for Any tag */\nconst Tag = ElementType.Tag;\n/** Type for <![CDATA[ ... ]]> */\nconst CDATA = ElementType.CDATA;\n/** Type for <!doctype ...> */\nconst Doctype = ElementType.Doctype;\n\n\n//# sourceURL=webpack://renderer/./node_modules/domelementtype/lib/esm/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/electron-debug/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/electron-debug/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ debug),\n/* harmony export */   devTools: () => (/* binding */ devTools),\n/* harmony export */   openDevTools: () => (/* binding */ openDevTools),\n/* harmony export */   refresh: () => (/* binding */ refresh)\n/* harmony export */ });\n/* harmony import */ var node_process__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! node:process */ \"node:process\");\n/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! electron */ \"electron\");\n/* harmony import */ var electron_localshortcut__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! electron-localshortcut */ \"./node_modules/electron-localshortcut/index.js\");\n/* harmony import */ var electron_is_dev__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! electron-is-dev */ \"./node_modules/electron-is-dev/index.js\");\n\n\n\n\n\nconst isMacOS = node_process__WEBPACK_IMPORTED_MODULE_0__.platform === 'darwin';\n\n// A Map allows each window to have its own options\nconst developmentToolsOptions = new Map();\n\nfunction toggleDevelopmentTools(win = electron__WEBPACK_IMPORTED_MODULE_1__.BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\tconst {webContents} = win;\n\t\tif (webContents.isDevToolsOpened()) {\n\t\t\twebContents.closeDevTools();\n\t\t} else {\n\t\t\twebContents.openDevTools(developmentToolsOptions.get(win));\n\t\t}\n\t}\n}\n\nfunction shouldRun(options) {\n\treturn options && (options.isEnabled === true || (options.isEnabled === null && electron_is_dev__WEBPACK_IMPORTED_MODULE_3__[\"default\"]));\n}\n\nfunction getOptionsForWindow(win, options) {\n\tif (!options.windowSelector) {\n\t\treturn options;\n\t}\n\n\tconst newOptions = options.windowSelector(win);\n\n\treturn newOptions === true\n\t\t? options\n\t\t: (newOptions === false\n\t\t\t? {isEnabled: false}\n\t\t\t: {...options, ...newOptions});\n}\n\nasync function registerAccelerators(win = electron__WEBPACK_IMPORTED_MODULE_1__.BrowserWindow.getFocusedWindow()) {\n\tawait electron__WEBPACK_IMPORTED_MODULE_1__.app.whenReady();\n\n\tif (win) {\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register(win, 'CommandOrControl+Shift+C', inspectElements);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register(win, isMacOS ? 'Command+Alt+I' : 'Control+Shift+I', devTools);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register(win, 'F12', devTools);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register(win, 'CommandOrControl+R', refresh);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register(win, 'F5', refresh);\n\t} else {\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register('CommandOrControl+Shift+C', inspectElements);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register(isMacOS ? 'Command+Alt+I' : 'Control+Shift+I', devTools);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register('F12', devTools);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register('CommandOrControl+R', refresh);\n\t\telectron_localshortcut__WEBPACK_IMPORTED_MODULE_2__.register('F5', refresh);\n\t}\n}\n\n// eslint-disable-next-line unicorn/prevent-abbreviations\nfunction devTools(win = electron__WEBPACK_IMPORTED_MODULE_1__.BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\ttoggleDevelopmentTools(win);\n\t}\n}\n\n// eslint-disable-next-line unicorn/prevent-abbreviations\nfunction openDevTools(win = electron__WEBPACK_IMPORTED_MODULE_1__.BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\twin.webContents.openDevTools(developmentToolsOptions.get(win));\n\t}\n}\n\nfunction refresh(win = electron__WEBPACK_IMPORTED_MODULE_1__.BrowserWindow.getFocusedWindow()) {\n\tif (win) {\n\t\twin.webContents.reloadIgnoringCache();\n\t}\n}\n\nfunction inspectElements() {\n\tconst win = electron__WEBPACK_IMPORTED_MODULE_1__.BrowserWindow.getFocusedWindow();\n\tconst inspect = () => {\n\t\twin.devToolsWebContents.executeJavaScript('DevToolsAPI.enterInspectElementMode()');\n\t};\n\n\tif (win) {\n\t\tif (win.webContents.isDevToolsOpened()) {\n\t\t\tinspect();\n\t\t} else {\n\t\t\twin.webContents.once('devtools-opened', inspect);\n\t\t\twin.openDevTools();\n\t\t}\n\t}\n}\n\nfunction debug(options) {\n\toptions = {\n\t\tisEnabled: null,\n\t\tshowDevTools: true,\n\t\tdevToolsMode: 'previous',\n\t\t...options,\n\t};\n\n\tif (!options.windowSelector) {\n\t\tif (!shouldRun(options)) {\n\t\t\treturn;\n\t\t}\n\n\t\t// When there's no filter, accelerators are defined globally\n\t\tregisterAccelerators();\n\t}\n\n\telectron__WEBPACK_IMPORTED_MODULE_1__.app.on('browser-window-created', (event, win) => {\n\t\t/// Workaround for https://github.com/electron/electron/issues/12438\n\t\twin.webContents.once('dom-ready', () => {\n\t\t\tconst winOptions = getOptionsForWindow(win, options);\n\n\t\t\tif (winOptions.devToolsMode !== 'previous') {\n\t\t\t\tdevelopmentToolsOptions.set(win, {\n\t\t\t\t\t...developmentToolsOptions.get(win),\n\t\t\t\t\tmode: winOptions.devToolsMode,\n\t\t\t\t});\n\t\t\t}\n\n\t\t\tif (!shouldRun(winOptions)) {\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tif (winOptions.windowSelector) {\n\t\t\t\t// With filters, accelerators are defined for each window depending on their provided options\n\t\t\t\tregisterAccelerators(win);\n\t\t\t}\n\n\t\t\tif (winOptions.showDevTools) {\n\t\t\t\topenDevTools(win);\n\t\t\t}\n\t\t});\n\t});\n}\n\n\n//# sourceURL=webpack://renderer/./node_modules/electron-debug/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/electron-is-dev/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/electron-is-dev/index.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! electron */ \"electron\");\n\n\nif (typeof electron__WEBPACK_IMPORTED_MODULE_0__ === 'string') {\n\tthrow new TypeError('Not running in an Electron environment!');\n}\n\nconst {env} = process; // eslint-disable-line n/prefer-global/process\nconst isEnvSet = 'ELECTRON_IS_DEV' in env;\nconst getFromEnv = Number.parseInt(env.ELECTRON_IS_DEV, 10) === 1;\n\nconst isDev = isEnvSet ? getFromEnv : !electron__WEBPACK_IMPORTED_MODULE_0__.app.isPackaged;\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (isDev);\n\n\n//# sourceURL=webpack://renderer/./node_modules/electron-is-dev/index.js?");
 
 /***/ }),
 
