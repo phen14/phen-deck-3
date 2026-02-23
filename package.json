@@ -38,7 +38,7 @@
         "uuid": "11.x"
     },
     "devDependencies": {
-        "@electron/rebuild": "3.3.x",
+        "@electron/rebuild": "4.x",
         "@eslint/eslintrc": "3.x",
         "@eslint/js": "9.x",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.x",
