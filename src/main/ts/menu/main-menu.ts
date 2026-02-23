@@ -27,24 +27,38 @@ export const mainMenuTemplate = [
             { role: 'toggleDevTools' },
         ]
     },
-    // { role: 'timelineMenu' }
+    // { role: 'adminMenu' }
     {
-        label: 'Timeline',
+        label: 'Admin',
         submenu: [
             {
                 label: 'Force Load',
                 click: () => {
+                    console.log("Force loading.");
                     ReactInterface.getInstance().getPosts(undefined, true);
                 }
             },
             {
                 label: 'Reset Cursors',
                 click: () => {
+                    console.log("Resetting Cursors.");
                     Accounts.getInstance().resetCursors();
                     ReactInterface.getInstance().getPosts(undefined, true);
                 }
             },
-            { type: 'separator' },
+            {
+                label: 'Forget Known Posts',
+                click: () => {
+                    console.log("Clearing known posts.");
+                    Accounts.getInstance().forgetPosts();
+                }
+            },
+        ]
+    },
+    // { role: 'timelineMenu' }
+    {
+        label: 'Timeline',
+        submenu: [
             {
                 checked: true,
                 label: 'Show in Ascending Order',

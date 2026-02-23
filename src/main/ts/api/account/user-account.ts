@@ -22,11 +22,6 @@ export interface UserAccount {
      */
     initialize(): Promise<void>;
 
-    /**
-     * Clear the "last post loaded" data for the service.
-     */
-    resetCursor(): void;
-
     // ---------------------------------
     // ~~~~~| Account Info |~~~~~
 
@@ -53,9 +48,22 @@ export interface UserAccount {
     getUrl(): string;
 
     // ---------------------------------
-    // ~~~~~| Actions |~~~~~
+    // ~~~~~| User Actions |~~~~~
 
     post(postText: string): void;
     getPosts(): Promise<StatusPost[]>;
     retweet(post: ActionedPost): Promise<void>;
+
+    // ---------------------------------
+    // ~~~~~| Admin Actions |~~~~~
+
+    /**
+     * Clear the list of known posts so the next repost of each will appear.
+     */
+    forgetPosts(): void;
+
+    /**
+     * Clear the "last post loaded" data for the service.
+     */
+    resetCursor(): void;
 }

@@ -128,10 +128,6 @@ export default class BlueskyAccount implements UserAccount {
         return this.following;
     }
 
-    resetCursor(): void {
-        this.postsSeen.clear();
-    }
-
     getId() {
         return this.ID;
     }
@@ -172,8 +168,8 @@ export default class BlueskyAccount implements UserAccount {
 
 
     // ===============================================================================================================
-    // -----| Actions |-----
-    // =====================
+    // -----| User Actions |-----
+    // ==========================
 
     async post(postText: string): Promise<void> {
         const facets = detectFacets(new UnicodeString(postText));
@@ -309,5 +305,20 @@ export default class BlueskyAccount implements UserAccount {
     async retweet(post: ActionedPost): Promise<void> {
         console.log("Reblogging (B)...", post);
         await this.client.repost(post.id, post.cid);
+    }
+
+
+    // ===============================================================================================================
+    // -----| Admin Actions |-----
+    // ===========================
+
+    forgetPosts(): void {
+        console.log("Clearing known posts.");
+        this.postsSeen.clear();
+    }
+
+    resetCursor(): void {
+        console.log("Resetting cursor.");
+        this.forgetPosts();
     }
 }
