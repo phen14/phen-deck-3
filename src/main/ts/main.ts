@@ -10,7 +10,9 @@
  */
 import path from "path";
 import { app, BrowserWindow, shell, ipcMain, Menu } from "electron";
+import debug from "electron-debug";
 import { URL } from "url";
+
 import { loadAccountConfig } from "./app/load-account-config";
 import { loadMutesConfig } from "./app/load-mutes-config";
 import { loadPostTemplatesConfig } from "./app/load-post-templates-config";
@@ -34,7 +36,7 @@ if (process.env.NODE_ENV === "production") {
 const isDebug = process.env.NODE_ENV === "development" || process.env.DEBUG_PROD === "true";
 
 if (isDebug) {
-    require("electron-debug")();
+    debug();
 }
 
 const installExtensions = async () => {
