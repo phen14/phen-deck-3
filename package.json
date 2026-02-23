@@ -20,7 +20,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@atproto/api": "0.13.x",
+        "@atproto/api": "0.19.x",
         "@electron/notarize": "3.x",
         "dateformat": "5.x",
         "electron-debug": "4.x",
