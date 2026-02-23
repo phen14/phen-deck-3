@@ -67,11 +67,6 @@ export default class MastodonAccount implements UserAccount {
         return this.myProfile;
     }
 
-    public resetCursor(): void {
-        this.newestPostSeen = "0";
-        this.postsSeen.clear();
-    }
-
 
     // ===============================================================================================================
     // -----| Account Info |-----
@@ -111,8 +106,8 @@ export default class MastodonAccount implements UserAccount {
 
 
     // ===============================================================================================================
-    // -----| Actions |-----
-    // =====================
+    // -----| User Actions |-----
+    // ==========================
 
     async post(postText: string): Promise<void> {
         const params : mastodon.rest.v1.CreateStatusParams = { status: postText };
@@ -225,5 +220,21 @@ export default class MastodonAccount implements UserAccount {
         } catch (e) {
             console.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
         }
+    }
+
+
+    // ===============================================================================================================
+    // -----| Admin Actions |-----
+    // ===========================
+
+    public forgetPosts(): void {
+        console.log("Clearing known posts.");
+        // Nothing until [33].
+    }
+
+    public resetCursor(): void {
+        console.log("Resetting cursor.");
+        this.newestPostSeen = "0";
+        this.forgetPosts();
     }
 }
