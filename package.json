@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@atproto/api": "0.13.x",
-        "@electron/notarize": "2.3.x",
+        "@electron/notarize": "3.x",
         "dateformat": "5.x",
         "electron-debug": "4.x",
         "electron-log": "5.x",
