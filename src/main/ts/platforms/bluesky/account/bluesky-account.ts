@@ -1,6 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import { AppBskyGraphGetFollows, AtpAgent, AtpSessionData, UnicodeString } from "@atproto/api";
+import { AppBskyGraphGetFollows, Agent, AtpAgentLoginOpts, UnicodeString, CredentialSession } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -31,8 +31,8 @@ export default class BlueskyAccount implements UserAccount {
 
     // Connection
     private access: BlueSkyAccess;
-    private client: AtpAgent;
-    private session: AtpSessionData | undefined;
+    private client: Agent;
+    private session: CredentialSession | undefined;
 
     // Account Info
     private server: Server;
@@ -51,11 +51,8 @@ export default class BlueskyAccount implements UserAccount {
         this.access = account.access as BlueSkyAccess;
         this.server = account.server;
 
-        this.client = new AtpAgent({
+        this.client = new Agent({
             service: account.server.url,
-            persistSession: (_evt, sess) => {
-                this.session = sess;
-            },
         });
     }
 
@@ -76,15 +73,14 @@ export default class BlueskyAccount implements UserAccount {
      *
      */
     async login() {
-        if (this.session) {
-            await this.client.resumeSession(this.session);
-            return;
-        }
-
-        await this.client.login({
+        const account: AtpAgentLoginOpts = {
             identifier: this.access.user,
             password: this.access.accessToken,
-        });
+        };
+
+        this.session = new CredentialSession(new URL(this.server.url));
+        await this.session.login(account);
+        this.client = new Agent(this.session);
     }
 
     async loadMyProfile(): Promise<void> {
