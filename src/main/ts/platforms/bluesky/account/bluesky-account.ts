@@ -1,6 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import { AppBskyGraphGetFollows, Agent, AtpAgentLoginOpts, UnicodeString, CredentialSession } from "@atproto/api";
+import { AppBskyGraphGetFollows, Agent, AtpAgentLoginOpts, UnicodeString, CredentialSession, $Typed } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -24,7 +24,7 @@ import { BlueskyPost } from "../post/bluesky-post";
  */
 export default class BlueskyAccount implements UserAccount {
     private static MAX_CHARS = 300;
-    private static MAX_STATUSES = 40;
+    // private static MAX_STATUSES = 40;
 
     // Primary Key
     private ID = crypto.randomUUID();
@@ -169,7 +169,7 @@ export default class BlueskyAccount implements UserAccount {
 
     async post(postText: string): Promise<void> {
         const facets = detectFacets(new UnicodeString(postText));
-        let linkCard: AppBskyEmbedExternal.Main | null = null;
+        let linkCard: $Typed<AppBskyEmbedExternal.Main> | null = null;
 
         if (facets) {
             const links = facets
@@ -266,12 +266,14 @@ export default class BlueskyAccount implements UserAccount {
             for (const post of posts) {
                 if (post.isReply()) {
                     replies.push(post.isRetweet() ? post.getRetweet()! as BlueskyPost : post);
-                    getRepliedToPromises.push(this.getRepliedTo(post.getReplyRef()?.parent.uri as string));
+                    const replyRef = post.getReplyRef()?.parent as { uri: string }
+                    getRepliedToPromises.push(this.getRepliedTo(replyRef.uri as string));
                 }
                 if (post.isQuoteTweet() && post.getQuoteTweet()!.isReply()) {
                     const quoted = post.getQuoteTweet()! as BlueskyQuotedPost;
                     postsWithQuotedReplies.push(post);
-                    getQuotedRepliedToPromises.push(this.getRepliedTo(quoted.getReplyRef()?.parent.uri as string));
+                    const replyRef = quoted.getReplyRef()?.parent as { uri: string }
+                    getQuotedRepliedToPromises.push(this.getRepliedTo(replyRef.uri as string));
                 }
             }
 
@@ -281,12 +283,16 @@ export default class BlueskyAccount implements UserAccount {
             for (let i = 0; i < replies.length; ++i) {
                 if (repliedTos[i] != null) {
                     replies[i].setRepliedTo(repliedTos[i]!);
+                } else {
+                    console.log(`Reply for post ${replies[i].getId()} by ${replies[i].getPosterHandle()} at ${replies[i].getTimestamp()} not found.`);
                 }
             }
 
             for (let i = 0; i < postsWithQuotedReplies.length; ++i) {
                 if (quotedRepliedTos[i] != null) {
                     postsWithQuotedReplies[i].setQuotedRepliedTo(quotedRepliedTos[i]!);
+                } else {
+                    console.log(`Reply for quoted post ${postsWithQuotedReplies[i].getId()} by ${postsWithQuotedReplies[i].getPosterHandle()} at ${postsWithQuotedReplies[i].getTimestamp()} not found.`);
                 }
             }
 
