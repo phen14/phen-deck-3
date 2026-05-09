@@ -1,6 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import { AppBskyGraphGetFollows, Agent, AtpAgentLoginOpts, UnicodeString, CredentialSession, $Typed } from "@atproto/api";
+import { AppBskyGraphGetFollows, AtpAgent, AtpAgentLoginOpts, UnicodeString, CredentialSession, $Typed } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -31,8 +31,7 @@ export default class BlueskyAccount implements UserAccount {
 
     // Connection
     private access: BlueSkyAccess;
-    private client: Agent;
-    private session: CredentialSession | undefined;
+    private client: AtpAgent;
 
     // Account Info
     private server: Server;
@@ -51,8 +50,8 @@ export default class BlueskyAccount implements UserAccount {
         this.access = account.access as BlueSkyAccess;
         this.server = account.server;
 
-        this.client = new Agent({
-            service: account.server.url,
+        this.client = new AtpAgent({
+            service: account.server.url
         });
     }
 
@@ -73,21 +72,23 @@ export default class BlueskyAccount implements UserAccount {
      *
      */
     async login() {
+        if (this.client.session?.active) {
+            return;
+        }
+
         const account: AtpAgentLoginOpts = {
             identifier: this.access.user,
-            password: this.access.accessToken,
+            password: this.access.accessToken
         };
 
-        this.session = new CredentialSession(new URL(this.server.url));
-        await this.session.login(account);
-        this.client = new Agent(this.session);
+        await this.client.login(account);
     }
 
     async loadMyProfile(): Promise<void> {
         await this.login();
 
         const bskyProfileResponse = await this.client.app.bsky.actor.getProfile({
-            actor: this.client.assertDid,
+            actor: this.client.assertDid
         });
         const bskyProfile = bskyProfileResponse.data;
 
@@ -98,7 +99,7 @@ export default class BlueskyAccount implements UserAccount {
             displayName: bskyProfile.displayName,
             handle: bskyProfile.handle,
             rawHandle: bskyProfile.handle
-        }
+        };
     }
 
     async loadFollowing(): Promise<void> {
@@ -184,23 +185,23 @@ export default class BlueskyAccount implements UserAccount {
                     external: {
                         "description": metadata["og:description"],
                         "title": metadata["og:title"],
-                        "uri": metadata["og:url"],
+                        "uri": metadata["og:url"]
                     }
-                }
+                };
 
                 const thumb = metadata["og:image"];
                 if (thumb) {
-                    const blob = await fetch(thumb).then(r => r.blob())
-                    const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" })
+                    const blob = await fetch(thumb).then(r => r.blob());
+                    const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" });
                     linkCard.external.thumb = data?.blob;
                 }
             }
         }
 
-        const params : Partial<AppBskyFeedPost.Record> = {
+        const params: Partial<AppBskyFeedPost.Record> = {
             facets,
             text: postText
-        }
+        };
 
         if (linkCard) {
             params.embed = linkCard!;
@@ -209,7 +210,7 @@ export default class BlueskyAccount implements UserAccount {
         try {
             await this.client.post(params);
         } catch (e) {
-            console.error(`Failed to post to ${this.myProfile?.handle}.`, e);
+            console.error(`Failed to post to ${ this.myProfile?.handle }.`, e);
         }
     }
 
@@ -225,7 +226,7 @@ export default class BlueskyAccount implements UserAccount {
 
             return new BlueskyRepliedToPost(postResponse.data.thread as ThreadViewPost, this.myProfile!, this.getId());
         } catch (e) {
-            console.error(`Error getting post ${postId}.`, e)
+            console.error(`Error getting post ${ postId }.`, e);
             return null;
         }
     }
@@ -266,13 +267,13 @@ export default class BlueskyAccount implements UserAccount {
             for (const post of posts) {
                 if (post.isReply()) {
                     replies.push(post.isRetweet() ? post.getRetweet()! as BlueskyPost : post);
-                    const replyRef = post.getReplyRef()?.parent as { uri: string }
+                    const replyRef = post.getReplyRef()?.parent as { uri: string };
                     getRepliedToPromises.push(this.getRepliedTo(replyRef.uri as string));
                 }
                 if (post.isQuoteTweet() && post.getQuoteTweet()!.isReply()) {
                     const quoted = post.getQuoteTweet()! as BlueskyQuotedPost;
                     postsWithQuotedReplies.push(post);
-                    const replyRef = quoted.getReplyRef()?.parent as { uri: string }
+                    const replyRef = quoted.getReplyRef()?.parent as { uri: string };
                     getQuotedRepliedToPromises.push(this.getRepliedTo(replyRef.uri as string));
                 }
             }
@@ -284,7 +285,7 @@ export default class BlueskyAccount implements UserAccount {
                 if (repliedTos[i] != null) {
                     replies[i].setRepliedTo(repliedTos[i]!);
                 } else {
-                    console.log(`Reply for post ${replies[i].getId()} by ${replies[i].getPosterHandle()} at ${replies[i].getTimestamp()} not found.`);
+                    console.log(`Reply for post ${ replies[i].getId() } by ${ replies[i].getPosterHandle() } at ${ replies[i].getTimestamp() } not found.`);
                 }
             }
 
@@ -292,14 +293,14 @@ export default class BlueskyAccount implements UserAccount {
                 if (quotedRepliedTos[i] != null) {
                     postsWithQuotedReplies[i].setQuotedRepliedTo(quotedRepliedTos[i]!);
                 } else {
-                    console.log(`Reply for quoted post ${postsWithQuotedReplies[i].getId()} by ${postsWithQuotedReplies[i].getPosterHandle()} at ${postsWithQuotedReplies[i].getTimestamp()} not found.`);
+                    console.log(`Reply for quoted post ${ postsWithQuotedReplies[i].getId() } by ${ postsWithQuotedReplies[i].getPosterHandle() } at ${ postsWithQuotedReplies[i].getTimestamp() } not found.`);
                 }
             }
 
             console.log(`Returning ${ posts.length } posts.`);
             return posts;
         } catch (e) {
-            console.error(`Failure getting posts for ${this.myProfile?.handle}.`, e);
+            console.error(`Failure getting posts for ${ this.myProfile?.handle }.`, e);
             return [];
         }
     }
