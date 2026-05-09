@@ -1,6 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import { AppBskyGraphGetFollows, Agent, AtpAgentLoginOpts, UnicodeString, CredentialSession, $Typed, AtpAgent } from "@atproto/api";
+import { AppBskyGraphGetFollows, AtpAgent, AtpAgentLoginOpts, UnicodeString, CredentialSession, $Typed } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -32,7 +32,6 @@ export default class BlueskyAccount implements UserAccount {
     // Connection
     private access: BlueSkyAccess;
     private client: AtpAgent;
-    private session: CredentialSession | undefined;
 
     // Account Info
     private server: Server;
