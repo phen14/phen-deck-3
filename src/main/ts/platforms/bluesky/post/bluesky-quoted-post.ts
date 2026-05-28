@@ -14,9 +14,9 @@ import { BlueskyRepliedToPost } from "./bluesky-replied-to-post";
 
 export class BlueskyQuotedPost extends AbstractBlueskyPost {
     private readonly blueskyStatus: AppBskyEmbedRecord.View;
-    private readonly repliedTo: BlueskyRepliedToPost | null = null;
+    private readonly repliedTo: BlueskyRepliedToPost | undefined = undefined;
 
-    public constructor(blueskyStatus: AppBskyEmbedRecord.View, account: UserAccountProfile, viewerAccountId: string, repliedTo: BlueskyRepliedToPost | null) {
+    public constructor(blueskyStatus: AppBskyEmbedRecord.View, account: UserAccountProfile, viewerAccountId: string, repliedTo?: BlueskyRepliedToPost) {
         super(account, viewerAccountId);
         this.blueskyStatus = blueskyStatus;
         this.repliedTo = repliedTo;
@@ -31,9 +31,9 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
     }
 
     protected getEmbed(): AppBskyEmbedImages.View | AppBskyEmbedVideo.View | AppBskyEmbedExternal.View | AppBskyEmbedRecord.View
-        | AppBskyEmbedRecordWithMedia.View | { $type: string; [k: string]: unknown } | null | undefined {
+        | AppBskyEmbedRecordWithMedia.View | { $type: string; [k: string]: unknown } | undefined {
         // @ts-ignore It doesn't want to admit embeds is an array.
-        return this.blueskyStatus.record.embeds ? this.blueskyStatus.record.embeds[0] : null;
+        return this.blueskyStatus.record.embeds ? this.blueskyStatus.record.embeds[0] : undefined;
     }
 
 
@@ -65,11 +65,11 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
         return value?.reply;
     }
 
-    getRepliedTo(): StatusPost | null {
+    getRepliedTo(): StatusPost | undefined {
         return this.repliedTo;
     }
 
-    async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
+    async getRepliedToPosterDisplayName(): Promise<string | undefined> {
         return this.repliedTo?.getPosterDisplayName();
     }
 
@@ -77,12 +77,12 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
     // ~~~~~| Retweets |~~~~~
 
     isRabbitHole(): boolean {
-        return this.getEmbed() != null && isRecordView(this.getEmbed());
+        return !!this.getEmbed() && isRecordView(this.getEmbed());
     }
 
-    getRabbitHoleUrl(): string | null | undefined {
+    getRabbitHoleUrl(): string | undefined {
         if (!this.isRabbitHole()) {
-            return null;
+            return undefined;
         }
 
         const embed = this.getEmbed() as AppBskyEmbedRecord.View;

@@ -43,18 +43,18 @@ export class BlueskyRepliedToPost extends AbstractBlueskyPost {
         return !!(this.blueskyStatus.parent && this.blueskyStatus.parent.$type === 'app.bsky.feed.defs#threadViewPost');
     }
 
-    getRepliedToUrl(): string | null {
+    getRepliedToUrl(): string | undefined {
         if (!this.isReply()) {
-            return null;
+            return undefined;
         }
 
         const parent = this.blueskyStatus.parent as ThreadViewPost;
         return this.convertPostAtToUrl(parent.post.uri);
     }
 
-    async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
+    async getRepliedToPosterDisplayName(): Promise<string | undefined> {
         if (!this.isReply()) {
-            return null;
+            return undefined;
         }
 
         const parent = this.blueskyStatus.parent as ThreadViewPost;

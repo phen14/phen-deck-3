@@ -10,14 +10,14 @@ import { StatusMedia } from "../../../api/post/status-media";
 export class MastodonPost implements StatusPost {
     private readonly isQuoted: boolean;
     private readonly mastodonStatus: mastodon.v1.Status;
-    private readonly quoted: MastodonPost | null = null;
-    private readonly rabbitHoleId: string | null | undefined = null;
-    private readonly retweet: MastodonPost | null;
+    private readonly quoted: MastodonPost | undefined = undefined;
+    private readonly rabbitHoleId: string | undefined = undefined;
+    private readonly retweet: MastodonPost | undefined;
     private readonly viewer: UserAccountProfile;
     private readonly viewerAccountId: string;
 
-    protected rabbitHole: MastodonPost | null = null;
-    protected repliedTo: MastodonPost | null = null;
+    protected rabbitHole: MastodonPost | undefined = undefined;
+    protected repliedTo: MastodonPost | undefined = undefined;
 
     public constructor(mastadonStatus: mastodon.v1.Status, viewer: UserAccountProfile, viewerAccountId: string, isQuoted = false) {
         if (!mastadonStatus || !viewer || !viewerAccountId) {
@@ -32,14 +32,14 @@ export class MastodonPost implements StatusPost {
         if (!!this.mastodonStatus.quote && this.mastodonStatus.quote.state === "accepted") {
             if (this.isQuoted) {
                 const quoteWrapper = this.mastodonStatus.quote as ShallowQuote;
-                this.rabbitHoleId = quoteWrapper.quotedStatusId;
+                this.rabbitHoleId = quoteWrapper.quotedStatusId ?? undefined;
             } else {
                 const quoteWrapper = this.mastodonStatus.quote as Quote;
                 this.quoted = new MastodonPost(quoteWrapper.quotedStatus!, this.viewer, this.viewerAccountId, true);
             }
         }
 
-        this.retweet = this.isRetweet() ? new MastodonPost(this.mastodonStatus.reblog!, this.viewer, this.viewerAccountId) : null;
+        this.retweet = this.isRetweet() ? new MastodonPost(this.mastodonStatus.reblog!, this.viewer, this.viewerAccountId) : undefined;
     }
 
     getId(): string {
@@ -137,11 +137,11 @@ export class MastodonPost implements StatusPost {
         return this.mastodonStatus.content ?? "";
     }
 
-    getLinkCard(): StatusLink | null {
+    getLinkCard(): StatusLink | undefined {
         const card = this.mastodonStatus.card;
 
         if (!card) {
-            return null;
+            return undefined;
         }
 
         return new StatusLink(card.url, card.title, card.description, card.image);
@@ -189,20 +189,20 @@ export class MastodonPost implements StatusPost {
         return !!this.mastodonStatus.inReplyToId;
     }
 
-    getInRepliedToId(): string | null {
-        return this.mastodonStatus.inReplyToId ?? null;
+    getInRepliedToId(): string | undefined {
+        return this.mastodonStatus.inReplyToId ?? undefined;
     }
 
-    getRepliedTo(): StatusPost | null {
+    getRepliedTo(): StatusPost | undefined {
         return this.repliedTo;
     }
 
-    getRepliedToUrl(): string | null {
-        return this.repliedTo?.getUrl() ?? null;
+    getRepliedToUrl(): string | undefined {
+        return this.repliedTo?.getUrl() ?? undefined;
     }
 
-    async getRepliedToPosterDisplayName(): Promise<string | null> {
-        return (this.getRepliedTo())?.getPosterDisplayName() ?? null;
+    async getRepliedToPosterDisplayName(): Promise<string | undefined> {
+        return (this.getRepliedTo())?.getPosterDisplayName() ?? undefined;
     }
 
     isRepliedToMutual(): boolean {
@@ -216,7 +216,7 @@ export class MastodonPost implements StatusPost {
         return !!this.mastodonStatus.quote && 'quotedStatus' in this.mastodonStatus.quote;
     }
 
-    getQuoteTweet(): StatusPost | null {
+    getQuoteTweet(): StatusPost | undefined {
         return this.quoted;
     }
 
@@ -224,19 +224,19 @@ export class MastodonPost implements StatusPost {
         return !!this.rabbitHoleId;
     }
 
-    getRabbitHoleId() : string | null | undefined {
+    getRabbitHoleId() : string | undefined {
         return this.rabbitHoleId;
     }
 
-    getRabbitHoleUrl(): string | null | undefined {
-        return this.rabbitHole?.getUrl() ?? null;
+    getRabbitHoleUrl(): string | undefined {
+        return this.rabbitHole?.getUrl() ?? undefined;
     }
 
     isRetweet(): boolean {
-        return this.mastodonStatus.reblog != null;
+        return this.mastodonStatus.reblog != undefined;
     }
 
-    getRetweet(): StatusPost | null {
+    getRetweet(): StatusPost | undefined {
         return this.retweet;
     }
 }

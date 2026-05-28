@@ -4,6 +4,7 @@ import { JSX, useState } from "react";
 
 import "./list.css";
 import { DisplayPost } from "../../../../src/main/ts/api/post/display-post";
+import { SystemMessage } from "../../../../src/main/ts/api/system/system-message";
 import { Channels } from "../../../../src/main/ts/app/preload";
 import { PhenDeckConfig } from "../../../../src/main/ts/config/phen-deck-config";
 import { getElectron } from "../../util/get-electron";
@@ -33,6 +34,11 @@ export function List({ config, onChange, name } : { config: PhenDeckConfig, onCh
             const shown = getFilteredPosts(combinedPosts);
             onChange(shown);
         }
+    });
+
+    getElectron().ipcRenderer.only("systemMessage" as Channels, (arg) => {
+        const message = arg as SystemMessage;
+        console.log(message);
     });
 
     const getPosts = () => {

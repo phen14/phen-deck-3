@@ -19,7 +19,7 @@ export interface StatusPost {
     hasViewerRetweeted(): boolean;
 
     // Poster
-    getPosterAvatarUrl(): string | null | undefined;
+    getPosterAvatarUrl(): string | undefined;
     getPosterDisplayName(): string;
     getPosterHandle(): string;
     getPosterService(): string;
@@ -32,7 +32,7 @@ export interface StatusPost {
 
     // Content
     getPostText(): string;
-    getLinkCard(): StatusLink | null;
+    getLinkCard(): StatusLink | undefined;
 
     // Media
     getImages(): StatusMedia[];
@@ -41,16 +41,16 @@ export interface StatusPost {
 
     // Reply
     isReply(): boolean;
-    getRepliedTo(): StatusPost | null;
-    getRepliedToUrl(): string | null;
-    getRepliedToPosterDisplayName(): Promise<string | null | undefined>;
+    getRepliedTo(): StatusPost | undefined;
+    getRepliedToUrl(): string | undefined;
+    getRepliedToPosterDisplayName(): Promise<string | undefined>;
     isRepliedToMutual(): boolean;
 
     // Retweets
     isQuoteTweet(): boolean;
-    getQuoteTweet(): StatusPost | null;
+    getQuoteTweet(): StatusPost | undefined;
     isRabbitHole(): boolean;
-    getRabbitHoleUrl(): string | null | undefined;
+    getRabbitHoleUrl(): string | undefined;
     isRetweet(): boolean;
-    getRetweet(): StatusPost | null;
+    getRetweet(): StatusPost | undefined;
 }

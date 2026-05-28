@@ -5,9 +5,10 @@ import { Accounts } from "../api/account/accounts";
 import { convertAccountToDisplayAccount, DisplayAccount } from "../api/account/display-account";
 import { UserAccount } from "../api/account/user-account";
 import { ActionedPost } from "../api/post/actioned-post";
-import { convertStatusPostToDisplayPost, DisplayPost } from "../api/post/display-post";
+import { DisplayPost } from "../api/post/display-post";
 import { StatusPost } from "../api/post/status-post";
 import { SubmittedPost } from "../api/post/submitted-post";
+import { SystemMessage } from "../api/system/system-message";
 import { phenDeckConfig } from "../config/phen-deck-config";
 import { shouldFilterOutPost } from "../service/post-filter";
 import WebContents = Electron.WebContents;
@@ -17,7 +18,7 @@ const accounts = Accounts.getInstance();
 
 export class ReactInterface {
     static #instance: ReactInterface;
-    mainWindow: BrowserWindow | null = null;
+    mainWindow: BrowserWindow | undefined = undefined;
 
     public static getInstance(): ReactInterface {
         if (!ReactInterface.#instance) {
@@ -44,7 +45,7 @@ export class ReactInterface {
      *
      * @param main Application window object.
      */
-     setMainWindow (main: BrowserWindow | null) {
+     setMainWindow (main: BrowserWindow | undefined) {
         this.mainWindow = main;
     }
 
@@ -72,7 +73,7 @@ export class ReactInterface {
         const accounts = Accounts.getInstance().list();
         const displayAccounts = accounts
             .map((account: UserAccount) => convertAccountToDisplayAccount(account))
-            .filter((displayAccount: DisplayAccount | null) => !!displayAccount);
+            .filter((displayAccount?: DisplayAccount) => !!displayAccount);
 
         sender.send("getAccounts", displayAccounts);
     }
@@ -110,9 +111,9 @@ export class ReactInterface {
         // sort
         filteredPosts.sort((a: StatusPost, b: StatusPost) => a.getTimestamp().getTime() - b.getTimestamp().getTime());
 
-        const conversionPromises: Promise<DisplayPost | null>[] = [];
+        const conversionPromises: Promise<DisplayPost | undefined>[] = [];
         filteredPosts.forEach((post) => {
-            conversionPromises.push(convertStatusPostToDisplayPost(post));
+            conversionPromises.push(DisplayPost.convertStatusPostToDisplayPost(post));
         })
         const displayPosts = await Promise.all(conversionPromises);
         sender.send("getPosts", displayPosts);
@@ -120,6 +121,23 @@ export class ReactInterface {
         if (!oneTime) {
             setTimeout(() => this.getPosts(sender), 30000)
         }
+    }
+
+    /**
+     * Communication channel to send a system message to the front end.
+     *
+     * @param systemMessage Message to send.
+     * @param senderArg
+     */
+    async sendSystemMessage (systemMessage: SystemMessage, senderArg?: WebContents) {
+        const sender = senderArg ?? this.mainWindow?.webContents;
+
+        if (!sender) {
+            console.error("Link to window not established.")
+            return;
+        }
+
+        sender.send("systemMessage", systemMessage);
     }
 
     /**
