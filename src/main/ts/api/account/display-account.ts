@@ -20,9 +20,9 @@ export type DisplayAccount = UserAccountProfile & {
  *
  * @param account
  */
-export const convertAccountToDisplayAccount = (account : UserAccount | null): DisplayAccount | null => {
+export const convertAccountToDisplayAccount = (account? : UserAccount): DisplayAccount | undefined => {
     if (!account) {
-        return null;
+        return undefined;
     }
 
     return {

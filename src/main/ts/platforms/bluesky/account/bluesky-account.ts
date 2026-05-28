@@ -12,6 +12,8 @@ import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { Server } from "../../../api/account/server";
 import { UserAccount } from "../../../api/account/user-account";
 import { ActionedPost } from "../../../api/post/actioned-post";
+import { SystemMessage } from "../../../api/system/system-message";
+import { ReactInterface } from "../../../app/react-interface";
 import { AccountConfig } from "../../../config/account-config-type";
 import { BlueskyQuotedPost } from "../post/bluesky-quoted-post";
 import { BlueskyRepliedToPost } from "../post/bluesky-replied-to-post";
@@ -60,7 +62,7 @@ export default class BlueskyAccount implements UserAccount {
      * so that replies can be filtered.
      */
     async initialize(): Promise<void> {
-        if (Server == null) {
+        if (!Server) {
             throw new Error("Failed to initialize account.");
         }
         await this.login();
@@ -170,11 +172,11 @@ export default class BlueskyAccount implements UserAccount {
 
     async post(postText: string): Promise<void> {
         const facets = detectFacets(new UnicodeString(postText));
-        let linkCard: $Typed<AppBskyEmbedExternal.Main> | null = null;
+        let linkCard: $Typed<AppBskyEmbedExternal.Main> | undefined = undefined;
 
         if (facets) {
             const links = facets
-                .map((facet) => facet.features.find((feature) => !!isLink(feature)))
+                .map((facet) => facet.features.find((feature) => isLink(feature)))
                 .filter((found) => found !== undefined);
             if (links.length) {
                 const link = links[0];
@@ -214,20 +216,20 @@ export default class BlueskyAccount implements UserAccount {
         }
     }
 
-    async getRepliedTo(postId: string): Promise<BlueskyRepliedToPost | null> {
+    async getRepliedTo(postId: string): Promise<BlueskyRepliedToPost | undefined> {
         try {
             const postResponse = await this.client.app.bsky.feed.getPostThread({
                 uri: postId
             });
 
             if (postResponse.data.thread.$type !== "app.bsky.feed.defs#threadViewPost") {
-                return null;
+                return undefined;
             }
 
             return new BlueskyRepliedToPost(postResponse.data.thread as ThreadViewPost, this.myProfile!, this.getId());
         } catch (e) {
             console.error(`Error getting post ${ postId }.`, e);
-            return null;
+            return undefined;
         }
     }
 
@@ -252,16 +254,17 @@ export default class BlueskyAccount implements UserAccount {
             }
 
             if (!unseenRawPosts.length) {
+                await ReactInterface.getInstance().sendSystemMessage(SystemMessage.info("Returning 0 Posts"));
                 console.log(`Returning 0 posts.`);
                 return [];
             }
 
             const posts = unseenRawPosts.map(rawPost => new BlueskyPost(rawPost, this.myProfile!, this.getId()));
 
-            const getRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
+            const getRepliedToPromises: Promise<BlueskyRepliedToPost | undefined>[] = [];
             const replies: BlueskyPost[] = [];
 
-            const getQuotedRepliedToPromises: Promise<BlueskyRepliedToPost | null>[] = [];
+            const getQuotedRepliedToPromises: Promise<BlueskyRepliedToPost | undefined>[] = [];
             const postsWithQuotedReplies: BlueskyPost[] = [];
 
             for (const post of posts) {
@@ -282,7 +285,7 @@ export default class BlueskyAccount implements UserAccount {
             const quotedRepliedTos = await Promise.all(getQuotedRepliedToPromises);
 
             for (let i = 0; i < replies.length; ++i) {
-                if (repliedTos[i] != null) {
+                if (!!repliedTos[i]) {
                     replies[i].setRepliedTo(repliedTos[i]!);
                 } else {
                     console.log(`Reply for post ${ replies[i].getId() } by ${ replies[i].getPosterHandle() } at ${ replies[i].getTimestamp() } not found.`);
@@ -290,13 +293,14 @@ export default class BlueskyAccount implements UserAccount {
             }
 
             for (let i = 0; i < postsWithQuotedReplies.length; ++i) {
-                if (quotedRepliedTos[i] != null) {
+                if (!!quotedRepliedTos[i]) {
                     postsWithQuotedReplies[i].setQuotedRepliedTo(quotedRepliedTos[i]!);
                 } else {
                     console.log(`Reply for quoted post ${ postsWithQuotedReplies[i].getId() } by ${ postsWithQuotedReplies[i].getPosterHandle() } at ${ postsWithQuotedReplies[i].getTimestamp() } not found.`);
                 }
             }
 
+            await ReactInterface.getInstance().sendSystemMessage(SystemMessage.info(`Returning ${ posts.length } posts.`));
             console.log(`Returning ${ posts.length } posts.`);
             return posts;
         } catch (e) {

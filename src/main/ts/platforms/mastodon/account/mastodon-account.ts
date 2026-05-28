@@ -119,13 +119,13 @@ export default class MastodonAccount implements UserAccount {
         }
     }
 
-    async fetchPostById(postId: string): Promise<MastodonPost | null> {
+    async fetchPostById(postId: string): Promise<MastodonPost | undefined> {
         const postResponse = await this.client.v1.statuses.fetch({
             id: [postId]
         });
 
         if (!postResponse.length) {
-            return null;
+            return undefined;
         }
 
         return new MastodonPost(postResponse[0], this.myProfile!, this.getId());
@@ -153,10 +153,10 @@ export default class MastodonAccount implements UserAccount {
             if (posts.length) {
                 this.newestPostSeen = rawPosts[0].id;
 
-                const getRepliedToPromises: Promise<MastodonPost | null>[] = [];
+                const getRepliedToPromises: Promise<MastodonPost | undefined>[] = [];
                 const replies: MastodonPost[] = [];
 
-                const getRabbitHolePromises: Promise<MastodonPost | null>[] = [];
+                const getRabbitHolePromises: Promise<MastodonPost | undefined>[] = [];
                 const quotes: MastodonPost[] = [];
 
                 for (const post of posts) {
@@ -176,11 +176,11 @@ export default class MastodonAccount implements UserAccount {
 
                 const repliedTos = await Promise.all(getRepliedToPromises);
 
-                const getRepliedToRepliedToPromises: Promise<MastodonPost | null>[] = [];
+                const getRepliedToRepliedToPromises: Promise<MastodonPost | undefined>[] = [];
                 const repliedToReplies: MastodonPost[] = [];
                 for (let i = 0; i < replies.length; ++i) {
                     const repliedTo = repliedTos[i];
-                    if (repliedTo != null) {
+                    if (!!repliedTo) {
                         replies[i].setRepliedTo(repliedTos[i]!);
 
                         if (repliedTo.isReply()) {
@@ -192,14 +192,14 @@ export default class MastodonAccount implements UserAccount {
 
                 const rabbitHoles = await Promise.all(getRabbitHolePromises);
                 for (let i = 0; i < quotes.length; ++i) {
-                    if (quotes[i] != null) {
+                    if (!!quotes[i]) {
                         quotes[i].setRabbitHole(rabbitHoles[i]!);
                     }
                 }
 
                 const repliedToRepliedTos = await Promise.all(getRepliedToRepliedToPromises);
                 for (let i = 0; i < repliedToReplies.length; ++i) {
-                    if (repliedToRepliedTos[i] != null) {
+                    if (!!repliedToRepliedTos[i]) {
                         repliedToReplies[i].setRepliedTo(repliedToRepliedTos[i]!);
                     }
                 }

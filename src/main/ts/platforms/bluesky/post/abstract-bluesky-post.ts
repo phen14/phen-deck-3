@@ -70,7 +70,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ---------------------------------------
     // ~~~~~| Poster |~~~~~
 
-    getPosterAvatarUrl(): string | null | undefined {
+    getPosterAvatarUrl(): string | undefined {
         return this.getBase().author?.avatar;
     }
 
@@ -141,23 +141,23 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     }
 
     protected getEmbed() : AppBskyEmbedImages.View | AppBskyEmbedVideo.View | AppBskyEmbedExternal.View | AppBskyEmbedRecord.View
-        | AppBskyEmbedRecordWithMedia.View | { $type: string; [k: string]: unknown } | null | undefined {
+        | AppBskyEmbedRecordWithMedia.View | { $type: string; [k: string]: unknown } | undefined {
         return (this.getBase() as PostView).embed;
     }
 
-    getLinkCard(): StatusLink | null {
+    getLinkCard(): StatusLink | undefined {
         const embed = this.getEmbed();
-        if (embed == null) {
-            return null;
+        if (!embed) {
+            return undefined;
         }
 
         if (!isExternalView(embed) && !isExternalMain(embed)) {
-            return null;
+            return undefined;
         }
         const linkEmbed = embed as AppBskyEmbedExternal.View;
 
         if (linkEmbed.external.uri.includes(".gif?")) {
-            return null;
+            return undefined;
         }
 
         const link = linkEmbed.external;
@@ -170,7 +170,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
     getImages(): StatusMedia[] {
         let embed = this.getEmbed();
-        if (embed == null) {
+        if (!embed) {
             return [];
         }
 
@@ -189,7 +189,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
     getAnimatedImages(): StatusMedia[] {
         let embed = this.getEmbed();
-        if (embed == null) {
+        if (!embed) {
             return [];
         }
 
@@ -212,7 +212,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
     getVideos(): StatusMedia[] {
         let embed = this.getEmbed();
-        if (embed == null) {
+        if (!embed) {
             return [];
         }
 
@@ -236,16 +236,16 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         return false;
     }
 
-    getRepliedTo(): StatusPost | null {
-        return null;
+    getRepliedTo(): StatusPost | undefined {
+        return undefined;
     }
 
-    getRepliedToUrl(): string | null {
-        return null;
+    getRepliedToUrl(): string | undefined {
+        return undefined;
     }
 
-    async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
-        return null;
+    async getRepliedToPosterDisplayName(): Promise<string | undefined> {
+        return undefined;
     }
 
     isRepliedToMutual(): boolean {
@@ -260,24 +260,24 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         return false;
     }
 
-    getQuoteTweet(): StatusPost | null {
-        return null;
+    getQuoteTweet(): StatusPost | undefined {
+        return undefined;
     }
 
     isRabbitHole(): boolean {
         return false;
     }
 
-    getRabbitHoleUrl(): string | null | undefined {
-        return null;
+    getRabbitHoleUrl(): string | undefined {
+        return undefined;
     }
 
     isRetweet(): boolean {
         return false;
     }
 
-    getRetweet(): StatusPost | null {
-        return null;
+    getRetweet(): StatusPost | undefined {
+        return undefined;
     }
 
     // ---------------------------------------

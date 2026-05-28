@@ -20,7 +20,7 @@ import { ReactInterface } from "./app/react-interface";
 import { phenDeckConfig } from "./config/phen-deck-config";
 import { mainMenuTemplate } from "./menu/main-menu";
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: BrowserWindow | undefined = undefined;
 
 ipcMain.on("ipc-example", async (event, arg) => {
     const msgTemplate = (pingPong: string) => `IPC test: ${ pingPong }`;
@@ -85,7 +85,7 @@ const createWindow = async () => {
     });
 
     mainWindow.on("closed", () => {
-        mainWindow = null;
+        mainWindow = undefined;
         app.quit();
     });
 

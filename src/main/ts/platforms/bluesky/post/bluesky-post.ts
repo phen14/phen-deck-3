@@ -18,22 +18,22 @@ import { BlueskyRepliedToPost } from "./bluesky-replied-to-post";
 export class BlueskyPost extends AbstractBlueskyPost {
     private readonly blueskyStatus: FeedViewPost;
     private readonly isRetweeted: boolean;
-    private readonly retweet: BlueskyPost | null;
+    private readonly retweet: BlueskyPost | undefined;
 
-    protected quotedRepliedTo: BlueskyRepliedToPost | null = null;
-    protected retweetInfo: ReasonRepost | null;
-    protected repliedTo: BlueskyRepliedToPost | null = null;
+    protected quotedRepliedTo: BlueskyRepliedToPost | undefined = undefined;
+    protected retweetInfo: ReasonRepost | undefined;
+    protected repliedTo: BlueskyRepliedToPost | undefined = undefined;
 
     public constructor(blueskyStatus: FeedViewPost, account: UserAccountProfile, viewerAccountId: string, isRetweeted: boolean = false) {
         super(account, viewerAccountId);
         this.blueskyStatus = blueskyStatus;
         this.isRetweeted = isRetweeted;
-        this.retweetInfo = !isRetweeted && isReasonRepost(this.blueskyStatus.reason) ? (this.blueskyStatus.reason as ReasonRepost) : null;
+        this.retweetInfo = !isRetweeted && isReasonRepost(this.blueskyStatus.reason) ? (this.blueskyStatus.reason as ReasonRepost) : undefined;
 
         if (this.isRetweet()) {
             this.retweet = new BlueskyPost(this.blueskyStatus, this.viewer, this.viewerAccountId, true);
         } else {
-            this.retweet = null;
+            this.retweet = undefined;
         }
     }
 
@@ -55,7 +55,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
 
 
     getId(): string {
-        return this.retweetInfo != null ? this.retweetInfo.uri as string : this.getBase().uri ?? "";
+        return !!this.retweetInfo ? this.retweetInfo.uri as string : this.getBase().uri ?? "";
     }
 
     // ---------------------------------------
@@ -64,20 +64,20 @@ export class BlueskyPost extends AbstractBlueskyPost {
     // ---------------------------------------
     // ~~~~~| Poster |~~~~~
 
-    getPosterAvatarUrl(): string | null | undefined {
-        return this.retweetInfo != null ? this.retweetInfo.by?.avatar ?? null : super.getPosterAvatarUrl();
+    getPosterAvatarUrl(): string | undefined {
+        return !!this.retweetInfo ? this.retweetInfo.by?.avatar ?? undefined : super.getPosterAvatarUrl();
     }
 
     getPosterDisplayName(): string {
-        return this.retweetInfo != null ? this.retweetInfo.by?.displayName ?? "" : super.getPosterDisplayName();
+        return !!this.retweetInfo ? this.retweetInfo.by?.displayName ?? "" : super.getPosterDisplayName();
     }
 
     getPosterHandle(): string {
-        return this.retweetInfo != null ? this.retweetInfo.by?.handle ?? "" : super.getPosterHandle();
+        return !!this.retweetInfo ? this.retweetInfo.by?.handle ?? "" : super.getPosterHandle();
     }
 
     getPosterUrl(): string {
-        return this.retweetInfo != null ? this.convertDidToAuthorUrl(this.retweetInfo.by?.did) ?? "" : super.getPosterUrl();
+        return !!this.retweetInfo ? this.convertDidToAuthorUrl(this.retweetInfo.by?.did) ?? "" : super.getPosterUrl();
     }
 
 
@@ -85,7 +85,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     // ~~~~~| Time |~~~~~
 
     getTimestamp(): Date {
-        const indexedAt = (this.retweetInfo != null ? this.retweetInfo.indexedAt : this.getBase().indexedAt);
+        const indexedAt = (!!this.retweetInfo ? this.retweetInfo.indexedAt : this.getBase().indexedAt);
         if (indexedAt) {
             return new Date(Date.parse(indexedAt));
         }
@@ -98,7 +98,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     // ~~~~~| Content |~~~~~
 
     getPostText(): string {
-        return this.retweetInfo != null ? "" : super.getPostText();
+        return !!this.retweetInfo ? "" : super.getPostText();
     }
 
 
@@ -106,12 +106,12 @@ export class BlueskyPost extends AbstractBlueskyPost {
     // ~~~~~| Media |~~~~~
 
     getImages(): StatusMedia[] {
-        if (this.retweetInfo != null) {
+        if (!!this.retweetInfo) {
             return [];
         }
 
         let embed = this.getBase().embed;
-        if (embed == null) {
+        if (!embed) {
             return [];
         }
 
@@ -130,7 +130,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     }
 
     getAnimatedImages(): StatusMedia[] {
-        if (this.retweetInfo != null) {
+        if (!!this.retweetInfo) {
             return [];
         }
 
@@ -138,7 +138,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     }
 
     getVideos(): StatusMedia[] {
-        if (this.retweetInfo != null) {
+        if (!!this.retweetInfo) {
             return [];
         }
 
@@ -150,18 +150,18 @@ export class BlueskyPost extends AbstractBlueskyPost {
     // ~~~~~| Reply |~~~~~
 
     isReply(): boolean {
-        return this.blueskyStatus.reply != null;
+        return !!this.blueskyStatus.reply;
     }
 
     getReplyRef(): ReplyRef | undefined {
         return this.blueskyStatus.reply;
     }
 
-    getRepliedTo(): StatusPost | null {
+    getRepliedTo(): StatusPost | undefined {
         return this.repliedTo;
     }
 
-    async getRepliedToPosterDisplayName(): Promise<string | null | undefined> {
+    async getRepliedToPosterDisplayName(): Promise<string | undefined> {
         return this.repliedTo?.getPosterDisplayName();
     }
 
@@ -212,18 +212,18 @@ export class BlueskyPost extends AbstractBlueskyPost {
     }
 
     private isBasicQuoteTweet(): boolean {
-        return this.blueskyStatus.post.embed != null && isRecordView(this.blueskyStatus.post.embed);
+        return !!this.blueskyStatus.post.embed && isRecordView(this.blueskyStatus.post.embed);
     }
 
     private isQuoteTweetWithMedia(): boolean {
-        return this.blueskyStatus.post.embed != null && isRecordWithMediaView(this.blueskyStatus.post.embed);
+        return !!this.blueskyStatus.post.embed && isRecordWithMediaView(this.blueskyStatus.post.embed);
     }
 
-    getQuoteTweet(): StatusPost | null {
+    getQuoteTweet(): StatusPost | undefined {
         if (this.isBasicQuoteTweet()) {
             const quotedTweet = this.blueskyStatus.post.embed! as AppBskyEmbedRecord.View;
             if (!quotedTweet?.record) {
-                return null;
+                return undefined;
             }
             return new BlueskyQuotedPost(quotedTweet, this.viewer, this.viewerAccountId, this.quotedRepliedTo);
         }
@@ -232,12 +232,12 @@ export class BlueskyPost extends AbstractBlueskyPost {
             const quotedTweetWithMedia = this.blueskyStatus.post.embed! as AppBskyEmbedRecordWithMedia.View;
             const quotedTweet = quotedTweetWithMedia.record!;
             if (!quotedTweet?.record) {
-                return null;
+                return undefined;
             }
             return new BlueskyQuotedPost(quotedTweet, this.viewer, this.viewerAccountId, this.quotedRepliedTo);
         }
 
-        return null;
+        return undefined;
     }
 
     isRabbitHole(): boolean {
@@ -245,10 +245,10 @@ export class BlueskyPost extends AbstractBlueskyPost {
     }
 
     isRetweet(): boolean {
-        return this.retweetInfo != null;
+        return !!this.retweetInfo;
     }
 
-    getRetweet(): StatusPost | null {
+    getRetweet(): StatusPost | undefined {
         return this.retweet;
     }
 }

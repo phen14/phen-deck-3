@@ -50,20 +50,20 @@ describe("Testing MastodonPost...", () => {
         ${"isRetweetedByMe"}                | ${false}
         ${"getTimestamp"}                   | ${new Date("2025-09-24T03:31:09.000Z")}
         ${"getPostText"}                    | ${"<p>There must be 3 or 4 Disney/Hulu ads every break in this show I’m watching on ID. 🤔</p>"}
-        ${"getLinkCard"}                    | ${null}
+        ${"getLinkCard"}                    | ${undefined}
         ${"getImages"}                      | ${[]}
         ${"getAnimatedImages"}              | ${[]}
         ${"getVideos"}                      | ${[]}
         ${"isReply"}                        | ${false}
-        ${"getRepliedTo"}                   | ${null}
-        ${"getRepliedToUrl"}                | ${null}
+        ${"getRepliedTo"}                   | ${undefined}
+        ${"getRepliedToUrl"}                | ${undefined}
         ${"isRepliedToMutual"}              | ${true}
         ${"isQuoteTweet"}                   | ${false}
-        ${"getQuoteTweet"}                  | ${null}
+        ${"getQuoteTweet"}                  | ${undefined}
         ${"isRabbitHole"}                   | ${false}
-        ${"getRabbitHoleUrl"}               | ${null}
+        ${"getRabbitHoleUrl"}               | ${undefined}
         ${"isRetweet"}                      | ${false}
-        ${"getRetweet"}                     | ${null}
+        ${"getRetweet"}                     | ${undefined}
     `(`$functionName() doesn't throw an exception and returns expected value.`, ({functionName, expected}: {functionName: string, expected: any}) => {
         const post = new MastodonPost(SIMPLE_POST, VIEWER, VIEWER_ACCOUNT_ID);
 

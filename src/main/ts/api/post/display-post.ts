@@ -9,7 +9,7 @@ import { StatusPost } from "./status-post";
 /**
  * All the information needed to display a post in the UI.
  */
-export type DisplayPost = {
+export class DisplayPost {
     id: string;
     cid: string;
     raw: string;
@@ -33,7 +33,7 @@ export type DisplayPost = {
     // ---------------------------------
     // ~~~~~| Poster |~~~~~
 
-    posterAvatarUrl: string | null | undefined;
+    posterAvatarUrl?: string;
     posterDisplayName: string;
     posterHandle: string;
     posterService: string;
@@ -49,7 +49,7 @@ export type DisplayPost = {
     // ~~~~~| Content |~~~~~
 
     postText: string;
-    linkCard: StatusLink | null;
+    linkCard?: StatusLink;
 
     // ---------------------------------
     // ~~~~~| Media |~~~~~
@@ -65,13 +65,13 @@ export type DisplayPost = {
     isReply: boolean;
 
     // The post that this post replied to.
-    repliedTo: DisplayPost | null;
+    repliedTo?: DisplayPost;
 
     // URL of the post that this post replied to.
-    repliedToUrl: string | null;
+    repliedToUrl?: string;
 
     // Who made the post that this post replied to.
-    repliedToPosterDisplayName: string | null | undefined;
+    repliedToPosterDisplayName?: string;
 
     // Is the post this is a reply to also somebody I'm following?
     isRepliedToMutual: boolean;
@@ -83,81 +83,84 @@ export type DisplayPost = {
     isQuoteTweet: boolean;
 
     // The post this post is quoting.
-    quoteTweet: DisplayPost | null;
+    quoteTweet?: DisplayPost;
 
     // Is the post being quoted while also quoting another post?
     isRabbitHole: boolean;
 
     // Link to the rabbit hole post.
-    rabbitHoleUrl: string | null | undefined;
+    rabbitHoleUrl?: string;
 
     // Is this post a retweet?
     isRetweet: boolean;
 
     // The post being retweeted.
-    retweet: DisplayPost | null;
+    retweet?: DisplayPost;
 
-};
-
-
-/**
- * Extract all the information we need to display a post from a service post model.
- *
- * @param statusPost
- */
-export const convertStatusPostToDisplayPost = async (statusPost : StatusPost | null): Promise<DisplayPost | null> => {
-    if (!statusPost) {
-        return null;
-    }
-
-    return {
-        id: statusPost.getId(),
-        cid: statusPost.getCid(),
-        raw: statusPost.getRawString(),
-        url: statusPost.getUrl(),
+    private constructor(statusPost: StatusPost, repliedTo?: DisplayPost, quoteTweet?: DisplayPost, retweet?: DisplayPost, repliedToName?: string) {
+        this.id = statusPost.getId();
+        this.cid = statusPost.getCid();
+        this.raw = statusPost.getRawString();
+        this.url = statusPost.getUrl();
 
         // Viewer
-        viewer: statusPost.getViewer(),
-        hasViewerRetweeted: statusPost.hasViewerRetweeted(),
+        this.viewer = statusPost.getViewer();
+        this.hasViewerRetweeted = statusPost.hasViewerRetweeted();
 
         // Poster
-        isMe: statusPost.isMe(),
-        isRetweetedByMe: statusPost.isRetweetedByMe(),
-        posterAvatarUrl: statusPost.getPosterAvatarUrl(),
-        posterDisplayName: statusPost.getPosterDisplayName(),
-        posterHandle: statusPost.getPosterHandle(),
-        posterService: statusPost.getPosterService(),
-        posterUrl: statusPost.getPosterUrl(),
+        this.isMe = statusPost.isMe();
+        this.isRetweetedByMe = statusPost.isRetweetedByMe();
+        this.posterAvatarUrl = statusPost.getPosterAvatarUrl();
+        this.posterDisplayName = statusPost.getPosterDisplayName();
+        this.posterHandle = statusPost.getPosterHandle();
+        this.posterService = statusPost.getPosterService();
+        this.posterUrl = statusPost.getPosterUrl();
 
         // Time
-        timestamp: statusPost.getTimestamp(),
-        timeSince: "",
+        this.timestamp = statusPost.getTimestamp();
+        this.timeSince = "";
 
         // Content
-        postText: convertPostText(statusPost.getPostText()),
-        linkCard: statusPost.getLinkCard(),
+        this.postText = convertPostText(statusPost.getPostText());
+        this.linkCard = statusPost.getLinkCard();
 
         // Media
-        images: statusPost.getImages(),
-        animatedImages: statusPost.getAnimatedImages(),
-        videos: statusPost.getVideos(),
+        this.images = statusPost.getImages();
+        this.animatedImages = statusPost.getAnimatedImages();
+        this.videos = statusPost.getVideos();
 
         // Reply
-        isReply: statusPost.isReply(),
-        repliedTo: await convertStatusPostToDisplayPost(statusPost.getRepliedTo()),
-        repliedToUrl: statusPost.getRepliedToUrl(),
-        repliedToPosterDisplayName: await statusPost.getRepliedToPosterDisplayName(),
-        isRepliedToMutual: statusPost.isRepliedToMutual(),
+        this.isReply = statusPost.isReply();
+        this.repliedTo = repliedTo;
+        this.repliedToUrl = statusPost.getRepliedToUrl();
+        this.repliedToPosterDisplayName = repliedToName;
+        this.isRepliedToMutual = statusPost.isRepliedToMutual();
 
         // Retweets
-        isQuoteTweet: statusPost.isQuoteTweet(),
-        quoteTweet: await convertStatusPostToDisplayPost(statusPost.getQuoteTweet()),
-        isRabbitHole: statusPost.isRabbitHole(),
-        rabbitHoleUrl: statusPost.getRabbitHoleUrl(),
-        isRetweet: statusPost.isRetweet(),
-        retweet: await convertStatusPostToDisplayPost(statusPost.getRetweet())
-    };
-}
+        this.isQuoteTweet = statusPost.isQuoteTweet();
+        this.quoteTweet = quoteTweet;
+        this.isRabbitHole = statusPost.isRabbitHole();
+        this.rabbitHoleUrl = statusPost.getRabbitHoleUrl();
+        this.isRetweet = statusPost.isRetweet();
+        this.retweet = retweet;
+    }
+
+    static convertStatusPostToDisplayPost = async (statusPost? : StatusPost): Promise<DisplayPost | undefined> => {
+        if (!statusPost) {
+            return undefined;
+        }
+
+        const promises: Promise<DisplayPost | undefined>[] = [
+            DisplayPost.convertStatusPostToDisplayPost(statusPost.getRepliedTo()),
+            DisplayPost.convertStatusPostToDisplayPost(statusPost.getQuoteTweet()),
+            DisplayPost.convertStatusPostToDisplayPost(statusPost.getRetweet()),
+        ];
+        const [repliedTo, quoteTweet, retweet] = await Promise.all(promises);
+        const repliedToName = await statusPost.getRepliedToPosterDisplayName();
+
+        return new DisplayPost(statusPost, repliedTo, quoteTweet, retweet, repliedToName);
+    }
+};
 
 /**
  * Make adjustments to the basic text of a post to make it display nicely.
