@@ -319,7 +319,11 @@ export default class BlueskyAccount implements UserAccount {
     async retweet(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (B)...", post);
         try {
-            await this.client.repost(post.id, post.cid);
+            if (post.retweet) {
+                await this.client.repost(post.retweet.id, post.retweet.cid);
+            } else {
+                await this.client.repost(post.id, post.cid);
+            }
             this.log.info(`Successfully reposted to ${this.myProfile?.handle}.`);
         } catch (e) {
             this.log.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
