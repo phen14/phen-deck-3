@@ -117,7 +117,8 @@ export default class MastodonAccount implements UserAccount {
         const params : mastodon.rest.v1.CreateStatusParams = { status: postText };
 
         try {
-            await this.client.v1.statuses.create(params)
+            await this.client.v1.statuses.create(params);
+            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
         } catch (e) {
             this.log.error(`Failed to post to ${this.myProfile?.handle}.`, e);
         }
@@ -137,7 +138,7 @@ export default class MastodonAccount implements UserAccount {
 
     async getPosts(): Promise<StatusPost[]> {
         try {
-            this.log.info(`Getting Mastadon timeline for ${ this.myProfile?.handle } since ${ this.newestPostSeen }`);
+            this.log.debug(`Getting Mastadon timeline for ${ this.myProfile?.handle } since ${ this.newestPostSeen }`);
             const rawPosts = await this.client.v1.timelines.home.list({
                 limit: 100,
                 sinceId: this.newestPostSeen
@@ -209,7 +210,7 @@ export default class MastodonAccount implements UserAccount {
                 }
             }
 
-            this.log.info(`Returning ${ posts.length } posts.`);
+            this.log.debug(`Returning ${ posts.length } posts.`);
             return posts;
         } catch (e) {
             this.log.error(`Failure getting posts for ${this.myProfile?.handle}.`, e);
@@ -218,9 +219,10 @@ export default class MastodonAccount implements UserAccount {
     }
 
     async retweet(post: ActionedPost): Promise<void> {
-        this.log.info("Reblogging (M)...", post);
+        this.log.debug("Reblogging (M)...", post);
         try {
             await this.client.v1.statuses.$select(post.id).reblog();
+            this.log.info(`Successfully reposted to ${this.myProfile?.handle}.`);
         } catch (e) {
             this.log.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
         }
@@ -232,12 +234,12 @@ export default class MastodonAccount implements UserAccount {
     // ===========================
 
     public forgetPosts(): void {
-        this.log.info("Clearing known posts.");
+        this.log.debug("Clearing known posts.");
         this.postsSeen.clear();
     }
 
     public resetCursor(): void {
-        this.log.info("Resetting cursor.");
+        this.log.debug("Resetting cursor.");
         this.newestPostSeen = "0";
         this.forgetPosts();
     }

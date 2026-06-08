@@ -176,20 +176,30 @@ export default class BlueskyAccount implements UserAccount {
         const facets = detectFacets(new UnicodeString(postText));
         let linkCard: $Typed<AppBskyEmbedExternal.Main> | undefined = undefined;
 
+        console.log("Facets", facets);
+
         if (facets) {
             const links = facets
                 .map((facet) => facet.features.find((feature) => isLink(feature)))
                 .filter((found) => found !== undefined);
+
+            console.log("Links", links);
             if (links.length) {
                 const link = links[0];
                 const metadata = await urlMetadata(link.uri);
+                console.log("Metadata", metadata);
+
+                let url: string = metadata["og:url"];
+                if (!url || !url.length) {
+                    url = metadata["url"];
+                }
 
                 linkCard = {
                     $type: "app.bsky.embed.external",
                     external: {
                         "description": metadata["og:description"],
                         "title": metadata["og:title"],
-                        "uri": metadata["og:url"]
+                        "uri": url
                     }
                 };
 
@@ -213,6 +223,7 @@ export default class BlueskyAccount implements UserAccount {
 
         try {
             await this.client.post(params);
+            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
         } catch (e) {
             this.log.error(`Failed to post to ${ this.myProfile?.handle }.`, e);
         }
@@ -237,7 +248,7 @@ export default class BlueskyAccount implements UserAccount {
 
     async getPosts(): Promise<StatusPost[]> {
         try {
-            this.log.info(`Getting Bluesky timeline for ${ this.myProfile?.handle }.`);
+            this.log.debug(`Getting Bluesky timeline for ${ this.myProfile?.handle }.`);
             await this.login();
 
             const postsResponse = await this.client.app.bsky.feed.getTimeline({
@@ -256,7 +267,7 @@ export default class BlueskyAccount implements UserAccount {
             }
 
             if (!unseenRawPosts.length) {
-                this.log.info("Returning 0 Posts");
+                this.log.debug("Returning 0 Posts");
                 return [];
             }
 
@@ -301,7 +312,7 @@ export default class BlueskyAccount implements UserAccount {
                 }
             }
 
-            this.log.info(`Returning ${ posts.length } posts.`);
+            this.log.debug(`Returning ${ posts.length } posts.`);
             return posts;
         } catch (e) {
             this.log.error(`Failure getting posts for ${ this.myProfile?.handle }.`, e);
@@ -310,8 +321,13 @@ export default class BlueskyAccount implements UserAccount {
     }
 
     async retweet(post: ActionedPost): Promise<void> {
-        this.log.info("Reblogging (B)...", post);
-        await this.client.repost(post.id, post.cid);
+        this.log.debug("Reblogging (B)...", post);
+        try {
+            await this.client.repost(post.id, post.cid);
+            this.log.info(`Successfully reposted to ${this.myProfile?.handle}.`);
+        } catch (e) {
+            this.log.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
+        }
     }
 
 
@@ -320,12 +336,12 @@ export default class BlueskyAccount implements UserAccount {
     // ===========================
 
     forgetPosts(): void {
-        this.log.info("Clearing known posts.");
+        this.log.debug("Clearing known posts.");
         this.postsSeen.clear();
     }
 
     resetCursor(): void {
-        this.log.info("Resetting cursor.");
+        this.log.debug("Resetting cursor.");
         this.forgetPosts();
     }
 }
