@@ -2,7 +2,7 @@
 
 import "../App.css";
 import { useState } from "react";
-import { DisplayPost } from "../../../src/main/ts/api/post/display-post";
+import { DisplayItem } from "../../../src/main/ts/api/display-item";
 import { Channels } from "../../../src/main/ts/app/preload";
 import { phenDeckConfig, PhenDeckConfig } from "../../../src/main/ts/config/phen-deck-config";
 import { List } from "../read/list/list";
@@ -21,7 +21,7 @@ export function MainWindow() {
         }
     });
 
-    const onHomeChange = (data: DisplayPost[]): void => {
+    const onHomeChange = (data: DisplayItem[]): void => {
         console.log("Updating count...", new Date(), data.length);
         if (config.layout.updateTitleWithHomeCount && data.length) {
             document.title = `(${data.length}) ${config.title}`;

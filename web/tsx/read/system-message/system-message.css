@@ -1,0 +1,49 @@
+/* (K) ALL RIGHTS REVERSED - Reprint what you like */
+
+/* Post */
+
+.system {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.system-message {
+    border-bottom: 2px solid #ccc;
+    padding: 5px 10px 0 10px;
+}
+
+.system-message pre {
+    margin-top: 3px;
+}
+
+.system-message .message {
+    font-family: monospace;
+    margin-top: 3px;
+}
+
+.system-message .objectSection {
+    font-weight: normal;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+
+/* Levels */
+
+.debug {
+    background-color: #eee;
+}
+
+.info {
+    background-color: #def;
+}
+
+.warn {
+    background-color: #fc9;
+}
+
+.error {
+    background-color: #f00;
+    color: #fff;
+    font-weight: bold;
+}
