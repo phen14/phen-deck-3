@@ -6,6 +6,7 @@ import { Server } from "../../../api/account/server";
 import { UserAccount } from "../../../api/account/user-account";
 import { ActionedPost } from "../../../api/post/actioned-post";
 import { AccountConfig } from "../../../config/account-config-type";
+import { MessageSystem } from "../../../service/message-system";
 import { MastodonAccess } from "./mastodon-access-type";
 import { StatusPost } from "../../../api/post/status-post";
 import { MastodonPost } from "../post/mastodon-post";
@@ -14,6 +15,9 @@ export default class MastodonAccount implements UserAccount {
     private static MAX_STATUSES = 40;
     private maxChars = 500;
     private newestPostSeen = "0";
+
+    // Logger
+    private log = new MessageSystem(MastodonAccount.name);
 
     // Primary Key
     private ID = crypto.randomUUID();
@@ -115,7 +119,7 @@ export default class MastodonAccount implements UserAccount {
         try {
             await this.client.v1.statuses.create(params)
         } catch (e) {
-            console.error(`Failed to post to ${this.myProfile?.handle}.`, e);
+            this.log.error(`Failed to post to ${this.myProfile?.handle}.`, e);
         }
     }
 
@@ -133,7 +137,7 @@ export default class MastodonAccount implements UserAccount {
 
     async getPosts(): Promise<StatusPost[]> {
         try {
-            console.log(`Getting Mastadon timeline for ${ this.myProfile?.handle } since ${ this.newestPostSeen }`);
+            this.log.info(`Getting Mastadon timeline for ${ this.myProfile?.handle } since ${ this.newestPostSeen }`);
             const rawPosts = await this.client.v1.timelines.home.list({
                 limit: 100,
                 sinceId: this.newestPostSeen
@@ -145,7 +149,7 @@ export default class MastodonAccount implements UserAccount {
                     this.postsSeen.add(post.id);
                     unseenRawPosts.push(post);
                 } else {
-                    // console.log(`Already seen ${post.id}`);
+                    this.log.debug(`Already seen ${post.id}`);
                 }
             }
 
@@ -205,20 +209,20 @@ export default class MastodonAccount implements UserAccount {
                 }
             }
 
-            console.log(`Returning ${ posts.length } posts.`);
+            this.log.info(`Returning ${ posts.length } posts.`);
             return posts;
         } catch (e) {
-            console.error(`Failure getting posts for ${this.myProfile?.handle}.`, e);
+            this.log.error(`Failure getting posts for ${this.myProfile?.handle}.`, e);
             return [];
         }
     }
 
     async retweet(post: ActionedPost): Promise<void> {
-        console.log("Reblogging (M)...", post);
+        this.log.info("Reblogging (M)...", post);
         try {
             await this.client.v1.statuses.$select(post.id).reblog();
         } catch (e) {
-            console.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
+            this.log.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
         }
     }
 
@@ -228,12 +232,12 @@ export default class MastodonAccount implements UserAccount {
     // ===========================
 
     public forgetPosts(): void {
-        console.log("Clearing known posts.");
+        this.log.info("Clearing known posts.");
         this.postsSeen.clear();
     }
 
     public resetCursor(): void {
-        console.log("Resetting cursor.");
+        this.log.info("Resetting cursor.");
         this.newestPostSeen = "0";
         this.forgetPosts();
     }

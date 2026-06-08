@@ -1,6 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import dateFormat from "dateformat";
+import { JSX } from "react";
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 import Bluesky from "web/assets/bluesky.png";
 import Egg from "web/assets/egg.png";

@@ -1,6 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import { Accounts } from "../api/account/accounts";
+import { SystemMessageLevel } from "../api/system/system-message-level";
 import { ReactInterface } from "../app/react-interface";
 import { phenDeckConfig } from "../config/phen-deck-config";
 import { refreshConfig } from "../main";
@@ -86,6 +87,47 @@ export const mainMenuTemplate = [
                     phenDeckConfig.layout.updateTitleWithHomeCount = !phenDeckConfig.layout.updateTitleWithHomeCount;
                     ReactInterface.getInstance().sendUpdatedConfig();
                 }
+            },
+            {
+                label: 'System Message Level',
+                submenu: [
+                    {
+                        checked: phenDeckConfig.timeline.systemMessageLevel === SystemMessageLevel.DEBUG,
+                        label: 'Debug',
+                        type: 'radio',
+                        click: () => {
+                            phenDeckConfig.timeline.systemMessageLevel = SystemMessageLevel.DEBUG;
+                            ReactInterface.getInstance().sendUpdatedConfig();
+                        }
+                    },
+                    {
+                        checked: phenDeckConfig.timeline.systemMessageLevel === SystemMessageLevel.INFO,
+                        label: 'Info',
+                        type: 'radio',
+                        click: () => {
+                            phenDeckConfig.timeline.systemMessageLevel = SystemMessageLevel.INFO;
+                            ReactInterface.getInstance().sendUpdatedConfig();
+                        }
+                    },
+                    {
+                        checked: phenDeckConfig.timeline.systemMessageLevel === SystemMessageLevel.WARN,
+                        label: 'Warn',
+                        type: 'radio',
+                        click: () => {
+                            phenDeckConfig.timeline.systemMessageLevel = SystemMessageLevel.WARN;
+                            ReactInterface.getInstance().sendUpdatedConfig();
+                        }
+                    },
+                    {
+                        checked: phenDeckConfig.timeline.systemMessageLevel === SystemMessageLevel.ERROR,
+                        label: 'Error',
+                        type: 'radio',
+                        click: () => {
+                            phenDeckConfig.timeline.systemMessageLevel = SystemMessageLevel.ERROR;
+                            ReactInterface.getInstance().sendUpdatedConfig();
+                        }
+                    },
+                ]
             },
         ]
     },

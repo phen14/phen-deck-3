@@ -110,7 +110,7 @@ export function refreshConfig() {
     const reactInterface = ReactInterface.getInstance();
     reactInterface.getAccounts(mainWindow!.webContents);
     reactInterface.sendUpdatedConfig(mainWindow!.webContents);
-}
+};
 
 function resolveHtmlPath(htmlFileName: string) {
     if (process.env.NODE_ENV === "development") {
@@ -120,7 +120,7 @@ function resolveHtmlPath(htmlFileName: string) {
         return url.href;
     }
     return `file://${ path.resolve(__dirname, "../renderer/", htmlFileName) }`;
-}
+};
 
 app.whenReady().then(async () => {
     await loadAccountConfig();

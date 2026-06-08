@@ -1,6 +1,8 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import { UserAccountProfile } from "../account/user-account-profile";
+import { DisplayItem } from "../display-item";
+import { DisplayItemType } from "../display-item-type";
 import { StatusLink } from "./status-link";
 import { StatusMedia } from "./status-media";
 import { StatusPost } from "./status-post";
@@ -9,11 +11,16 @@ import { StatusPost } from "./status-post";
 /**
  * All the information needed to display a post in the UI.
  */
-export class DisplayPost {
+export class DisplayPost implements DisplayItem {
     id: string;
     cid: string;
     raw: string;
     url: string;
+
+    // ---------------------------------
+    // ~~~~~| DisplayItem |~~~~~
+
+    public readonly type: DisplayItemType = DisplayItemType.POST;
 
     // ---------------------------------
     // ~~~~~| Viewer |~~~~~
@@ -96,6 +103,10 @@ export class DisplayPost {
 
     // The post being retweeted.
     retweet?: DisplayPost;
+
+
+    // ---------------------------------
+    // ~~~~~| Constructor |~~~~~
 
     private constructor(statusPost: StatusPost, repliedTo?: DisplayPost, quoteTweet?: DisplayPost, retweet?: DisplayPost, repliedToName?: string) {
         this.id = statusPost.getId();

@@ -1,7 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import Hls from "hls.js";
-import { useEffect, useRef } from "react";
+import { JSX, useEffect, useRef } from "react";
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 
 /**

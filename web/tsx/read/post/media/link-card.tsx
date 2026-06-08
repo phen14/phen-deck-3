@@ -1,6 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
 import "./link.css";
+import { JSX } from "react";
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 
 /**

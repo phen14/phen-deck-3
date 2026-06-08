@@ -1,5 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
+import { JSX } from "react";
 import { DisplayPost } from "../../../../../src/main/ts/api/post/display-post";
 import Retweet from "web/assets/retweet.png";
 import { SmallHeader } from "./small-header";
