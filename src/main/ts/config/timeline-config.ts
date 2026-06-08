@@ -10,7 +10,7 @@ export const timelineConfig: TimelineConfig = {
     hideNonMutualReplies: true,
     hideRetweetsFromUsers: [],
     mutedPhrases: [],
-    systemMessageLevel: SystemMessageLevel.ERROR
+    systemMessageLevel: SystemMessageLevel.INFO
 }
 
 /**
