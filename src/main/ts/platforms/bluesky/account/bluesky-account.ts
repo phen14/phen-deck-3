@@ -176,18 +176,14 @@ export default class BlueskyAccount implements UserAccount {
         const facets = detectFacets(new UnicodeString(postText));
         let linkCard: $Typed<AppBskyEmbedExternal.Main> | undefined = undefined;
 
-        console.log("Facets", facets);
-
         if (facets) {
             const links = facets
                 .map((facet) => facet.features.find((feature) => isLink(feature)))
                 .filter((found) => found !== undefined);
 
-            console.log("Links", links);
             if (links.length) {
                 const link = links[0];
                 const metadata = await urlMetadata(link.uri);
-                console.log("Metadata", metadata);
 
                 let url: string = metadata["og:url"];
                 if (!url || !url.length) {
