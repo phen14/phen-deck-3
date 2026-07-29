@@ -122,6 +122,7 @@ function resolveHtmlPath(htmlFileName: string) {
     return `file://${ path.resolve(__dirname, "../renderer/", htmlFileName) }`;
 };
 
+app.commandLine.appendSwitch('js-flags', '--max-old-space-size=8192');
 app.whenReady().then(async () => {
     await loadAccountConfig();
     await loadMutesConfig();
