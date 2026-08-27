@@ -1,13 +1,6 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import {
-    AppBskyGraphGetFollows,
-    AtpAgent,
-    AtpAgentLoginOpts,
-    UnicodeString,
-    $Typed,
-    AppBskyNotificationGetUnreadCount
-} from "@atproto/api";
+import { AppBskyGraphGetFollows, AtpAgent, AtpAgentLoginOpts, UnicodeString, $Typed } from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -192,7 +185,8 @@ export default class BlueskyAccount implements UserAccount {
     // -----| User Read Actions |-----
     // ===============================
 
-    lastUpdateCount= -1;
+    lastUpdateCount = -1;
+
     async getNotifications(): Promise<void> {
         try {
             this.log.debug(`Getting Bluesky notifications for ${ this.myProfile?.handle }.`);
@@ -208,7 +202,7 @@ export default class BlueskyAccount implements UserAccount {
             }
             this.lastUpdateCount = count;
         } catch (e) {
-            this.log.error(`Failure getting notifications for ${this.myProfile?.handle}.`, e);
+            this.log.error(`Failure getting notifications for ${ this.myProfile?.handle }.`, e);
             return;
         }
     }
@@ -246,7 +240,7 @@ export default class BlueskyAccount implements UserAccount {
                     this.postsSeen.add(id);
                     unseenRawPosts.push(post);
                 } else {
-                    this.log.debug(`Already seen ${id}`);
+                    this.log.debug(`Already seen ${ id }`);
                 }
             }
 
@@ -356,7 +350,7 @@ export default class BlueskyAccount implements UserAccount {
 
         try {
             await this.client.post(params);
-            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
+            this.log.info(`Successfully posted to ${ this.myProfile?.handle }`);
         } catch (e) {
             this.log.error(`Failed to post to ${ this.myProfile?.handle }.`, e);
         }
@@ -370,9 +364,9 @@ export default class BlueskyAccount implements UserAccount {
             } else {
                 await this.client.repost(post.id, post.cid);
             }
-            this.log.info(`Successfully reposted to ${this.myProfile?.handle}.`);
+            this.log.info(`Successfully reposted to ${ this.myProfile?.handle }.`);
         } catch (e) {
-            this.log.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
+            this.log.error(`Failed to retweet to ${ this.myProfile?.handle }.`, e);
         }
     }
 
