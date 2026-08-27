@@ -11,6 +11,7 @@ export type DisplayAccount = UserAccountProfile & {
     // Service Info
     accountId: string;
     postLength: number;
+    primary: boolean;
     selected: boolean;
     service: string;
 };
@@ -29,7 +30,8 @@ export const convertAccountToDisplayAccount = (account? : UserAccount): DisplayA
         ...account.getMyProfile(),
         accountId: account.getId(),
         postLength: account.getMaximumPostLength(),
-        selected: true,
+        primary: account.isPrimary(),
+        selected: account.isPrimary(),
         service: account.getService()
     };
 }

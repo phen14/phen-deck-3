@@ -43,6 +43,9 @@ export default class BlueskyAccount implements UserAccount {
 
     private myProfile: UserAccountProfile | undefined;
 
+    // Account Options
+    private primary: boolean;
+
     // Post record
     private postsSeen = new Set<string>();
 
@@ -52,6 +55,7 @@ export default class BlueskyAccount implements UserAccount {
 
     constructor(account: AccountConfig) {
         this.access = account.access as BlueSkyAccess;
+        this.primary = account.options?.primary ?? false;
         this.server = account.server;
 
         this.client = new AtpAgent({
@@ -148,6 +152,15 @@ export default class BlueskyAccount implements UserAccount {
 
     getRawUserHandle(): string {
         return this.getUserHandle();
+    }
+
+
+    // ===============================================================================================================
+    // -----| Account Options |-----
+    // =============================
+
+    isPrimary(): boolean {
+        return this.primary;
     }
 
 

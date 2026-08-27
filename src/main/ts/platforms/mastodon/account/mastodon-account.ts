@@ -31,6 +31,9 @@ export default class MastodonAccount implements UserAccount {
     private myProfile: UserAccountProfile | undefined;
     private handleServer = "";
 
+    // Account Options
+    private primary: boolean;
+
     // Post record
     private postsSeen = new Set<string>();
 
@@ -40,6 +43,7 @@ export default class MastodonAccount implements UserAccount {
 
     constructor(account: AccountConfig) {
         this.access = account.access as MastodonAccess;
+        this.primary = account.options?.primary ?? false;
         this.server = account.server;
 
         this.client = createRestAPIClient({
@@ -91,6 +95,16 @@ export default class MastodonAccount implements UserAccount {
     getRawUserHandle(): string {
         return this.myProfile?.rawHandle ?? "";
     }
+
+
+    // ===============================================================================================================
+    // -----| Account Options |-----
+    // =============================
+
+    isPrimary(): boolean {
+        return this.primary;
+    }
+
 
     // ===============================================================================================================
     // -----| Service Info |-----

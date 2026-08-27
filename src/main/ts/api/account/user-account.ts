@@ -41,6 +41,14 @@ export interface UserAccount {
     getUserHandle(): string;
 
     // ---------------------------------
+    // ~~~~~| Account Options |~~~~~
+
+    /**
+     * Get if the account is one that should be selected for posting by default.
+     */
+    isPrimary(): boolean;
+
+    // ---------------------------------
     // ~~~~~| Service Info |~~~~~
 
     getMaximumPostLength(): number;
