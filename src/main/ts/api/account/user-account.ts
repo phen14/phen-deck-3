@@ -56,10 +56,15 @@ export interface UserAccount {
     getUrl(): string;
 
     // ---------------------------------
-    // ~~~~~| User Actions |~~~~~
+    // ~~~~~| User Read Actions |~~~~~
+
+    getNotifications(): Promise<void>;
+    getPosts(): Promise<StatusPost[]>;
+
+    // ---------------------------------
+    // ~~~~~| User Write Actions |~~~~~
 
     post(postText: string): void;
-    getPosts(): Promise<StatusPost[]>;
     retweet(post: ActionedPost): Promise<void>;
 
     // ---------------------------------

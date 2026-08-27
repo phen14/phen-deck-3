@@ -104,6 +104,7 @@ const createWindow = async () => {
     setTimeout(() => reactInterface.getAccounts(mainWindow!.webContents), 5000);
     setTimeout(() => reactInterface.getPosts(mainWindow!.webContents), 5000);
     setTimeout(() => reactInterface.sendUpdatedConfig(mainWindow!.webContents), 5000);
+    setTimeout(() => reactInterface.getNotifications(mainWindow!.webContents), 20000);
 };
 
 export function refreshConfig() {
