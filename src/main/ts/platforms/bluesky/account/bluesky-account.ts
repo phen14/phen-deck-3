@@ -1,6 +1,13 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
-import { AppBskyGraphGetFollows, AtpAgent, AtpAgentLoginOpts, UnicodeString, $Typed } from "@atproto/api";
+import {
+    AppBskyGraphGetFollows,
+    AtpAgent,
+    AtpAgentLoginOpts,
+    UnicodeString,
+    $Typed,
+    AppBskyNotificationGetUnreadCount
+} from "@atproto/api";
 import { ThreadViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { isLink } from "@atproto/api/dist/client/types/app/bsky/richtext/facet";
 import { detectFacets } from "@atproto/api/dist/rich-text/detection";
@@ -182,59 +189,27 @@ export default class BlueskyAccount implements UserAccount {
 
 
     // ===============================================================================================================
-    // -----| User Actions |-----
-    // ==========================
+    // -----| User Read Actions |-----
+    // ===============================
 
-    async post(postText: string): Promise<void> {
-        const facets = detectFacets(new UnicodeString(postText));
-        let linkCard: $Typed<AppBskyEmbedExternal.Main> | undefined = undefined;
-
-        if (facets) {
-            const links = facets
-                .map((facet) => facet.features.find((feature) => isLink(feature)))
-                .filter((found) => found !== undefined);
-
-            if (links.length) {
-                const link = links[0];
-                const metadata = await urlMetadata(link.uri);
-
-                let url: string = metadata["og:url"];
-                if (!url || !url.length) {
-                    url = metadata["url"];
-                }
-
-                linkCard = {
-                    $type: "app.bsky.embed.external",
-                    external: {
-                        "description": metadata["og:description"],
-                        "title": metadata["og:title"],
-                        "uri": url
-                    }
-                };
-
-                const thumb = metadata["og:image"];
-                if (thumb) {
-                    const blob = await fetch(thumb).then(r => r.blob());
-                    const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" });
-                    linkCard.external.thumb = data?.blob;
-                }
-            }
-        }
-
-        const params: Partial<AppBskyFeedPost.Record> = {
-            facets,
-            text: postText
-        };
-
-        if (linkCard) {
-            params.embed = linkCard!;
-        }
-
+    lastUpdateCount= -1;
+    async getNotifications(): Promise<void> {
         try {
-            await this.client.post(params);
-            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
+            this.log.debug(`Getting Bluesky notifications for ${ this.myProfile?.handle }.`);
+            await this.login();
+
+            const response = await this.client.app.bsky.notification.getUnreadCount();
+            const { count } = response.data;
+
+            if (count > this.lastUpdateCount) {
+                this.log.info(`There are ${ count } unread notifications for ${ this.myProfile?.handle }.`);
+            } else {
+                this.log.debug(`No new unread notifications for ${ this.myProfile?.handle }.`);
+            }
+            this.lastUpdateCount = count;
         } catch (e) {
-            this.log.error(`Failed to post to ${ this.myProfile?.handle }.`, e);
+            this.log.error(`Failure getting notifications for ${this.myProfile?.handle}.`, e);
+            return;
         }
     }
 
@@ -326,6 +301,64 @@ export default class BlueskyAccount implements UserAccount {
         } catch (e) {
             this.log.error(`Failure getting posts for ${ this.myProfile?.handle }.`, e);
             return [];
+        }
+    }
+
+
+    // ===============================================================================================================
+    // -----| User Write Actions |-----
+    // ================================
+
+    async post(postText: string): Promise<void> {
+        const facets = detectFacets(new UnicodeString(postText));
+        let linkCard: $Typed<AppBskyEmbedExternal.Main> | undefined = undefined;
+
+        if (facets) {
+            const links = facets
+                .map((facet) => facet.features.find((feature) => isLink(feature)))
+                .filter((found) => found !== undefined);
+
+            if (links.length) {
+                const link = links[0];
+                const metadata = await urlMetadata(link.uri);
+
+                let url: string = metadata["og:url"];
+                if (!url || !url.length) {
+                    url = metadata["url"];
+                }
+
+                linkCard = {
+                    $type: "app.bsky.embed.external",
+                    external: {
+                        "description": metadata["og:description"],
+                        "title": metadata["og:title"],
+                        "uri": url
+                    }
+                };
+
+                const thumb = metadata["og:image"];
+                if (thumb) {
+                    const blob = await fetch(thumb).then(r => r.blob());
+                    const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" });
+                    linkCard.external.thumb = data?.blob;
+                }
+            }
+        }
+
+        const params: Partial<AppBskyFeedPost.Record> = {
+            facets,
+            text: postText
+        };
+
+        if (linkCard) {
+            params.embed = linkCard!;
+        }
+
+        try {
+            await this.client.post(params);
+            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
+        } catch (e) {
+            this.log.error(`Failed to post to ${ this.myProfile?.handle }.`, e);
         }
     }
 

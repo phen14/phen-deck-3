@@ -79,12 +79,33 @@ export class ReactInterface {
     }
 
     /**
+     * Communication channel to (eventually) send a batch of notifications to the front end.
+     *
+     * @param senderArg
+     * @param oneTime
+     */
+    async getNotifications(senderArg?: WebContents, oneTime: boolean = false) {
+        const sender = senderArg ?? this.mainWindow?.webContents;
+
+        const notificationPromises: Promise<void>[] = [];
+        accounts.list().forEach(account => {
+            notificationPromises.push(account.getNotifications());
+        });
+
+        await Promise.all(notificationPromises);
+
+        if (!oneTime) {
+            setTimeout(() => this.getNotifications(sender), 120000)
+        }
+    }
+
+    /**
      * Communication channel to send a batch of posts to the front end.
      *
      * @param senderArg
      * @param oneTime
      */
-    async getPosts (senderArg?: WebContents, oneTime: boolean = false) {
+    async getPosts(senderArg?: WebContents, oneTime: boolean = false) {
         const sender = senderArg ?? this.mainWindow?.webContents;
 
         if (!sender) {

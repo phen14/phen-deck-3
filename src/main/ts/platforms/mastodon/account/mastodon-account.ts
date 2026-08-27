@@ -124,17 +124,24 @@ export default class MastodonAccount implements UserAccount {
 
 
     // ===============================================================================================================
-    // -----| User Actions |-----
-    // ==========================
+    // -----| User Read Actions |-----
+    // ===============================
 
-    async post(postText: string): Promise<void> {
-        const params : mastodon.rest.v1.CreateStatusParams = { status: postText };
-
+    lastUpdateCount = -1;
+    async getNotifications(): Promise<void> {
         try {
-            await this.client.v1.statuses.create(params);
-            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
+            this.log.debug(`Getting Mastodon notifications for ${ this.myProfile?.handle }.`);
+            const { count } = await this.client.v1.notifications.unreadCount.fetch();
+
+            if (count > this.lastUpdateCount) {
+                this.log.info(`There are ${ count } unread notifications for ${ this.myProfile?.handle }.`);
+            } else {
+                this.log.debug(`No new unread notifications for ${ this.myProfile?.handle }.`);
+            }
+            this.lastUpdateCount = count;
         } catch (e) {
-            this.log.error(`Failed to post to ${this.myProfile?.handle}.`, e);
+            this.log.error(`Failure getting notifications for ${this.myProfile?.handle}.`, e);
+            return;
         }
     }
 
@@ -231,6 +238,23 @@ export default class MastodonAccount implements UserAccount {
             return [];
         }
     }
+
+
+    // ===============================================================================================================
+    // -----| User Write Actions |-----
+    // ================================
+
+    async post(postText: string): Promise<void> {
+        const params : mastodon.rest.v1.CreateStatusParams = { status: postText };
+
+        try {
+            await this.client.v1.statuses.create(params);
+            this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
+        } catch (e) {
+            this.log.error(`Failed to post to ${this.myProfile?.handle}.`, e);
+        }
+    }
+
 
     async retweet(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (M)...", post);
