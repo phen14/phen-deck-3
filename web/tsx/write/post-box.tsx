@@ -8,14 +8,23 @@ import { Channels } from "../../../src/main/ts/app/preload";
 import { getElectron } from "../util/get-electron";
 import { TemplateSelection } from "./template-selection";
 
+type Params = {
+    max: number,
+    onPost?: Function,
+    onReset?: Function,
+    selectedAccounts: string[]
+}
+
 /**
  * Display the box for text for a new post.
  *
  * @param max Maximum length for the post.
+ * @param onPost Optional function to run when a post is made.
+ * @param onReset Optional function to run when the Reset button is hit.
  * @param selectedAccounts List of currently selected accounts.
  * @constructor
  */
-export function PostBox({ max, selectedAccounts }: { max: number, selectedAccounts: string[] }): JSX.Element {
+export function PostBox({ max, onPost, onReset, selectedAccounts }: Params): JSX.Element {
     const [count, setCount] = useState<number>(0);
     const [postContent, setPostContent] = useState("");
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
@@ -29,6 +38,10 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
     const handleReset = () => {
         setCount(selectedTemplate.length);
         setPostContent(selectedTemplate ?? "");
+
+        if (onReset) {
+            onReset();
+        }
     };
 
     const post = () => {
@@ -38,6 +51,10 @@ export function PostBox({ max, selectedAccounts }: { max: number, selectedAccoun
         } as SubmittedPost;
         getElectron().ipcRenderer.sendMessage("post" as Channels, submittedPost);
         handleReset();
+
+        if (onPost) {
+            onPost(post);
+        }
     };
 
     const handleTemplateSelectionChange = (content: string) => {
