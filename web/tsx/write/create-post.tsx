@@ -2,7 +2,7 @@
 
 import "./create-post.css";
 
-import { JSX, useRef, useState } from "react";
+import { JSX, useState } from "react";
 import { DisplayAccount } from "../../../src/main/ts/api/account/display-account";
 import { Channels } from "../../../src/main/ts/app/preload";
 import { getElectron } from "../util/get-electron";
