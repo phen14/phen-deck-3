@@ -151,16 +151,20 @@ export abstract class AbstractBlueskyPost implements StatusPost {
             return undefined;
         }
 
-        if (!isExternalView(embed) && !isExternalMain(embed)) {
+        const isNotExternal = !isExternalView(embed);
+        const isNotExternalMain = !isExternalMain(embed);
+        const isNotRecordWithMediaExternal = !isRecordWithMediaView(embed) || !isExternalView(embed.media);
+
+        if (isNotExternal && isNotExternalMain && isNotRecordWithMediaExternal) {
             return undefined;
         }
-        const linkEmbed = embed as AppBskyEmbedExternal.View;
+        const linkView = (isRecordWithMediaView(embed) ? embed.media : embed) as AppBskyEmbedExternal.View;
+        const link = linkView.external;
 
-        if (linkEmbed.external.uri.includes(".gif?")) {
+        if (link.uri.includes(".gif?")) {
             return undefined;
         }
 
-        const link = linkEmbed.external;
         return new StatusLink(link.uri, link.title, link.description, link.thumb);
     }
 
