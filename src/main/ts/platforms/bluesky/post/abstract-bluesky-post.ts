@@ -153,9 +153,9 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
         const isNotExternal = !isExternalView(embed);
         const isNotExternalMain = !isExternalMain(embed);
-        const isNotRecordWithMediaOtherThanALink = !isRecordWithMediaView(embed) || !isExternalView(embed.media);
+        const isNotRecordWithMediaExternal = !isRecordWithMediaView(embed) || !isExternalView(embed.media);
 
-        if (isNotExternal && isNotExternalMain && isNotRecordWithMediaOtherThanALink) {
+        if (isNotExternal && isNotExternalMain && isNotRecordWithMediaExternal) {
             return undefined;
         }
         const linkView = (isRecordWithMediaView(embed) ? embed.media : embed) as AppBskyEmbedExternal.View;
