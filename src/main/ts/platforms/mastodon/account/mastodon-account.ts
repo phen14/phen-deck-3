@@ -255,6 +255,15 @@ export default class MastodonAccount implements UserAccount {
         }
     }
 
+    async favorite(post: ActionedPost): Promise<void> {
+        this.log.debug("Reblogging (M)...", post);
+        try {
+            await this.client.v1.statuses.$select(post.id).favourite();
+            this.log.info(`Successfully favorited by ${this.myProfile?.handle}.`);
+        } catch (e) {
+            this.log.error(`Failed to favorite for ${this.myProfile?.handle}.`, e);
+        }
+    }
 
     async retweet(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (M)...", post);

@@ -356,6 +356,20 @@ export default class BlueskyAccount implements UserAccount {
         }
     }
 
+    async favorite(post: ActionedPost): Promise<void> {
+        this.log.debug("Favoriting (B)...", post);
+        try {
+            if (post.retweet) {
+                await this.client.like(post.retweet.id, post.retweet.cid);
+            } else {
+                await this.client.like(post.id, post.cid);
+            }
+            this.log.info(`Successfully favorited by ${ this.myProfile?.handle }.`);
+        } catch (e) {
+            this.log.error(`Failed to favorite for ${ this.myProfile?.handle }.`, e);
+        }
+    }
+
     async retweet(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (B)...", post);
         try {
