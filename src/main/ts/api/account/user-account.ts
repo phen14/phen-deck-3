@@ -65,6 +65,7 @@ export interface UserAccount {
     // ~~~~~| User Write Actions |~~~~~
 
     post(postText: string): void;
+    favorite(post: ActionedPost): Promise<void>
     retweet(post: ActionedPost): Promise<void>;
 
     // ---------------------------------

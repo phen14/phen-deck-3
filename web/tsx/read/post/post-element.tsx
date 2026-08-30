@@ -39,6 +39,12 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     }
 
     const rawRef = useRef(null);
+
+    const favoriteHandler = () => {
+        const actionedPost = convertDisplayPostToActionedPost(post);
+        getElectron().ipcRenderer.sendMessage("favorite" as Channels, actionedPost);
+    }
+
     const rawHandler = () => {
         if (!rawRef.current) {
             return;
@@ -117,7 +123,8 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     const linkSection = (!post.isRetweet && post.linkCard) ? <LinkCard post={post} /> : "";
     const videoSection = (post.videos.length > 0) ? <VideoBlock post={post} /> : "";
     const retweetSection = (post.isRetweet) ? <PostElement post={post.retweet!} isEmbedded={ true } /> : "";
-    const actionRowSection = (isEmbedded || isRepliedTo) ? "" : <ActionRow post={post} rawHandler={rawHandler} retweetHandler={retweetHander}/>;
+    const actionRowSection = (isEmbedded || isRepliedTo) ? "" :
+            <ActionRow post={post} favoriteHandler={ favoriteHandler } rawHandler={ rawHandler } retweetHandler={ retweetHander } />;
 
     const postCopy = structuredClone(post);
     postCopy.raw = "";

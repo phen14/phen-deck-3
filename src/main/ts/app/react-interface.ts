@@ -32,8 +32,13 @@ export class ReactInterface {
         ipcMain.on('getPosts', async (event) => {
             await this.getPosts(event.sender);
         })
+
         ipcMain.on('post', async (event, value: SubmittedPost) => {
             await this.post(event, value);
+        });
+
+        ipcMain.on('favorite', async (event, value: ActionedPost) => {
+            await this.favorite(event, value);
         });
         ipcMain.on('retweet', async (event, value: ActionedPost) => {
             await this.retweet(event, value);
@@ -187,6 +192,20 @@ export class ReactInterface {
 
         accounts.forEach((account => account?.post(value.text)));
     }
+
+    /**
+     * Communication for the front end to send a favorite to the back end.
+     *
+     * @param event
+     * @param value
+     */
+    async favorite (event: IpcMainEvent, value: ActionedPost)  {
+        const accountsLibrary = Accounts.getInstance();
+        const accounts = value.accounts.map((account) => accountsLibrary.get(account));
+
+        accounts.forEach((account => account?.favorite(value)));
+    }
+
 
     /**
      * Communication for the front end to send a retweet to the back end.
