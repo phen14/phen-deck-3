@@ -12,8 +12,10 @@ import { SmallHeader } from "./small-header";
  * @constructor
  */
 export function RetweetHeader({ post } : { post: DisplayPost }): JSX.Element {
+    const className = `retweetHeader ${post.isRetweetedByMe ? "me" : "notMe"}`;
+
     return (
-        <div className="retweetHeader">
+        <div className={className}>
             <div className="retweetedIconColumn">
                 <img className="retweetedIcon" src={Retweet} />
             </div>

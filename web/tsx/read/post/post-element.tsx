@@ -71,7 +71,7 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
         className = "repliedTo";
     }
 
-    if (post.isMe || post.isRetweetedByMe) {
+    if (post.isMe) {
         className += " me";
     } else {
         className += " notMe";
