@@ -168,7 +168,9 @@ export default class MastodonAccount implements UserAccount {
             const unseenRawPosts = [];
             for (const post of rawPosts) {
                 if (!this.postsSeen.has(post.id) && !this.postsSeen.has(post.reblog?.id ?? '')) {
-                    this.postsSeen.add(post.id);
+                    if (post.account.acct != this.myProfile!.rawHandle) {
+                        this.postsSeen.add(post.id);
+                    }
                     unseenRawPosts.push(post);
                 } else {
                     this.log.debug(`Already seen ${post.id}`);
