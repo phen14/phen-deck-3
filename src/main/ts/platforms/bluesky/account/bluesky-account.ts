@@ -258,6 +258,10 @@ export default class BlueskyAccount implements UserAccount {
             const postsWithQuotedReplies: BlueskyPost[] = [];
 
             for (const post of posts) {
+                // The raw object model makes it annoying to check this earlier.
+                if (post.isMe()) {
+                    this.postsSeen.delete(post.getId());
+                }
                 if (post.isReply()) {
                     replies.push(post.isRetweet() ? post.getRetweet()! as BlueskyPost : post);
                     const replyRef = post.getReplyRef()?.parent as { uri: string };
