@@ -99,10 +99,12 @@
 }
 
 .retweetHeader {
-    border-bottom: 1px dotted #ccc;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     display: grid;
     grid-column-gap: 0.5rem;
     grid-template-columns: 32px auto;
+    padding: 5px;
     margin-bottom: 5px;
     width: 100%;
 }
