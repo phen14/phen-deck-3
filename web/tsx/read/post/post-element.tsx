@@ -74,7 +74,7 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     if (post.isMe || post.isRetweetedByMe) {
         className += " me";
     } else {
-        className += " notme";
+        className += " notMe";
     }
 
     let contentClassName = "";
@@ -95,8 +95,10 @@ export function PostElement({ isEmbedded, isRepliedTo, post } : Props): JSX.Elem
     // Quoted
     let quoteSection: JSX.Element | string = "";
     if(!isRepliedTo && !post.isRetweet && post.isQuoteTweet) {
+        const quoteClass = `quoteSection ${post.quoteTweet!.isMe ? " me" : "notMe"}`;
+        const quoteId = `${post.id}~${post.quoteTweet!.id}`;
         quoteSection = (
-            <div className="quoteSection">
+            <div id={quoteId} className={quoteClass}>
                 <PostElement post={ post.quoteTweet! } isEmbedded={ true } />
             </div>
         )
