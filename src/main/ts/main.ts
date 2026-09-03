@@ -1,13 +1,6 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
+import contextMenu from "electron-context-menu";
 import path from "path";
 import { app, BrowserWindow, shell, ipcMain, Menu } from "electron";
 import debug from "electron-debug";
@@ -19,6 +12,15 @@ import { loadPostTemplatesConfig } from "./app/load-post-templates-config";
 import { ReactInterface } from "./app/react-interface";
 import { phenDeckConfig } from "./config/phen-deck-config";
 import { mainMenuTemplate } from "./menu/main-menu";
+
+/**
+ * This module executes inside of electron's main process. You can start
+ * electron renderer process from here and communicate with the other processes
+ * through IPC.
+ *
+ * When running `npm run build` or `npm run build:main`, this file is compiled to
+ * `./src/main.js` using webpack. This gives us some performance wins.
+ */
 
 let mainWindow: BrowserWindow | undefined = undefined;
 
@@ -62,6 +64,22 @@ const createWindow = async () => {
     const getAssetPath = (...paths: string[]): string => {
         return path.join(RESOURCES_PATH, ...paths);
     };
+
+    contextMenu({
+        showSearchWithGoogle: false,
+        showSaveImageAs: true,
+
+        append: (defaultActions, parameters, browserWindow) => [
+            {
+                label: 'Search Startpage for “{selection}”',
+                // Only show it when right-clicking text
+                visible: parameters.selectionText.trim().length > 0,
+                click: () => {
+                    shell.openExternal(`https://www.startpage.com/do/search?q=${encodeURIComponent(parameters.selectionText)}`);
+                }
+            },
+        ]
+    });
 
     mainWindow = new BrowserWindow({
         show: false,
