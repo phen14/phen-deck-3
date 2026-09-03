@@ -68,6 +68,7 @@ const createWindow = async () => {
         width: 753,
         height: 1024,
         icon: getAssetPath("icon.png"),
+        roundedCorners: false,
         title: phenDeckConfig.title,
         webPreferences: {
             nodeIntegration: true,
