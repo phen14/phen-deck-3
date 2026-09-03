@@ -68,6 +68,7 @@ const createWindow = async () => {
         width: 753,
         height: 1024,
         icon: getAssetPath("icon.png"),
+        roundedCorners: false,
         title: phenDeckConfig.title,
         webPreferences: {
             nodeIntegration: true,
@@ -76,6 +77,16 @@ const createWindow = async () => {
     });
 
     mainWindow.loadURL(resolveHtmlPath("index.html"));
+
+    const menu = Menu.buildFromTemplate([
+        { role: 'copy' },
+        { role: 'cut' },
+        { role: 'paste' },
+        { role: 'selectAll' },
+    ])
+    mainWindow.webContents.on('context-menu', (_event, params) => {
+        menu.popup();
+    })
 
     mainWindow.on("ready-to-show", () => {
         if (!mainWindow) {
