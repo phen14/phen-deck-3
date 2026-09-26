@@ -69,7 +69,8 @@ export default class MastodonAccount implements UserAccount {
             avatarUrl: mastoProfile.avatar,
             displayName: mastoProfile.displayName,
             handle: `${mastoProfile.username}@${this.handleServer}`,
-            rawHandle: mastoProfile.username
+            rawHandle: mastoProfile.username,
+            server: this.server.url
         }
 
         return this.myProfile;
