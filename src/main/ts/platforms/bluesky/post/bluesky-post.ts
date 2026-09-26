@@ -77,7 +77,7 @@ export class BlueskyPost extends AbstractBlueskyPost {
     }
 
     getPosterUrl(): string {
-        return !!this.retweetInfo ? this.convertDidToAuthorUrl(this.retweetInfo.by?.did) ?? "" : super.getPosterUrl();
+        return !!this.retweetInfo ? this.convertDidToAuthorUrl(this.retweetInfo.by?.handle) ?? "" : super.getPosterUrl();
     }
 
 

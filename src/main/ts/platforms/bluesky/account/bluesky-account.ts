@@ -106,7 +106,8 @@ export default class BlueskyAccount implements UserAccount {
             avatarUrl: bskyProfile.avatar,
             displayName: bskyProfile.displayName,
             handle: bskyProfile.handle,
-            rawHandle: bskyProfile.handle
+            rawHandle: bskyProfile.handle,
+            server: this.server.url
         };
     }
 

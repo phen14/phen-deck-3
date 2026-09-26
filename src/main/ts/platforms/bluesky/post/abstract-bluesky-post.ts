@@ -17,9 +17,9 @@ import { ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record
 import { isView as isRecordWithMediaView } from "@atproto/api/dist/client/types/app/bsky/embed/recordWithMedia";
 
 export abstract class AbstractBlueskyPost implements StatusPost {
-    private readonly AUTHOR_URL_FORMAT = "https://bsky.app/profile/AT_ID/";
+    private readonly AUTHOR_URL_FORMAT = "https://bsky.app/profile/HANDLE/";
     private readonly POST_AT_URI_REGEX = "at://(.*)/app.bsky.feed.post/(.*)";
-    private readonly POST_URL_FORMAT = "https://bsky.app/profile/AT_ID/post/RKEY";
+    private readonly POST_URL_FORMAT = "https://bsky.app/profile/HANDLE/post/RKEY";
 
     protected readonly viewer: UserAccountProfile;
     protected readonly viewerAccountId: string;
@@ -87,7 +87,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     }
 
     getPosterUrl(): string {
-        return this.convertDidToAuthorUrl(this.getBase().author?.did);
+        return this.convertDidToAuthorUrl(this.getPosterHandle());
     }
 
     isMe(): boolean {
@@ -289,11 +289,11 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
     protected convertPostAtToUrl(at: string): string {
         const pieces = at.match(this.POST_AT_URI_REGEX);
-        return this.POST_URL_FORMAT.replace("AT_ID", pieces?.at(1)!).replace("RKEY", pieces?.at(2)!);
+        return this.POST_URL_FORMAT.replace("HANDLE", this.getPosterHandle()).replace("RKEY", pieces?.at(2)!);
     }
 
-    protected convertDidToAuthorUrl(did: string): string {
-        return this.AUTHOR_URL_FORMAT.replace("AT_ID", did);
+    protected convertDidToAuthorUrl(handle: string): string {
+        return this.AUTHOR_URL_FORMAT.replace("HANDLE", handle);
     }
 }
 
