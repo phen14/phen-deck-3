@@ -51,7 +51,14 @@ export class MastodonPost implements StatusPost {
     }
 
     getUrl(): string {
-        return this.mastodonStatus.url ?? "";
+        // Using URI instead of URL avoids getting direct Twitter links for Sportsbots...
+        let uri = this.mastodonStatus.uri ?? "";
+
+        // But the URI is still a redirect, so build an address to view the post on the viewing server.
+        if (uri.startsWith("https://sportsbots.xyz")) {
+            uri = `${this.viewer.server}/@${this.getPosterHandle()}/${this.getId()}`
+        }
+        return uri;
     }
 
     getViewer(): UserAccountProfile {

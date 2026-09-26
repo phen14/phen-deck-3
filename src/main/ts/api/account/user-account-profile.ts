@@ -13,4 +13,5 @@ export type UserAccountProfile = {
     readonly displayName: string | undefined;
     readonly handle: string;
     readonly rawHandle: string;
+    readonly server: string;
 }
