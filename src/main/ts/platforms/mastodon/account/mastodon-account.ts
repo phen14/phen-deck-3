@@ -7,6 +7,7 @@ import { UserAccount } from "../../../api/account/user-account";
 import { ActionedPost } from "../../../api/post/actioned-post";
 import { AccountConfig } from "../../../config/account-config-type";
 import { MessageSystem } from "../../../service/message-system";
+import { withRetry } from "../../../util/retry.js";
 import { MastodonAccess } from "./mastodon-access-type";
 import { StatusPost } from "../../../api/post/status-post";
 import { MastodonPost } from "../post/mastodon-post";
@@ -53,7 +54,7 @@ export default class MastodonAccount implements UserAccount {
     }
 
     async initialize(): Promise<void> {
-        const instance = await this.client.v2.instance.fetch();
+        const instance = await withRetry(() => this.client.v2.instance.fetch());
         this.maxChars = instance.configuration.statuses.maxCharacters;
         this.handleServer = instance.domain;
 
@@ -61,7 +62,7 @@ export default class MastodonAccount implements UserAccount {
     }
 
     async loadMyProfile(): Promise<UserAccountProfile> {
-        const mastoProfile = await this.client.v1.accounts.verifyCredentials();
+        const mastoProfile = await withRetry(() => this.client.v1.accounts.verifyCredentials());
 
         this.myProfile =  {
             id: mastoProfile.id,
@@ -132,7 +133,7 @@ export default class MastodonAccount implements UserAccount {
     async getNotifications(): Promise<void> {
         try {
             this.log.debug(`Getting Mastodon notifications for ${ this.myProfile?.handle }.`);
-            const { count } = await this.client.v1.notifications.unreadCount.fetch();
+            const { count } = await withRetry(() => this.client.v1.notifications.unreadCount.fetch());
 
             if (count > this.lastUpdateCount) {
                 this.log.info(`There are ${ count } unread notifications for ${ this.myProfile?.handle }.`);
@@ -147,9 +148,7 @@ export default class MastodonAccount implements UserAccount {
     }
 
     async fetchPostById(postId: string): Promise<MastodonPost | undefined> {
-        const postResponse = await this.client.v1.statuses.fetch({
-            id: [postId]
-        });
+        const postResponse = await withRetry(() => this.client.v1.statuses.fetch({ id: [postId] }));
 
         if (!postResponse.length) {
             return undefined;
@@ -161,10 +160,10 @@ export default class MastodonAccount implements UserAccount {
     async getPosts(): Promise<StatusPost[]> {
         try {
             this.log.debug(`Getting Mastadon timeline for ${ this.myProfile?.handle } since ${ this.newestPostSeen }`);
-            const rawPosts = await this.client.v1.timelines.home.list({
+            const rawPosts = await withRetry(() => this.client.v1.timelines.home.list({
                 limit: 100,
                 sinceId: this.newestPostSeen
-            });
+            }));
 
             const unseenRawPosts = [];
             for (const post of rawPosts) {
@@ -251,7 +250,7 @@ export default class MastodonAccount implements UserAccount {
         const params : mastodon.rest.v1.CreateStatusParams = { status: postText };
 
         try {
-            await this.client.v1.statuses.create(params);
+            await withRetry(() => this.client.v1.statuses.create(params));
             this.log.info(`Successfully posted to ${this.myProfile?.handle}`);
         } catch (e) {
             this.log.error(`Failed to post to ${this.myProfile?.handle}.`, e);
@@ -261,7 +260,7 @@ export default class MastodonAccount implements UserAccount {
     async favorite(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (M)...", post);
         try {
-            await this.client.v1.statuses.$select(post.id).favourite();
+            await withRetry(() => this.client.v1.statuses.$select(post.id).favourite());
             this.log.info(`Successfully favorited by ${this.myProfile?.handle}.`);
         } catch (e) {
             this.log.error(`Failed to favorite for ${this.myProfile?.handle}.`, e);
@@ -271,7 +270,7 @@ export default class MastodonAccount implements UserAccount {
     async retweet(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (M)...", post);
         try {
-            await this.client.v1.statuses.$select(post.id).reblog();
+            await withRetry(() => this.client.v1.statuses.$select(post.id).reblog());
             this.log.info(`Successfully reposted to ${this.myProfile?.handle}.`);
         } catch (e) {
             this.log.error(`Failed to retweet to ${this.myProfile?.handle}.`, e);
