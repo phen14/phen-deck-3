@@ -31,6 +31,7 @@
         "lorem-ipsum": "2.x",
         "masto": "7.x",
         "path-browserify": "1.x",
+        "p-retry": "8.x",
         "react": "19.x",
         "react-dom": "19.x",
         "react-router-dom": "7.x",

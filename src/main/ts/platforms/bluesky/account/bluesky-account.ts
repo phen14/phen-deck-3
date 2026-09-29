@@ -14,6 +14,7 @@ import { UserAccount } from "../../../api/account/user-account";
 import { ActionedPost } from "../../../api/post/actioned-post";
 import { AccountConfig } from "../../../config/account-config-type";
 import { MessageSystem } from "../../../service/message-system";
+import { withRetry } from "../../../util/retry.js";
 import { BlueskyQuotedPost } from "../post/bluesky-quoted-post";
 import { BlueskyRepliedToPost } from "../post/bluesky-replied-to-post";
 import { BlueSkyAccess } from "./bluesky-access-type";
@@ -89,15 +90,15 @@ export default class BlueskyAccount implements UserAccount {
             password: this.access.accessToken
         };
 
-        await this.client.login(account);
+        await withRetry(() => this.client.login(account));
     }
 
     async loadMyProfile(): Promise<void> {
         await this.login();
 
-        const bskyProfileResponse = await this.client.app.bsky.actor.getProfile({
+        const bskyProfileResponse = await withRetry(() => this.client.app.bsky.actor.getProfile({
             actor: this.client.assertDid
-        });
+        }));
         const bskyProfile = bskyProfileResponse.data;
 
         this.myProfile = {
@@ -116,14 +117,13 @@ export default class BlueskyAccount implements UserAccount {
         let followingResponse: AppBskyGraphGetFollows.Response | undefined;
 
         do {
-            followingResponse = await this.client.app.bsky.graph.getFollows({
+            followingResponse = await withRetry(() => this.client.app.bsky.graph.getFollows({
                 actor: this.client.assertDid,
                 cursor: followingResponse?.data.cursor,
                 limit: 100
-            });
-
-            follows.push(...followingResponse.data.follows.map((follow) => follow.handle));
-        } while (followingResponse.data.cursor);
+            }));
+            follows.push(...followingResponse!.data.follows.map((follow) => follow.handle));
+        } while (followingResponse!.data.cursor);
 
         follows.push(this.getUserHandle());
 
@@ -193,7 +193,7 @@ export default class BlueskyAccount implements UserAccount {
             this.log.debug(`Getting Bluesky notifications for ${ this.myProfile?.handle }.`);
             await this.login();
 
-            const response = await this.client.app.bsky.notification.getUnreadCount();
+            const response = await withRetry(() => this.client.app.bsky.notification.getUnreadCount());
             const { count } = response.data;
 
             if (count > this.lastUpdateCount) {
@@ -210,9 +210,9 @@ export default class BlueskyAccount implements UserAccount {
 
     async getRepliedTo(postId: string): Promise<BlueskyRepliedToPost | undefined> {
         try {
-            const postResponse = await this.client.app.bsky.feed.getPostThread({
+            const postResponse = await withRetry(() => this.client.app.bsky.feed.getPostThread({
                 uri: postId
-            });
+            }));
 
             if (postResponse.data.thread.$type !== "app.bsky.feed.defs#threadViewPost") {
                 return undefined;
@@ -230,9 +230,9 @@ export default class BlueskyAccount implements UserAccount {
             this.log.debug(`Getting Bluesky timeline for ${ this.myProfile?.handle }.`);
             await this.login();
 
-            const postsResponse = await this.client.app.bsky.feed.getTimeline({
+            const postsResponse = await withRetry(() => this.client.app.bsky.feed.getTimeline({
                 limit: 100
-            });
+            }));
 
             const unseenRawPosts: AppBskyFeedDefs.FeedViewPost[] = [];
             for (const post of postsResponse.data.feed) {
@@ -338,7 +338,7 @@ export default class BlueskyAccount implements UserAccount {
                 const thumb = metadata["og:image"];
                 if (thumb) {
                     const blob = await fetch(thumb).then(r => r.blob());
-                    const { data } = await this.client.uploadBlob(blob, { encoding: "image/jpeg" });
+                    const { data } = await withRetry(() => withRetry(() => this.client.uploadBlob(blob, { encoding: "image/jpeg" })));
                     linkCard.external.thumb = data?.blob;
                 }
             }
@@ -354,7 +354,7 @@ export default class BlueskyAccount implements UserAccount {
         }
 
         try {
-            await this.client.post(params);
+            await withRetry(() => this.client.post(params));
             this.log.info(`Successfully posted to ${ this.myProfile?.handle }`);
         } catch (e) {
             this.log.error(`Failed to post to ${ this.myProfile?.handle }.`, e);
@@ -364,11 +364,14 @@ export default class BlueskyAccount implements UserAccount {
     async favorite(post: ActionedPost): Promise<void> {
         this.log.debug("Favoriting (B)...", post);
         try {
+            let id = post.id;
+            let cid = post.cid;
             if (post.retweet) {
-                await this.client.like(post.retweet.id, post.retweet.cid);
-            } else {
-                await this.client.like(post.id, post.cid);
+                id = post.retweet.id;
+                cid = post.retweet.cid;
             }
+
+            await withRetry(() => this.client.like(id, cid));
             this.log.info(`Successfully favorited by ${ this.myProfile?.handle }.`);
         } catch (e) {
             this.log.error(`Failed to favorite for ${ this.myProfile?.handle }.`, e);
@@ -378,11 +381,14 @@ export default class BlueskyAccount implements UserAccount {
     async retweet(post: ActionedPost): Promise<void> {
         this.log.debug("Reblogging (B)...", post);
         try {
+            let id = post.id;
+            let cid = post.cid;
             if (post.retweet) {
-                await this.client.repost(post.retweet.id, post.retweet.cid);
-            } else {
-                await this.client.repost(post.id, post.cid);
+                id = post.retweet.id;
+                cid = post.retweet.cid;
             }
+
+            await withRetry(() => this.client.repost(id, cid));
             this.log.info(`Successfully reposted to ${ this.myProfile?.handle }.`);
         } catch (e) {
             this.log.error(`Failed to retweet to ${ this.myProfile?.handle }.`, e);
