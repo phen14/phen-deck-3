@@ -86,6 +86,7 @@ export class BlueskyQuotedPost extends AbstractBlueskyPost {
         }
 
         const embed = this.getEmbed() as AppBskyEmbedRecord.View;
-        return this.convertPostAtToUrl(embed.record.uri as string);
+        const record = embed.record as ViewRecord;
+        return this.convertPostAtToUrl(record.uri, record.author.handle);
     }
 }

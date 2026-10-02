@@ -30,7 +30,8 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     }
 
     protected abstract getBase(): PostView | ViewRecord;
-    protected abstract getRecord() : BlueRecord;
+
+    protected abstract getRecord(): BlueRecord;
 
     getId(): string {
         return this.getBase().uri ?? "";
@@ -107,7 +108,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ~~~~~| Time |~~~~~
 
     getTimestamp(): Date {
-        return new Date(this.getRecord()?.createdAt ?? new Date(Date.UTC(1900,1,1)));
+        return new Date(this.getRecord()?.createdAt ?? new Date(Date.UTC(1900, 1, 1)));
     }
 
     // ---------------------------------------
@@ -120,7 +121,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
         const text = this.getRecord()?.text ?? "";
         const facets = this.getRecord().facets;
-        const rt = new RichText({text, facets});
+        const rt = new RichText({ text, facets });
 
         // Mostly from the docs
         let markdown = "";
@@ -140,7 +141,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         return markdown;
     }
 
-    protected getEmbed() : AppBskyEmbedImages.View | AppBskyEmbedVideo.View | AppBskyEmbedExternal.View | AppBskyEmbedRecord.View
+    protected getEmbed(): AppBskyEmbedImages.View | AppBskyEmbedVideo.View | AppBskyEmbedExternal.View | AppBskyEmbedRecord.View
         | AppBskyEmbedRecordWithMedia.View | { $type: string; [k: string]: unknown } | undefined {
         return (this.getBase() as PostView).embed;
     }
@@ -229,7 +230,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
         }
 
         const video = embed as AppBskyEmbedVideo.View;
-        return [new StatusMedia(video.playlist, video.aspectRatio?.height, video.aspectRatio?.width)]
+        return [new StatusMedia(video.playlist, video.aspectRatio?.height, video.aspectRatio?.width)];
     }
 
 
@@ -287,9 +288,10 @@ export abstract class AbstractBlueskyPost implements StatusPost {
     // ---------------------------------------
     // ~~~~~| Util |~~~~~
 
-    protected convertPostAtToUrl(at: string): string {
+    protected convertPostAtToUrl(at: string, posterParam?: string): string {
+        const poster = posterParam ?? this.getPosterHandle();
         const pieces = at.match(this.POST_AT_URI_REGEX);
-        return this.POST_URL_FORMAT.replace("HANDLE", this.getPosterHandle()).replace("RKEY", pieces?.at(2)!);
+        return this.POST_URL_FORMAT.replace("HANDLE", poster).replace("RKEY", pieces?.at(2)!);
     }
 
     protected convertDidToAuthorUrl(handle: string): string {
@@ -299,7 +301,7 @@ export abstract class AbstractBlueskyPost implements StatusPost {
 
 export type BlueRecord = {
     createdAt: string;
-    embed? : AppBskyEmbedImages.View
+    embed?: AppBskyEmbedImages.View
         | AppBskyEmbedVideo.View
         | AppBskyEmbedExternal.View
         | AppBskyEmbedRecord.View
