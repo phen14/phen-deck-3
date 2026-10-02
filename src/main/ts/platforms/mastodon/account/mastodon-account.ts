@@ -147,14 +147,14 @@ export default class MastodonAccount implements UserAccount {
         }
     }
 
-    async fetchPostById(postId: string): Promise<MastodonPost | undefined> {
+    async fetchPostById(postId: string, isQuoted = false, isRepliedTo = false): Promise<MastodonPost | undefined> {
         const postResponse = await withRetry(() => this.client.v1.statuses.fetch({ id: [postId] }));
 
         if (!postResponse.length) {
             return undefined;
         }
 
-        return new MastodonPost(postResponse[0], this.myProfile!, this.getId());
+        return new MastodonPost(postResponse[0], this.myProfile!, this.getId(), isQuoted, isRepliedTo);
     }
 
     async getPosts(): Promise<StatusPost[]> {
@@ -190,7 +190,7 @@ export default class MastodonAccount implements UserAccount {
                 for (const post of posts) {
                     if (post.isReply()) {
                         replies.push(post);
-                        getRepliedToPromises.push(this.fetchPostById(post.getInRepliedToId()!));
+                        getRepliedToPromises.push(this.fetchPostById(post.getInRepliedToId()!, false, true));
                     } else if (post.isRetweet() && post.getRetweet()?.isReply()) {
                         const retweet = post.getRetweet() as MastodonPost;
                         replies.push(retweet);

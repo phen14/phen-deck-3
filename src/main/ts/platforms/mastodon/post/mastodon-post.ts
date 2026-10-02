@@ -9,6 +9,7 @@ import { StatusMedia } from "../../../api/post/status-media";
 
 export class MastodonPost implements StatusPost {
     private readonly isQuoted: boolean;
+    private readonly isRepliedTo: boolean;
     private readonly mastodonStatus: mastodon.v1.Status;
     private readonly quoted: MastodonPost | undefined = undefined;
     private readonly rabbitHoleId: string | undefined = undefined;
@@ -19,13 +20,14 @@ export class MastodonPost implements StatusPost {
     protected rabbitHole: MastodonPost | undefined = undefined;
     protected repliedTo: MastodonPost | undefined = undefined;
 
-    public constructor(mastadonStatus: mastodon.v1.Status, viewer: UserAccountProfile, viewerAccountId: string, isQuoted = false) {
-        if (!mastadonStatus || !viewer || !viewerAccountId) {
+    public constructor(mastodonStatus: mastodon.v1.Status, viewer: UserAccountProfile, viewerAccountId: string, isQuoted = false, isRepliedTo = false) {
+        if (!mastodonStatus || !viewer || !viewerAccountId) {
             throw new Error("Required fields missing.");
         }
 
         this.isQuoted = isQuoted;
-        this.mastodonStatus = mastadonStatus;
+        this.isRepliedTo = isRepliedTo;
+        this.mastodonStatus = mastodonStatus;
         this.viewer = viewer;
         this.viewerAccountId = viewerAccountId;
 
@@ -56,7 +58,7 @@ export class MastodonPost implements StatusPost {
 
         // But the URI is still a redirect, so build an address to view the post on the viewing server.
         if (uri.startsWith("https://sportsbots.xyz")) {
-            uri = `${this.viewer.server}/@${this.getPosterHandle()}/${this.getId()}`
+            uri = `${ this.viewer.server }/@${ this.getPosterHandle() }/${ this.getId() }`;
         }
         return uri;
     }
@@ -220,7 +222,7 @@ export class MastodonPost implements StatusPost {
     // ~~~~~| Retweets |~~~~~
 
     isQuoteTweet(): boolean {
-        return !!this.mastodonStatus.quote && 'quotedStatus' in this.mastodonStatus.quote;
+        return !!this.mastodonStatus.quote && "quotedStatus" in this.mastodonStatus.quote;
     }
 
     getQuoteTweet(): StatusPost | undefined {
@@ -228,15 +230,15 @@ export class MastodonPost implements StatusPost {
     }
 
     isRabbitHole(): boolean {
-        return !!this.rabbitHoleId;
+        return this.isRepliedTo ? this.isQuoteTweet() : !!this.rabbitHoleId;
     }
 
-    getRabbitHoleId() : string | undefined {
-        return this.rabbitHoleId;
+    getRabbitHoleId(): string | undefined {
+        return this.isRepliedTo ? this.getQuoteTweet()?.getId() : this.rabbitHoleId;
     }
 
     getRabbitHoleUrl(): string | undefined {
-        return this.rabbitHole?.getUrl() ?? undefined;
+        return (this.isRepliedTo ? this.getQuoteTweet()?.getUrl() : this.rabbitHole?.getUrl()) ?? undefined;
     }
 
     isRetweet(): boolean {
