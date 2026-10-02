@@ -1,5 +1,7 @@
 // (K) ALL RIGHTS REVERSED - Reprint what you like
 
+import { AppBskyEmbedRecord } from "@atproto/api";
+import { isView as isRecordView, ViewRecord } from "@atproto/api/dist/client/types/app/bsky/embed/record";
 import { UserAccountProfile } from "../../../api/account/user-account-profile";
 import { StatusPost } from "../../../api/post/status-post";
 import { AbstractBlueskyPost, BlueRecord } from "./abstract-bluesky-post";
@@ -40,7 +42,7 @@ export class BlueskyRepliedToPost extends AbstractBlueskyPost {
     // ~~~~~| Reply |~~~~~
 
     isReply(): boolean {
-        return !!(this.blueskyStatus.parent && this.blueskyStatus.parent.$type === 'app.bsky.feed.defs#threadViewPost');
+        return !!(this.blueskyStatus.parent && this.blueskyStatus.parent.$type === "app.bsky.feed.defs#threadViewPost");
     }
 
     getRepliedToUrl(): string | undefined {
@@ -64,4 +66,17 @@ export class BlueskyRepliedToPost extends AbstractBlueskyPost {
     // ---------------------------------------
     // ~~~~~| Retweets |~~~~~
 
+    isRabbitHole(): boolean {
+        return !!this.getEmbed() && isRecordView(this.getEmbed());
+    }
+
+    getRabbitHoleUrl(): string | undefined {
+        if (!this.isRabbitHole()) {
+            return undefined;
+        }
+
+        const embed = this.getEmbed() as AppBskyEmbedRecord.View;
+        const record = embed.record as ViewRecord;
+        return this.convertPostAtToUrl(record.uri, record.author.handle);
+    }
 }
