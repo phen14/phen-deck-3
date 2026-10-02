@@ -24,29 +24,29 @@ export function CreatePost(): JSX.Element {
         const map: Map<string, DisplayAccount> = new Map();
         accounts.forEach(account => map.set(account.accountId, account));
         setAccountMap(map);
+        computeCurrentSelectedAccountSettings(map);
     });
 
-    const computeCurrentSelectedAccountSettings = () => {
-        const selected = [...accountMap.values()]
-            .filter(account => account.selected);
+    const computeCurrentSelectedAccountSettings = (mapParam?: Map<string, DisplayAccount>) => {
+        const map = mapParam ?? accountMap;
+        const selected = [...map.values()].filter(account => account.selected);
         const ids = selected.map((account: DisplayAccount) => account.accountId);
         setSelectedAccounts(ids);
 
-        const maxes = selected
-            .map(account => account.postLength);
+        const maxes = selected.map(account => account.postLength);
         setMax(Math.min(...maxes));
     };
 
     const handleAccountSelectionChange = (id: string) => {
         const account = accountMap.get(id);
         if (!account) {
-            console.error(`No account found for account ${id}`);
+            console.error(`No account found for account ${ id }`);
             return;
         }
 
         account.selected = !account.selected;
         computeCurrentSelectedAccountSettings();
-    }
+    };
 
     const resetSelectedAccounts = () => {
         for (const account of accountMap.values()) {
@@ -55,15 +55,15 @@ export function CreatePost(): JSX.Element {
 
         setAccountMap(accountMap);
         computeCurrentSelectedAccountSettings();
-    }
+    };
 
     return (
         <div className="createPostColumn">
             <div className="createPostHeader">
                 <span>Create Post</span>
             </div>
-            <AccountSelection accountMap={accountMap} onSelect={ handleAccountSelectionChange } />
-            <PostBox max={ max } onPost={resetSelectedAccounts} onReset={resetSelectedAccounts} selectedAccounts={ selectedAccounts } />
+            <AccountSelection accountMap={ accountMap } onSelect={ handleAccountSelectionChange } />
+            <PostBox max={ max } onPost={ resetSelectedAccounts } onReset={ resetSelectedAccounts } selectedAccounts={ selectedAccounts } />
         </div>
     );
 }
